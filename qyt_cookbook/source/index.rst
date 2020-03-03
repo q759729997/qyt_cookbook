@@ -11,6 +11,7 @@ Welcome to qyt_cookbook's documentation!
    :caption: Contents:
 
    hello
+   hello_md
 
 Indices and tables
 ==================
