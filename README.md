@@ -27,3 +27,9 @@ pip install sphinx sphinx-autobuild sphinx_rtd_theme
 ~~~shell
 make.bat html
 ~~~
+
+## Read the Docs
+
+- 官网：<https://readthedocs.org/>
+- 使用github登录
+- 导入项目
