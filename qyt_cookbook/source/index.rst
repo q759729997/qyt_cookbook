@@ -6,14 +6,15 @@
 Welcome to qyt_cookbook's documentation!
 ========================================
 
+pytorch手册
+----------------
+
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
 
-   hello
-   hello_md
+   环境配置 </pytorch/install>
 
-Indices and tables
+索引与搜索
 ==================
 
 * :ref:`genindex`

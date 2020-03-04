@@ -2,6 +2,7 @@
 
 - 我的API手册
 - 参考资料：<https://www.xncoding.com/2017/01/22/fullstack/readthedoc.html>
+- `Sphinx`使用手册：<https://zh-sphinx-doc.readthedocs.io/en/latest/tutorial.html>
 
 ## Sphinx
 

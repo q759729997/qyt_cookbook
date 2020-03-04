@@ -22,8 +22,10 @@ project = 'qyt_cookbook'
 copyright = '2020, qiaoyongtian'
 author = 'qiaoyongtian'
 
+# The short X.Y version
+version = '0.0.1'
 # The full version, including alpha/beta/rc tags
-release = '0.0.1'
+release = version
 
 
 # -- General configuration ---------------------------------------------------
