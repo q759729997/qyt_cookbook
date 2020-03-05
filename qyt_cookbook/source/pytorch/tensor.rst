@@ -1,11 +1,11 @@
-.. _header-n307:
+.. _header-n479:
 
 Tensor数据操作
 ==============
 
 -  ``Tensor``\ 这个单词一般可译作“张量”，张量可以看作是一个多维数组。标量可以看作是0维张量，向量可以看作1维张量，矩阵可以看作是二维张量。
 
-.. _header-n312:
+.. _header-n484:
 
 创建Tensor
 ----------
@@ -53,16 +53,16 @@ randperm(m)                       随机排列
 .. code:: python
 
    x = torch.tensor([1, 2, 3])
-   print('x:{}, dtype:{}'.format(x, x.dtype)) 
+   print('x:{}, dtype:{}'.format(x, x.dtype))
    # 输出 x:tensor([1, 2, 3]), dtype:torch.int64
    x = x.new_empty(1, 5)
-   print('x:{}, dtype:{}'.format(x, x.dtype))  
+   print('x:{}, dtype:{}'.format(x, x.dtype))
    # 输出 x:tensor([[0, 0, 0, 0, 0]]), dtype:torch.int64
    x = x.new_empty(1, 5, dtype=torch.double)
    print('x:{}, dtype:{}'.format(x, x.dtype))
    # x:tensor([[0., 0., 0., 0., 0.]], dtype=torch.float64), dtype:torch.float64
 
-.. _header-n386:
+.. _header-n558:
 
 Tensor常用属性
 --------------
@@ -73,10 +73,10 @@ Tensor常用属性
 
 .. code:: python
 
-   x = torch.randn(8, 28, 28)
-   print(x.shape)  # 输出 torch.Size([8, 28, 28])
-   print(type(x.shape))  # 输出 <class 'torch.Size'>
-   print(x.size())  # 输出 torch.Size([8, 28, 28])
-   print(type(x.size()))  # 输出 <class 'torch.Size'>
-   print(x.size()[1])  # 输出 28
+   x = torch.randn(8, 28, 28)
+   print(x.shape)  # 输出 torch.Size([8, 28, 28])
+   print(type(x.shape))  # 输出 <class 'torch.Size'>
+   print(x.size())  # 输出 torch.Size([8, 28, 28])
+   print(type(x.size()))  # 输出 <class 'torch.Size'>
+   print(x.size()[1])  # 输出 28
    # x.shape[1] += 1，TypeError: 'torch.Size' object does not support item assignment

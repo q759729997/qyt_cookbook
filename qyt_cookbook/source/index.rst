@@ -10,9 +10,10 @@ Pytorch手册
 ----------------
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
+   :numbered:
    
-   /pytorch/index
+   Pytorch手册 </pytorch/index>
 
 索引与搜索
 ==================

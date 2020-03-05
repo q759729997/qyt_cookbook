@@ -30,31 +30,31 @@
 | 64位带符号整数 | torch.int64 或 torch.long     | torch.LongTensor   |
 | 布尔型         | torch.bool                    | torch.BoolTensor   |
 
-~~~python
+```python
 x = torch.ones(1, 2)
 print('x:{}, dtype:{}'.format(x, x.dtype))
 # 输出：x:tensor([[1., 1.]]), dtype:torch.float32
-~~~
+```
 
 - 通过现有的 `Tensor` 来创建，此方法会默认重用输入 `Tensor` 的一些属性，例如数据类型，除非自定义数据类型。
 
-~~~python
+```python
 x = torch.tensor([1, 2, 3])
-print('x:{}, dtype:{}'.format(x, x.dtype)) 
+print('x:{}, dtype:{}'.format(x, x.dtype))
 # 输出 x:tensor([1, 2, 3]), dtype:torch.int64
 x = x.new_empty(1, 5)
-print('x:{}, dtype:{}'.format(x, x.dtype))  
+print('x:{}, dtype:{}'.format(x, x.dtype))
 # 输出 x:tensor([[0, 0, 0, 0, 0]]), dtype:torch.int64
 x = x.new_empty(1, 5, dtype=torch.double)
 print('x:{}, dtype:{}'.format(x, x.dtype))
 # x:tensor([[0., 0., 0., 0., 0.]], dtype=torch.float64), dtype:torch.float64
-~~~
+```
 
 ## Tensor常用属性
 
 -  `Tensor` 形状获取，通过 `shape` 或者 `size()` 来获取 `Tensor` 的形状。返回的 `torch.Size` 其实相当于一个 `tuple` , 支持所有 `tuple` 的操作。
 
-~~~python
+```python
 x = torch.randn(8, 28, 28)
 print(x.shape)  # 输出 torch.Size([8, 28, 28])
 print(type(x.shape))  # 输出 <class 'torch.Size'>
@@ -62,4 +62,5 @@ print(x.size())  # 输出 torch.Size([8, 28, 28])
 print(type(x.size()))  # 输出 <class 'torch.Size'>
 print(x.size()[1])  # 输出 28
 # x.shape[1] += 1，TypeError: 'torch.Size' object does not support item assignment
-~~~
+```
+
