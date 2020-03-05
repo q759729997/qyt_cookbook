@@ -55,7 +55,7 @@ exclude_patterns = []
 source_parsers = {
     '.md': CommonMarkParser,
 }
-source_suffix = ['.rst', '.md']
+source_suffix = ['.rst']  # , '.md'
 
 # -- Options for HTML output -------------------------------------------------
 

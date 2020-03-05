@@ -3,16 +3,16 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to qyt_cookbook's documentation!
+Welcome to qyt's documentation!
 ========================================
 
-pytorch手册
+Pytorch手册
 ----------------
 
 .. toctree::
    :maxdepth: 2
-
-   环境配置 </pytorch/install>
+   
+   /pytorch/index
 
 索引与搜索
 ==================
