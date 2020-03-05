@@ -14,8 +14,7 @@ class TestTensorAttr(unittest.TestCase):
     """Tensor常用属性测试.
 
     Main methods:
-        test_dytpe - Tensor数据类型测试.
-        test_create - Tensor创建测试.
+        test_shape - Tensor形状获取测试.
     """
     # @unittest.skip('debug')
     def test_shape(self):
