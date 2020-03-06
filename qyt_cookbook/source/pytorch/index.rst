@@ -8,3 +8,4 @@ Pytorch手册
 
    环境配置 </pytorch/install>
    数据操作 </pytorch/tensor>
+   梯度计算 </pytorch/gradient>
