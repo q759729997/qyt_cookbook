@@ -17,6 +17,9 @@ class TestAutoGrad(unittest.TestCase):
         test_requires_grad - requires_grad属性测试.
         test_grad_fn - grad_fn属性测试.
         test_backward - backward函数测试.
+        test_grad_clear - 梯度清零与累计测试.
+        test_no_grad - 中断梯度跟踪测试.
+        test_tensor_data - tensor.data测试.
     """
     @unittest.skip('debug')
     def test_requires_grad(self):
@@ -48,7 +51,7 @@ class TestAutoGrad(unittest.TestCase):
         print(y)  # tensor([2., 2.], grad_fn=<MulBackward0>)
         print(x.grad_fn, y.grad_fn)  # None <MulBackward0 object at 0x00000282A67BCF28>
 
-    # @unittest.skip('debug')
+    @unittest.skip('debug')
     def test_backward(self):
         """backward函数测试.
         """
@@ -61,6 +64,56 @@ class TestAutoGrad(unittest.TestCase):
         print(x.grad)  # None
         print(y.backward())  # None 等价于 y.backward(torch.tensor(1.))
         print(x.grad)  # tensor([2., 2.])
+
+    @unittest.skip('debug')
+    def test_no_grad(self):
+        """中断梯度跟踪测试.
+        """
+        print('{} test_no_grad {}'.format('-'*15, '-'*15))
+        x = torch.ones(2, requires_grad=True)
+        y = (x * x).sum()
+        print(y, y.grad_fn)  # tensor(2., grad_fn=<SumBackward0>) <SumBackward0 object at 0x000001A08211D1D0>
+        with torch.no_grad():  # 中断梯度追踪
+            y = (x * x).sum()
+            print(y, y.grad_fn)  # tensor(2.) None
+
+    # @unittest.skip('debug')
+    def test_tensor_data(self):
+        """tensor.data测试.
+        """
+        print('{} test_no_grad {}'.format('-'*15, '-'*15))
+        x = torch.ones(1, requires_grad=True)
+        print(x.data)  # tensor([1.]),data也是一个tensor
+        print(x.data.requires_grad)  # False，已经是独立于计算图之外
+        y = 2 * x
+        x.data *= 100  # 只改变了值，不会记录在计算图，所以不会影响梯度传播
+        y.backward()
+        print(x)  # tensor([100.], requires_grad=True)，更改data的值也会影响tensor的值
+        print(x.grad)  # tensor([2.])
+        print('{} 不使用data，直接操作tensor {}'.format('-'*15, '-'*15))
+        # x = torch.ones(1, requires_grad=True)
+        # y = 2 * x
+        # x *= 100  # RuntimeError: a leaf Variable that requires grad has been used in an in-place operation.
+
+
+    @unittest.skip('debug')
+    def test_grad_clear(self):
+        """梯度清零与累计测试.
+        """
+        print('{} test_grad_clear {}'.format('-'*15, '-'*15))
+        x = torch.ones(2, requires_grad=True)
+        y = (x * x).sum()
+        y.backward()
+        print(x.grad)  # tensor([2., 2.])
+        y = (x * x).sum()
+        y.backward()
+        print(x.grad)  # tensor([4., 4.])；梯度累加
+        x.grad.data.zero_()  # 梯度清零
+        y = (x * x).sum()
+        y.backward()
+        print(x.grad)  # tensor([2., 2.])
+
+
 
 
 if __name__ == "__main__":
