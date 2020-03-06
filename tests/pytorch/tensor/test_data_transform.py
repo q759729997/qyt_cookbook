@@ -1,5 +1,5 @@
 """
-    main_module - 数据转换测试，测试时将对应方法的@unittest.skip注释掉.
+    main_module - Tensor与Python数据转换测试，测试时将对应方法的@unittest.skip注释掉.
 
     Main members:
 
@@ -12,7 +12,7 @@ import torch
 
 
 class TestDataTransform(unittest.TestCase):
-    """数据转换测试.
+    """Tensor与Python数据转换测试.
 
     Main methods:
         test_item - item函数测试.

@@ -199,8 +199,8 @@ svd                               奇异值分解
 
 .. _header-n160:
 
-数据转换
---------
+Tensor与Python数据转换
+----------------------
 
 -  ``item()``,
    它可以将一个标量\ ``Tensor``\ 转换成一个\ ``Python number``\ ：
@@ -243,3 +243,37 @@ svd                               奇异值分解
    print(x, '\t', y)  # [1. 1. 1.] tensor([0., 0., 0.], dtype=torch.float64)
    y += 2
    print(x, '\t', y)  # [1. 1. 1.] tensor([2., 2., 2.], dtype=torch.float64)
+
+.. _header-n173:
+
+设备间移动
+----------
+
+-  用方法\ ``to()``\ 可以将\ ``Tensor``\ 在CPU和GPU（需要硬件支持）之间相互移动。
+
+-  GPU环境下操作如下，\ ``torch.cuda.is_available()``\ **用于判断cuda是否可用**\ ：
+
+.. code:: python
+
+   device = 'cuda' if torch.cuda.is_available() else 'cpu'
+   print(device)  # cuda
+   x = torch.ones(3)
+   print(x)  # tensor([1., 1., 1.])
+   print(x.to(device))  # tensor([1., 1., 1.], device='cuda:0')
+   print(x)  # tensor([1., 1., 1.])
+   print(x.to(device, dtype=torch.int))  # tensor([1, 1, 1], device='cuda:0', dtype=torch.int32)
+
+-  CPU环境下操作如下：
+
+.. code:: python
+
+   device = 'cuda' if torch.cuda.is_available() else 'cpu'
+   print(device)  # cpu
+   x = torch.ones(3)
+   print(x)  # tensor([1., 1., 1.])
+   print(x.to(device))  # tensor([1., 1., 1.])
+   print(x.to(device, dtype=torch.int))  # tensor([1, 1, 1], dtype=torch.int32)
+
+-  **Tensor运算需要保证都在相同的设备上**\ ，否则会报错：\ ``RuntimeError: expected device cuda:0 but got device cpu``
+
+-  Tensor转Python数据类型的操作（如\ ``.numpy()``\ ），若Tensor在cuda设备上，需要先将其转移至cpu上，再进行操作。否则会报错：\ ``TypeError: can't convert CUDA tensor to numpy. Use Tensor.cpu() to copy the tensor to host memory first.``
