@@ -15,7 +15,7 @@ x = torch.ones(2, requires_grad=True)
 print(x, x.requires_grad)  # tensor([1., 1.], requires_grad=True) True
 ~~~
 
-- **注意：在`y.backward()`时**，如果`y`是标量，则不需要为`backward()`传入任何参数；否则，需要传入一个与`y`同形的`Tensor`。参考：backward为什么有一个grad_variables参数<https://zhuanlan.zhihu.com/p/29923090>
+- **注意：在`y.backward()`时**，如果`y`是标量，则不需要为`backward()`传入任何参数；否则，需要传入一个与`y`同形的`Tensor`。参考，backward为什么有一个grad_variables参数：<https://zhuanlan.zhihu.com/p/29923090>
 
 ~~~python
 x = torch.ones(2, requires_grad=True)

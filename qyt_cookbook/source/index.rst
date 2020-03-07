@@ -15,6 +15,15 @@ Pytorch手册
    
    Pytorch手册 </pytorch/index>
 
+Python手册
+----------------
+
+.. toctree::
+   :maxdepth: 3
+   :numbered:
+   
+   Python手册 </python/index>
+
 索引与搜索
 ==================
 

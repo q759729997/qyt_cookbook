@@ -3,10 +3,10 @@
 ## 参考资料
 
 
-- 官方网站： https://pytorch.org/
-- 官方示例： https://pytorch.org/tutorials/
-- 官方文档： https://pytorch.org/docs/stable/index.html
-- 《动手学深度学习》Pytorch实现： https://github.com/ShusenTang/Dive-into-DL-PyTorch
+- 官方网站： <https://pytorch.org/>
+- 官方示例： <https://pytorch.org/tutorials/>
+- 官方文档： <https://pytorch.org/docs/stable/index.html>
+- 《动手学深度学习》Pytorch实现： <https://github.com/ShusenTang/Dive-into-DL-PyTorch>
 
 ## Pytorch安装
 
@@ -17,4 +17,4 @@
 pip install torch==1.4.0+cpu torchvision==0.5.0+cpu -f https://download.pytorch.org/whl/torch_stable.html
 ~~~
 
-- 以前版本安装： https://pytorch.org/get-started/previous-versions/
+- 以前版本安装：<https://pytorch.org/get-started/previous-versions/>

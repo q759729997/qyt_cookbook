@@ -32,4 +32,4 @@ Pytorch安装
 
    pip install torch==1.4.0+cpu torchvision==0.5.0+cpu -f https://download.pytorch.org/whl/torch_stable.html
 
--  以前版本安装： https://pytorch.org/get-started/previous-versions/
+-  以前版本安装：\ https://pytorch.org/get-started/previous-versions/
