@@ -1,0 +1,33 @@
+.. _header-n0:
+
+多层感知器
+==========
+
+-  多层感知器（multilayer
+   perceptron，MLP）：分为输入层、隐藏层、输出层。隐藏层中的神经元和输入层中各个输入完全连接，输出层中的神经元和隐藏层中的各个神经元也完全连接。因此，多层感知机中的隐藏层和输出层都是全连接层（fully-connected
+   layer，也叫稠密层dense layer）。
+
+   .. figure:: D:/workspace/github_qyt/qyt_cookbook/qyt_cookbook/source/pytorch/imgs/多层感知器.png
+      :alt: 
+
+.. _header-n6:
+
+损失函数
+--------
+
+-  在机器学习里，将衡量误差的函数称为损失函数（loss
+   function）。例如常见的平方误差函数也称为平方损失（square
+   loss），\ *除以2是为了更方便的求导*\ ：
+
+.. math:: \ell^{(i)}(w, b) = \frac{1}{2} \left(\hat{y}^{(i)} - y^{(i)}\right)^2
+
+.. _header-n11:
+
+优化算法
+--------
+
+-  当模型和损失函数形式较为简单时，误差最小化问题的解可以直接用公式表达出来。这类解叫作解析解（analytical
+   solution）。然而，大多数深度学习模型并没有解析解，只能通过优化算法有限次迭代模型参数来尽可能降低损失函数的值。这类解叫作数值解（numerical
+   solution）。
+
+-  
