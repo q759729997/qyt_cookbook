@@ -34,6 +34,7 @@ release = version
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
+    'sphinx_rtd_theme'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -66,6 +67,14 @@ source_suffix = ['.rst']  # , '.md'
 # 修改theme
 html_theme = "sphinx_rtd_theme"
 html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
+# https://sphinx-rtd-theme.readthedocs.io/en/latest/configuring.html
+# Sphinx主题：https://www.kutu66.com//GitHub/article_103450
+html_theme_options = {
+    'display_version': True,  # 边栏的顶部显示版本号
+    'style_external_links': True,  # 在外部链接旁边添加一个 icon
+    'collapse_navigation': False,  # With this enabled, navigation entries are not expandable – the [+] icons next to each entry are removed.
+    
+}
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
