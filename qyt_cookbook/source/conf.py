@@ -73,7 +73,6 @@ html_theme_options = {
     'display_version': True,  # 边栏的顶部显示版本号
     'style_external_links': True,  # 在外部链接旁边添加一个 icon
     'collapse_navigation': False,  # With this enabled, navigation entries are not expandable – the [+] icons next to each entry are removed.
-    
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,
