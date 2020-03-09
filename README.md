@@ -28,7 +28,8 @@ pip install sphinx sphinx-autobuild sphinx_rtd_theme
 - `windows`下编译，在对应目录下执行，进入`build/html`目录后用浏览器打开`index.html`：
 
 ~~~shell
-make.bat html
+make.bat html  # 编译HTML
+make.bat clean  # 清理HTML缓存
 ~~~
 
 ## Read the Docs

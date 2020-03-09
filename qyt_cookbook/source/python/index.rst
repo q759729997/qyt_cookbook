@@ -7,3 +7,4 @@ Python手册
    :maxdepth: 2
 
    性能测试 </python/performance>
+   module详解 </python/module>
