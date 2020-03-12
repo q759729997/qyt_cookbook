@@ -22,19 +22,24 @@ class TestDataLoader(unittest.TestCase):
         """随机读取小批量数据.
         """
         print('{} test_dataLoader {}'.format('-'*15, '-'*15))
-        features = torch.zeros(20, 2)
-        print('features:', features.shape)
-        labels = torch.ones(features.shape[0])
-        print('labels:', labels.shape)
-        batch_size = 8
+        features = torch.zeros(20, 2)  # 第一个维度表示样本数目，切分batch时以此为依据
+        print('features:', features.shape)  # features: torch.Size([20, 2])
+        labels = torch.ones(features.shape[0])  # labels: torch.Size([20])
+        print('labels:', labels.shape)  # data_iter len: 3
+        batch_size = 3
         # 将训练数据的特征和标签组合
-        dataset = Data.TensorDataset(features, labels)
+        dataset = Data.TensorDataset(features, labels)  # tensors that have the same size of the first dimension.
         # 随机读取小批量
         data_iter = Data.DataLoader(dataset, batch_size, shuffle=True)
-        print('data_iter len:', len(data_iter))
+        print('data_iter len:', len(data_iter))  # data_iter len: 7
         for X, y in data_iter:
             print(X, y)
             break
+        """输出
+        tensor([[0., 0.],
+        [0., 0.],
+        [0., 0.]]) tensor([1., 1., 1.])
+        """
 
 
 if __name__ == "__main__":
