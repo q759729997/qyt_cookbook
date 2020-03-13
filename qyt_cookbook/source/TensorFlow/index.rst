@@ -6,4 +6,4 @@ TensorFlow手册
 .. toctree::
    :maxdepth: 2
 
-   环境配置 </TensorFlow/index>
+   环境配置 </TensorFlow/install>

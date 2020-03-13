@@ -129,3 +129,4 @@ dmypy.json
 .pyre/
 .vscode
 #upload_html.py
+scripts/myconfig.py

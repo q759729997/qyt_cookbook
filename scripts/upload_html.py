@@ -3,6 +3,9 @@
 Python实现Windows和Linux之间互相传输文件(文件夹)的方法:http://www.cppcns.com/os/linux/190042.html
 """
 import os
+import sys
+sys.path.insert(0, './')
+from scripts.myconfig import upload_config  # noqa
 
 
 def win_to_linux_file(win_path, linux_path, linux_ip, user_name, password):
@@ -15,7 +18,7 @@ def win_to_linux_file(win_path, linux_path, linux_ip, user_name, password):
 if __name__ == "__main__":
     win_path = 'D:\\workspace\\github_qyt\\qyt_cookbook\\qyt_cookbook\\build\\html\\*'
     linux_path = '/var/www/html/qyt_cookbook/'
-    linux_ip = '39.104.161.233'
-    user_name = 'root'
-    password = ''
+    linux_ip = upload_config['linux_ip']
+    user_name = upload_config['user_name']
+    password = upload_config['password']
     win_to_linux_file(win_path, linux_path, linux_ip, user_name, password)
