@@ -82,5 +82,35 @@ Sequential(
 """
 ~~~
 
+## 模型参数
+
+- 通过`net.parameters()`来查看模型所有的可学习参数，此函数将返回一个生成器。
+
+~~~python
+net = nn.Sequential()
+net.add_module('linear', nn.Linear(5, 1))
+for param in net.parameters():
+print(param)
+"""输出
+Parameter containing:
+tensor([[-0.0567,  0.1161,  0.1954, -0.2397,  0.3248]], requires_grad=True)
+Parameter containing:
+tensor([-0.0782], requires_grad=True)
+"""
+~~~
+
+- `net.named_parameters()`可以返回参数名称。
+
+~~~python
+for name, param in net.named_parameters():
+print('name:{}, param:{}'.format(name, param))
+"""
+name:linear.weight, param:Parameter containing:
+tensor([[-0.3299, -0.2503,  0.1922, -0.3915, -0.2623]], requires_grad=True)
+name:linear.bias, param:Parameter containing:
+tensor([-0.4374], requires_grad=True)
+"""
+~~~
+
 
 
