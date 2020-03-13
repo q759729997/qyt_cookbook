@@ -24,6 +24,15 @@ Python手册
    
    Python手册 </python/index>
 
+TensorFlow手册
+----------------
+
+.. toctree::
+   :maxdepth: 3
+   :numbered:
+   
+   TensorFlow手册 </TensorFlow/index>
+
 索引与搜索
 ==================
 
