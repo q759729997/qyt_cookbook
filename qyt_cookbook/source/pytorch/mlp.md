@@ -12,10 +12,56 @@ $$
 \ell^{(i)}(w, b) = \frac{1}{2} \left(\hat{y}^{(i)} - y^{(i)}\right)^2
 $$
 
+- PyTorch在`nn`模块中提供了各种损失函数，这些损失函数可看作是一种特殊的层，PyTorch也将这些损失函数实现为`nn.Module`的子类。
+
+~~~python
+loss = nn.MSELoss()  # 均方误差损失
+print(loss)  # MSELoss()
+pred_y = torch.tensor([-1, -1], dtype=torch.float)
+y = torch.tensor([1, 1], dtype=torch.float)
+print(loss(pred_y, y))  # tensor(4.),数据类型不能为int
+~~~
+
 ## 优化算法
 
 - 当模型和损失函数形式较为简单时，误差最小化问题的解可以直接用公式表达出来。这类解叫作**解析解（analytical solution）**。然而，大多数深度学习模型并没有解析解，只能通过优化算法有限次迭代模型参数来尽可能降低损失函数的值。这类解叫作**数值解（numerical solution）**。
 - **小批量随机梯度下降**（mini-batch stochastic gradient descent）：在每次迭代中，先随机均匀采样一个由固定数目训练数据样本所组成的小批量（mini-batch）$\mathcal{B}$，然后求小批量中数据样本的平均损失有关模型参数的导数（梯度），最后用此结果与预先设定的一个正数的乘积作为模型参数在本次迭代的减小量。
+
+- `torch.optim`模块提供了很多常用的优化算法比如SGD、Adam和RMSProp等。
+
+~~~python
+net = nn.Sequential()
+net.add_module('linear', nn.Linear(5, 1))
+optimizer = torch.optim.SGD(net.parameters(), lr=0.03)  # 小批量随机梯度下降,lr为必须参数
+print(optimizer)
+"""
+SGD (
+Parameter Group 0
+	dampening: 0
+	lr: 0.03
+	momentum: 0
+	nesterov: False
+	weight_decay: 0
+)
+"""
+~~~
+
+- 为不同子网络设置不同的学习率，这**在finetune时经常用到**:
+
+~~~python
+optimizer =optim.SGD([
+                # 如果对某个参数不指定学习率，就使用最外层的默认学习率
+                {'params': net.subnet1.parameters()}, # lr=0.03
+                {'params': net.subnet2.parameters(), 'lr': 0.01}
+            ], lr=0.03)
+~~~
+
+- 调整学习率：要有两种做法。一种是修改`optimizer.param_groups`中对应的学习率，另一种是更简单也是较为推荐的做法——新建优化器，由于optimizer十分轻量级，构建开销很小，故而可以构建新的optimizer。但是后者对于使用动量的优化器（如Adam），会丢失动量等状态信息，可能会造成损失函数的收敛出现震荡等情况。
+
+~~~python
+for param_group in optimizer.param_groups:
+    param_group['lr'] *= 0.1 # 学习率为之前的0.1倍
+~~~
 
 ## 模型定义
 
@@ -114,5 +160,98 @@ tensor([-0.4374], requires_grad=True)
 """
 ~~~
 
+### 初始化模型参数
 
+- 在使用`net`前，我们需要初始化模型参数。PyTorch在`init`模块中提供了多种参数初始化方法。这里的`init`是`initializer`的缩写形式。
+- 通过`init.normal_`将权重参数每个元素初始化为随机采样于均值为0、标准差为0.01的正态分布。偏差会初始化为零。
+
+~~~python
+net = nn.Sequential()
+net.add_module('linear', nn.Linear(5, 1))
+print('初始化前')
+for param in net.parameters():
+print(param)
+"""输出
+Parameter containing:
+tensor([[-0.0567,  0.1161,  0.1954, -0.2397,  0.3248]], requires_grad=True)
+Parameter containing:
+tensor([-0.0782], requires_grad=True)
+"""
+nn.init.normal_(net[0].weight, mean=0, std=0.01)
+nn.init.constant_(net[0].bias, val=0)  # 也可以直接修改bias的data: net[0].bias.data.fill_(0)
+print('初始化后')
+for param in net.parameters():
+print(param)
+"""
+Parameter containing:
+tensor([[0.0037, 0.0178, 0.0186, 0.0216, 0.0020]], requires_grad=True)
+Parameter containing:
+tensor([0.], requires_grad=True)
+"""
+~~~
+
+- 如果需要使用name定位某一层时，则`net[0].weight`应改为`net.linear.weight`，`bias`亦然。因为`net[0]`这样根据下标访问子模块的写法只有当`net`是个`ModuleList`或者`Sequential`实例时才可以。
+- 常用的还有`xavier_normal_`。
+
+## 训练模型
+
+- 构造数据=》加载数据=》定义模型=》定义优化器=》定义损失函数=》进行训练。
+- 通过调用`optim`实例的`step`函数来迭代模型参数。训练时注意`optimizer.zero_grad()`梯度清零，防止梯度一直累加。
+
+~~~python
+# 构造数据
+num_samples = 200  # 样本个数
+num_inputs = 2  # 特征个数
+features = torch.randn(num_samples, num_inputs)
+print('features shape:{}, dtype:{}'.format(features.shape, features.dtype))  # features shape:torch.Size([200, 2]), dtype:torch.float32
+label_weight = [2.0, 5.0]  # 定义一个线性函数
+label_bias = 6.0
+labels = torch.randn(num_samples)
+labels += label_weight[0] * features[:, 0] + label_weight[1] * features[:, 1] + label_bias
+print('labels shape:{}, dtype:{}'.format(labels.shape, labels.dtype))  # labels shape:torch.Size([200]), dtype:torch.float32
+# 加载数据
+batch_size = 8
+dataset = torch.utils.data.TensorDataset(features, labels)
+data_iter = torch.utils.data.DataLoader(dataset, batch_size, shuffle=True)
+print('data_iter len:{}'.format(len(data_iter)))
+# for X, y in data_iter:
+#     print(X, y)
+#     break
+# 定义模型
+net = nn.Sequential()
+net.add_module('linear', nn.Linear(num_inputs, 1))
+print(net)
+"""
+Sequential(
+(linear): Linear(in_features=2, out_features=1, bias=True)
+)
+"""
+# 定义优化器
+optimizer = torch.optim.SGD(net.parameters(), lr=0.03)
+# 定义损失函数
+loss = nn.MSELoss()
+# 进行训练
+num_epochs = 8
+for epoch in range(1, num_epochs + 1):
+	for X, y in data_iter:
+		output = net(X)  # 模型前向传播
+		loss_value = loss(output, y.view(-1, 1))  # 计算loss
+		optimizer.zero_grad()  # 梯度清零，等价于net.zero_grad()
+		loss_value.backward()  # 反向传播
+		optimizer.step()  # 迭代模型参数
+	print('epoch %d, loss: %f' % (epoch, loss_value.item()))
+# 输出训练后的结果
+print(label_weight, net[0].weight.data)  # [2.0, 5.0] tensor([[2.0171, 4.9683]])
+print(label_bias, net[0].bias.data)  # 6.0 tensor([6.0194])
+"""
+epoch 1, loss: 5.885800
+epoch 2, loss: 0.424021
+epoch 3, loss: 0.963439
+epoch 4, loss: 1.011478
+epoch 5, loss: 1.178113
+epoch 6, loss: 0.847684
+epoch 7, loss: 0.644298
+epoch 8, loss: 0.848485
+"""
+~~~
 
