@@ -197,7 +197,34 @@ svd                               奇异值分解
    print(y)  # tensor([[3., 3., 3., 3., 3.], [3., 3., 3., 3., 3.]])
    print(x)  # tensor([0., 0., 0., 0., 0., 0., 0., 0., 0., 0.])
 
-.. _header-n160:
+-  ``unsqueeze``\ **增加维度**\ ，参数\ ``dim``\ 表示在哪个维度位置增加一个维度。
+
+.. code:: python
+
+   # torch.Size([2]) dim=0 ==》torch.Size([1, 2])
+   # torch.Size([2]) dim=1 ==》torch.Size([2, 1])
+   x = torch.tensor([1, 2])
+   print(x.shape)  # torch.Size([2])
+   print(torch.unsqueeze(x, dim=0).shape)  # torch.Size([1, 2])
+   print(torch.unsqueeze(x, dim=0))  # tensor([[1, 2]])
+   print(torch.unsqueeze(x, dim=1).shape)  # torch.Size([2, 1])
+   print(torch.unsqueeze(x, dim=1))
+   """
+   tensor([[1],
+           [2]])
+   """
+
+-  ``squeeze``\ **减少维度**\ ，默认去掉所有size为1的维度，可以使用\ ``dim``\ 参数指定某一个待移除的位置。若指定位置size不为1，则不进行任何操作。
+
+.. code:: python
+
+   x = torch.ones(1, 2, 1, 3, 1, 4)
+   print(x.shape)  # torch.Size([1, 2, 1, 3, 1, 4])
+   print(torch.squeeze(x).shape)  # torch.Size([2, 3, 4])
+   print(torch.squeeze(x, dim=0).shape)  # torch.Size([2, 1, 3, 1, 4])
+   print(torch.squeeze(x, dim=1).shape)  # torch.Size([1, 2, 1, 3, 1, 4])
+
+.. _header-n206:
 
 Tensor与Python数据转换
 ----------------------
@@ -255,23 +282,23 @@ Tensor与Python数据转换
 
 .. code:: python
 
-   device = 'cuda' if torch.cuda.is_available() else 'cpu'
-   print(device)  # cuda
-   x = torch.ones(3)
-   print(x)  # tensor([1., 1., 1.])
-   print(x.to(device))  # tensor([1., 1., 1.], device='cuda:0')
-   print(x)  # tensor([1., 1., 1.])
+   device = 'cuda' if torch.cuda.is_available() else 'cpu'
+   print(device)  # cuda
+   x = torch.ones(3)
+   print(x)  # tensor([1., 1., 1.])
+   print(x.to(device))  # tensor([1., 1., 1.], device='cuda:0')
+   print(x)  # tensor([1., 1., 1.])
    print(x.to(device, dtype=torch.int))  # tensor([1, 1, 1], device='cuda:0', dtype=torch.int32)
 
 -  CPU环境下操作如下：
 
 .. code:: python
 
-   device = 'cuda' if torch.cuda.is_available() else 'cpu'
-   print(device)  # cpu
-   x = torch.ones(3)
-   print(x)  # tensor([1., 1., 1.])
-   print(x.to(device))  # tensor([1., 1., 1.])
+   device = 'cuda' if torch.cuda.is_available() else 'cpu'
+   print(device)  # cpu
+   x = torch.ones(3)
+   print(x)  # tensor([1., 1., 1.])
+   print(x.to(device))  # tensor([1., 1., 1.])
    print(x.to(device, dtype=torch.int))  # tensor([1, 1, 1], dtype=torch.int32)
 
 -  **Tensor运算需要保证都在相同的设备上**\ ，否则会报错：\ ``RuntimeError: expected device cuda:0 but got device cpu``

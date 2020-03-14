@@ -16,6 +16,8 @@ class TestTensorShape(unittest.TestCase):
     Main methods:
         test_view - view函数测试.
         test_clone - clone函数测试.
+        test_unsqueeze - unsqueeze增加维度函数测试.
+        test_squeeze - squeeze减少维度函数测试.
     """
     @unittest.skip('debug')
     def test_view(self):
@@ -34,7 +36,7 @@ class TestTensorShape(unittest.TestCase):
         y += 3
         print(x)  # tensor([3., 3., 3., 3., 3., 3., 3., 3., 3., 3.])
 
-    # @unittest.skip('debug')
+    @unittest.skip('debug')
     def test_clone(self):
         """clone函数测试.
         """
@@ -44,6 +46,33 @@ class TestTensorShape(unittest.TestCase):
         y += 3
         print(y)  # tensor([[3., 3., 3., 3., 3.], [3., 3., 3., 3., 3.]])
         print(x)  # tensor([0., 0., 0., 0., 0., 0., 0., 0., 0., 0.])
+
+    @unittest.skip('debug')
+    def test_unsqueeze(self):
+        """unsqueeze增加维度函数测试.
+        """
+        print('{} test_unsqueeze {}'.format('-'*15, '-'*15))
+        x = torch.tensor([1, 2])
+        print(x.shape)  # torch.Size([2])
+        print(torch.unsqueeze(x, dim=0).shape)  # torch.Size([1, 2])
+        print(torch.unsqueeze(x, dim=0))  # tensor([[1, 2]])
+        print(torch.unsqueeze(x, dim=1).shape)  # torch.Size([2, 1])
+        print(torch.unsqueeze(x, dim=1))
+        """
+        tensor([[1],
+        [2]])
+        """
+
+    # @unittest.skip('debug')
+    def test_squeeze(self):
+        """squeeze减少维度函数测试.
+        """
+        print('{} test_squeeze {}'.format('-'*15, '-'*15))
+        x = torch.ones(1, 2, 1, 3, 1, 4)
+        print(x.shape)  # torch.Size([1, 2, 1, 3, 1, 4])
+        print(torch.squeeze(x).shape)  # torch.Size([2, 3, 4])
+        print(torch.squeeze(x, dim=0).shape)  # torch.Size([2, 1, 3, 1, 4])
+        print(torch.squeeze(x, dim=1).shape)  # torch.Size([1, 2, 1, 3, 1, 4])
 
 
 if __name__ == "__main__":

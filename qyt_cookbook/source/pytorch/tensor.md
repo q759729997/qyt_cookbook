@@ -160,6 +160,33 @@ print(y)  # tensor([[3., 3., 3., 3., 3.], [3., 3., 3., 3., 3.]])
 print(x)  # tensor([0., 0., 0., 0., 0., 0., 0., 0., 0., 0.])
 ~~~
 
+- `unsqueeze`**增加维度**，参数`dim`表示在哪个维度位置增加一个维度。
+
+~~~python
+# torch.Size([2]) dim=0 ==》torch.Size([1, 2])
+# torch.Size([2]) dim=1 ==》torch.Size([2, 1])
+x = torch.tensor([1, 2])
+print(x.shape)  # torch.Size([2])
+print(torch.unsqueeze(x, dim=0).shape)  # torch.Size([1, 2])
+print(torch.unsqueeze(x, dim=0))  # tensor([[1, 2]])
+print(torch.unsqueeze(x, dim=1).shape)  # torch.Size([2, 1])
+print(torch.unsqueeze(x, dim=1))
+"""
+tensor([[1],
+        [2]])
+"""
+~~~
+
+- `squeeze`**减少维度**，默认去掉所有size为1的维度，可以使用`dim`参数指定某一个待移除的位置。若指定位置size不为1，则不进行任何操作。
+
+~~~python
+x = torch.ones(1, 2, 1, 3, 1, 4)
+print(x.shape)  # torch.Size([1, 2, 1, 3, 1, 4])
+print(torch.squeeze(x).shape)  # torch.Size([2, 3, 4])
+print(torch.squeeze(x, dim=0).shape)  # torch.Size([2, 1, 3, 1, 4])
+print(torch.squeeze(x, dim=1).shape)  # torch.Size([1, 2, 1, 3, 1, 4])
+~~~
+
 ## Tensor与Python数据转换
 
 - `item()`, 它可以将一个标量`Tensor`转换成一个`Python number`：
