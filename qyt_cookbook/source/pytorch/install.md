@@ -6,7 +6,7 @@
 - 官方网站： <https://pytorch.org/>
 - 官方示例： <https://pytorch.org/tutorials/>
 - 官方文档： <https://pytorch.org/docs/stable/index.html>
-- 《动手学深度学习》Pytorch实现： <https://github.com/ShusenTang/Dive-into-DL-PyTorch>
+- 《动手学深度学习》Pytorch实现： <https://github.com/ShusenTang/Dive-into-DL-PyTorch> 或 <https://tangshusen.me/Dive-into-DL-PyTorch/#/>
 
 ## Pytorch安装
 

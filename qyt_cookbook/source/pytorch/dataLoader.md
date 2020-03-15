@@ -35,3 +35,49 @@ drop_last(default: False):不满batch_size时，最后一个批次是否删除;
 num_workers:(default: 0):多线程处理数据,windows下暂时不能设置多线程;
 ~~~
 
+## 常用数据集
+
+### MNIST
+
+- 手写数字识别数据集。MNIST是深度学习最基本的数据集之一，由CNN鼻祖yann lecun建立的一个手写字符数据集，包含60000张训练图像和10000张测试图像，包含数字0-9共10个类别。
+
+![image-20200315103303047](dataLoader.assets/image-20200315103303047.png)
+
+### FashionMNIST
+
+- 10类衣服标签的数据集。zalando research的工作人员建立了fashion mnist数据集，该数据集由衣服、鞋子等服饰组成，包含70000张图像，其中60000张训练图像加10000张测试图像，图像大小为28x28，单通道，共分10个类，如下图，每3行表示一个类。数据大小：`training.pt`为45.3MB，`test.pt`为7.55MB。
+
+![image-20200315103506843](dataLoader.assets/image-20200315103506843.png)
+
+- 每个 training 和 test 示例的标签如下：
+
+| Label | Description |
+| :---- | :---------- |
+| 0     | T-shirt/top |
+| 1     | Trouser     |
+| 2     | Pullover    |
+| 3     | Dress       |
+| 4     | Coat        |
+| 5     | Sandal      |
+| 6     | Shirt       |
+| 7     | Sneaker     |
+| 8     | Bag         |
+| 9     | Ankle boot  |
+
+- 加载数据，`download=True`首次使用时下载，若指定目录已经下载过，则不会重复下载：
+
+~~~python
+mnist_train = torchvision.datasets.FashionMNIST(root='./data/FashionMNIST', train=True, download=True, transform=torchvision.transforms.ToTensor())
+mnist_test = torchvision.datasets.FashionMNIST(root='./data/FashionMNIST', train=False, download=True, transform=torchvision.transforms.ToTensor())
+print(type(mnist_train))  # <class 'torchvision.datasets.mnist.FashionMNIST'>
+print(len(mnist_train), len(mnist_test))  # 60000 10000
+~~~
+
+### CIFAR10
+
+- 数据集由10个类中的60000个32x32彩色图像组成，每个类有6000个图像。 有50000个训练图像和10000个测试图像。
+
+### CIFAR100
+
+- CIFAR-10类似，不同之处在于它有100个类，每个类包含600个图像。 每个类有500个训练图像和100个测试图像。 CIFAR-100中的100个类被分为20个超类。 每个图像都带有一个“精细”标签（它所属的类）和一个“粗”标签（它所属的超类）。
+
