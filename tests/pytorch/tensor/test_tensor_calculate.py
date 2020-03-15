@@ -16,6 +16,7 @@ class TestTensorCalculate(unittest.TestCase):
     Main methods:
         test_add - Tensor相加测试.
         test_broadcasting - 广播机制测试.
+        test_keepdim - 按维度求和.
     """
     @unittest.skip('debug')
     def test_add(self):
@@ -40,7 +41,7 @@ class TestTensorCalculate(unittest.TestCase):
         print(y.add_(x))  # tensor([1.1000, 2.2000, 3.3000])
         print(y)  # tensor([1.1000, 2.2000, 3.3000])
 
-    # @unittest.skip('debug')
+    @unittest.skip('debug')
     def test_broadcasting(self):
         """广播机制测试.
         """
@@ -51,6 +52,18 @@ class TestTensorCalculate(unittest.TestCase):
         print(x + torch.ones(1, 2))  # tensor([[2., 1.], [1., 2.]])
         print(x + torch.ones(2, 1))  # tensor([[2., 1.], [1., 2.]])
         print(x + torch.ones(2, 2))  # tensor([[2., 1.], [1., 2.]])
+
+    # @unittest.skip('debug')
+    def test_keepdim(self):
+        """按维度求和.
+        """
+        print('{} test_keepdim {}'.format('-'*15, '-'*15))
+        x = torch.tensor([[1, 2, 3], [4, 5, 6]])
+        print(x.shape)  # torch.Size([2, 3])
+        print(x.sum(dim=0, keepdim=True))  # tensor([[5, 7, 9]])
+        print(x.sum(dim=0, keepdim=True).shape)  # torch.Size([1, 3])
+        print(x.sum(dim=1, keepdim=True))  # tensor([[ 6], [15]])
+        print(x.sum(dim=1, keepdim=True).shape)  # torch.Size([2, 1])
 
 
 if __name__ == "__main__":

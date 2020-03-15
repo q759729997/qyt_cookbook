@@ -109,6 +109,19 @@ print(x + torch.ones(2, 2))  # tensor([[2., 1.], [1., 2.]])
 | inverse                           | 求逆矩阵                          |
 | svd                               | 奇异值分解                        |
 
+### 按维度计算
+
+- 对多维`Tensor`按维度操作。可以只对其中同一列（`dim=0`）或同一行（`dim=1`）的元素求和，并在结果中保留行和列这两个维度（`keepdim=True`）。求和操作中，被计算的dim最后变为size=1。
+
+~~~python
+x = torch.tensor([[1, 2, 3], [4, 5, 6]])
+print(x.shape)  # torch.Size([2, 3])
+print(x.sum(dim=0, keepdim=True))  # tensor([[5, 7, 9]])
+print(x.sum(dim=0, keepdim=True).shape)  # torch.Size([1, 3])
+print(x.sum(dim=1, keepdim=True))  # tensor([[ 6], [15]])
+print(x.sum(dim=1, keepdim=True).shape)  # torch.Size([2, 1])
+~~~
+
 ## 索引操作
 
 - 使用类似NumPy的索引操作来访问`Tensor`的一部分，需要注意的是：**索引出来的结果与原数据共享内存，即修改一个，另一个会跟着修改。**
@@ -131,6 +144,35 @@ print(x)  # tensor([[4., 3.], [0., 1.]])
 | masked_select(input, mask)      | 例子如上，a[a>0]，使用ByteTensor进行选取              |
 | nonzero(input)                  | 非0元素的下标                                         |
 | gather(input, dim, index)       | 根据index，在dim维度上选取数据，输出的size与index一样 |
+
+- `gather`,根据index，在dim维度上选取数据,输出的size与index一样。
+
+~~~python
+y_hat = torch.tensor([[0.1, 0.3, 0.6], [0.3, 0.2, 0.5]])
+print(y_hat.shape)  # torch.Size([2, 3])
+index = torch.LongTensor([0, 2]).view(-1, 1)
+print(index.shape)  # torch.Size([2, 1])
+print(index)
+"""
+tensor([[0],
+[2]])
+"""
+print(y_hat.gather(dim=1, index=index).shape)  # torch.Size([2, 1])
+print(y_hat.gather(dim=1, index=index))
+"""
+tensor([[0.1000],
+[0.5000]])
+"""
+~~~
+
+- `y_hat.argmax(dim=1)`返回矩阵`y_hat`每行中最大元素的索引。
+
+~~~python
+y_hat = torch.tensor([[0.1, 0.3, 0.6], [0.3, 0.2, 0.5]])
+print(y_hat.shape)  # torch.Size([2, 3])
+print(y_hat.argmax(dim=1).shape)  # torch.Size([2])
+print(y_hat.argmax(dim=1))  # tensor([2, 2])
+~~~
 
 ## 形状改变操作
 

@@ -134,6 +134,22 @@ svd                               奇异值分解
 
 .. _header-n127:
 
+按维度计算
+~~~~~~~~~~
+
+-  对多维\ ``Tensor``\ 按维度操作。可以只对其中同一列（\ ``dim=0``\ ）或同一行（\ ``dim=1``\ ）的元素求和，并在结果中保留行和列这两个维度（\ ``keepdim=True``\ ）。求和操作中，被计算的dim最后变为size=1。
+
+.. code:: python
+
+   x = torch.tensor([[1, 2, 3], [4, 5, 6]])
+   print(x.shape)  # torch.Size([2, 3])
+   print(x.sum(dim=0, keepdim=True))  # tensor([[5, 7, 9]])
+   print(x.sum(dim=0, keepdim=True).shape)  # torch.Size([1, 3])
+   print(x.sum(dim=1, keepdim=True))  # tensor([[ 6], [15]])
+   print(x.sum(dim=1, keepdim=True).shape)  # torch.Size([2, 1])
+
+.. _header-n198:
+
 索引操作
 --------
 
@@ -166,7 +182,36 @@ svd                               奇异值分解
 |                                 | 上选取数据，输出的size与index一样 |
 +---------------------------------+-----------------------------------+
 
-.. _header-n151:
+-  ``gather``,根据index，在dim维度上选取数据,输出的size与index一样。
+
+.. code:: python
+
+   y_hat = torch.tensor([[0.1, 0.3, 0.6], [0.3, 0.2, 0.5]])
+   print(y_hat.shape)  # torch.Size([2, 3])
+   index = torch.LongTensor([0, 2]).view(-1, 1)
+   print(index.shape)  # torch.Size([2, 1])
+   print(index)
+   """
+   tensor([[0],
+   [2]])
+   """
+   print(y_hat.gather(dim=1, index=index).shape)  # torch.Size([2, 1])
+   print(y_hat.gather(dim=1, index=index))
+   """
+   tensor([[0.1000],
+   [0.5000]])
+   """
+
+-  ``y_hat.argmax(dim=1)``\ 返回矩阵\ ``y_hat``\ 每行中最大元素的索引。
+
+.. code:: python
+
+   y_hat = torch.tensor([[0.1, 0.3, 0.6], [0.3, 0.2, 0.5]])
+   print(y_hat.shape)  # torch.Size([2, 3])
+   print(y_hat.argmax(dim=1).shape)  # torch.Size([2])
+   print(y_hat.argmax(dim=1))  # tensor([2, 2])
+
+.. _header-n223:
 
 形状改变操作
 ------------
@@ -201,30 +246,30 @@ svd                               奇异值分解
 
 .. code:: python
 
-   # torch.Size([2]) dim=0 ==》torch.Size([1, 2])
-   # torch.Size([2]) dim=1 ==》torch.Size([2, 1])
-   x = torch.tensor([1, 2])
-   print(x.shape)  # torch.Size([2])
-   print(torch.unsqueeze(x, dim=0).shape)  # torch.Size([1, 2])
-   print(torch.unsqueeze(x, dim=0))  # tensor([[1, 2]])
-   print(torch.unsqueeze(x, dim=1).shape)  # torch.Size([2, 1])
-   print(torch.unsqueeze(x, dim=1))
-   """
-   tensor([[1],
-           [2]])
+   # torch.Size([2]) dim=0 ==》torch.Size([1, 2])
+   # torch.Size([2]) dim=1 ==》torch.Size([2, 1])
+   x = torch.tensor([1, 2])
+   print(x.shape)  # torch.Size([2])
+   print(torch.unsqueeze(x, dim=0).shape)  # torch.Size([1, 2])
+   print(torch.unsqueeze(x, dim=0))  # tensor([[1, 2]])
+   print(torch.unsqueeze(x, dim=1).shape)  # torch.Size([2, 1])
+   print(torch.unsqueeze(x, dim=1))
+   """
+   tensor([[1],
+           [2]])
    """
 
 -  ``squeeze``\ **减少维度**\ ，默认去掉所有size为1的维度，可以使用\ ``dim``\ 参数指定某一个待移除的位置。若指定位置size不为1，则不进行任何操作。
 
 .. code:: python
 
-   x = torch.ones(1, 2, 1, 3, 1, 4)
-   print(x.shape)  # torch.Size([1, 2, 1, 3, 1, 4])
-   print(torch.squeeze(x).shape)  # torch.Size([2, 3, 4])
-   print(torch.squeeze(x, dim=0).shape)  # torch.Size([2, 1, 3, 1, 4])
+   x = torch.ones(1, 2, 1, 3, 1, 4)
+   print(x.shape)  # torch.Size([1, 2, 1, 3, 1, 4])
+   print(torch.squeeze(x).shape)  # torch.Size([2, 3, 4])
+   print(torch.squeeze(x, dim=0).shape)  # torch.Size([2, 1, 3, 1, 4])
    print(torch.squeeze(x, dim=1).shape)  # torch.Size([1, 2, 1, 3, 1, 4])
 
-.. _header-n206:
+.. _header-n168:
 
 Tensor与Python数据转换
 ----------------------
@@ -271,7 +316,7 @@ Tensor与Python数据转换
    y += 2
    print(x, '\t', y)  # [1. 1. 1.] tensor([2., 2., 2.], dtype=torch.float64)
 
-.. _header-n173:
+.. _header-n181:
 
 设备间移动
 ----------
