@@ -33,9 +33,18 @@ TensorFlow手册
    
    TensorFlow手册 </TensorFlow/index>
 
-索引与搜索
-==================
+常用网站与工具
+----------------
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+.. toctree::
+   :maxdepth: 3
+   :numbered:
+   
+   常用网站与工具 <contents>
+
+.. 索引与搜索
+.. ==================
+
+.. * :ref:`genindex`
+.. * :ref:`modindex`
+.. * :ref:`search`
