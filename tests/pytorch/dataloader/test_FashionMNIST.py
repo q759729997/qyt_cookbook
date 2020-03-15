@@ -25,6 +25,10 @@ class TestFashionMNIST(unittest.TestCase):
         mnist_test = torchvision.datasets.FashionMNIST(root='./data/FashionMNIST', train=False, download=True, transform=torchvision.transforms.ToTensor())
         print(type(mnist_train))  # <class 'torchvision.datasets.mnist.FashionMNIST'>
         print(len(mnist_train), len(mnist_test))  # 60000 10000
+        # 查看第一个样本
+        feature, label = mnist_train[0]
+        print(feature.shape, label)  # Channel x Height x Width
+        # 输出：torch.Size([1, 28, 28]) 9
 
 
 if __name__ == "__main__":

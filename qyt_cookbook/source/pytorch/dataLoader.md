@@ -43,26 +43,29 @@ num_workers:(default: 0):多线程处理数据,windows下暂时不能设置多�
 
 ![image-20200315103303047](dataLoader.assets/image-20200315103303047.png)
 
+- 所属文献：LeCun, Y., Cortes, C., & Burges, C. <http://yann.lecun.com/exdb/mnist/>
+
 ### FashionMNIST
 
 - 10类衣服标签的数据集。zalando research的工作人员建立了fashion mnist数据集，该数据集由衣服、鞋子等服饰组成，包含70000张图像，其中60000张训练图像加10000张测试图像，图像大小为28x28，单通道，共分10个类，如下图，每3行表示一个类。数据大小：`training.pt`为45.3MB，`test.pt`为7.55MB。
 
 ![image-20200315103506843](dataLoader.assets/image-20200315103506843.png)
 
+- 所属文献：Xiao, H., Rasul, K., & Vollgraf, R. (2017). Fashion-mnist: a novel image dataset for benchmarking machine learning algorithms. arXiv preprint arXiv:1708.07747.
 - 每个 training 和 test 示例的标签如下：
 
-| Label | Description |
-| :---- | :---------- |
-| 0     | T-shirt/top |
-| 1     | Trouser     |
-| 2     | Pullover    |
-| 3     | Dress       |
-| 4     | Coat        |
-| 5     | Sandal      |
-| 6     | Shirt       |
-| 7     | Sneaker     |
-| 8     | Bag         |
-| 9     | Ankle boot  |
+| Label | Description | 描述   |
+| :---- | :---------- | ------ |
+| 0     | T-shirt/top | T恤    |
+| 1     | Trouser     | 裤子   |
+| 2     | Pullover    | 套衫   |
+| 3     | Dress       | 连衣裙 |
+| 4     | Coat        | 外套   |
+| 5     | Sandal      | 凉鞋   |
+| 6     | Shirt       | 衬衫   |
+| 7     | Sneaker     | 运动鞋 |
+| 8     | Bag         | 包     |
+| 9     | Ankle boot  | 短靴   |
 
 - 加载数据，`download=True`首次使用时下载，若指定目录已经下载过，则不会重复下载：
 
