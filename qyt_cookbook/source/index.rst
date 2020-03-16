@@ -33,6 +33,15 @@ TensorFlow手册
    
    TensorFlow手册 </TensorFlow/index>
 
+操作系统相关
+----------------
+
+.. toctree::
+   :maxdepth: 3
+   :numbered:
+   
+   操作系统相关 </ossystem/index>
+
 常用网站与工具
 ----------------
 
