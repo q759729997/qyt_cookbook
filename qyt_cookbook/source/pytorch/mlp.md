@@ -4,6 +4,67 @@
 
   ![多层感知器](imgs/%E5%A4%9A%E5%B1%82%E6%84%9F%E7%9F%A5%E5%99%A8.png)
 
+- 多层感知机就是含有至少一个隐藏层的由全连接层组成的神经网络，且每个隐藏层的输出通过激活函数进行变换。多层感知机的层数和各隐藏层中隐藏单元个数都是超参数。多层感知机按以下方式计算输出：
+
+  $$
+  \begin{aligned}
+  \boldsymbol{H} &= \phi(\boldsymbol{X} \boldsymbol{W}_h + \boldsymbol{b}_h),\\
+  \boldsymbol{O} &= \boldsymbol{H} \boldsymbol{W}_o + \boldsymbol{b}_o,
+  \end{aligned}
+  $$
+
+- 其中$\phi$表示激活函数。在分类问题中，我们可以对输出$\boldsymbol{O}$做softmax运算，并使用softmax回归中的交叉熵损失函数。在回归问题中，我们将输出层的输出个数设为1，并将输出$\boldsymbol{O}$直接提供给线性回归中使用的平方损失函数。
+
+## 激活函数
+
+- 激活函数（activation function）：全连接层只是对数据做仿射变换（affine transformation），而多个仿射变换的叠加仍然是一个仿射变换。解决问题的一个方法是引入非线性变换，例如对隐藏变量使用按元素运算的非线性函数进行变换，然后再作为下一个全连接层的输入。这个**非线性函数被称为激活函数**。
+
+### ReLU
+
+- ReLU（rectified linear unit）函数提供了一个很简单的非线性变换。给定元素$x$，该函数定义为
+$$
+\text{ReLU}(x) = \max(x, 0)
+$$
+
+<img src="mlp.assets/image-20200316225821002.png" alt="image-20200316225821002" style="zoom: 67%;" />
+
+- 当输入为负数时，ReLU函数的导数为0；当输入为正数时，ReLU函数的导数为1。尽管输入为0时ReLU函数不可导，但是我们可以取此处的导数为0。
+
+<img src="mlp.assets/image-20200316230159193.png" alt="image-20200316230159193" style="zoom:67%;" />
+
+### sigmoid
+
+- sigmoid函数可以将元素的值变换到0和1之间：
+
+$$
+\text{sigmoid}(x) = \frac{1}{1 + \exp(-x)}
+$$
+
+<img src="mlp.assets/image-20200316231711688.png" alt="image-20200316231711688" style="zoom:67%;" />
+
+- 依据链式法则，sigmoid函数的导数
+
+$$
+\text{sigmoid}'(x) = \text{sigmoid}(x)\left(1-\text{sigmoid}(x)\right)
+$$
+
+- 当输入为0时，sigmoid函数的导数达到最大值0.25；当输入越偏离0时，sigmoid函数的导数越接近0。
+
+<img src="mlp.assets/image-20200316231929192.png" alt="image-20200316231929192" style="zoom:67%;" />
+
+### tanh
+
+- tanh（双曲正切）函数可以将元素的值变换到-1和1之间：
+  $$
+  \text{tanh}(x) = \frac{1 - \exp(-2x)}{1 + \exp(-2x)}
+  $$
+
+<img src="mlp.assets/image-20200316232255834.png" alt="image-20200316232255834" style="zoom:67%;" />
+
+- 当输入为0时，tanh函数的导数达到最大值1；当输入越偏离0时，tanh函数的导数越接近0。
+
+<img src="mlp.assets/image-20200316232411001.png" alt="image-20200316232411001" style="zoom:67%;" />
+
 ## 损失函数
 
 - 在机器学习里，将衡量误差的函数称为损失函数（loss function）。例如常见的平方误差函数也称为平方损失（square loss），*除以2是为了更方便的求导*：

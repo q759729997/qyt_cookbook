@@ -37,3 +37,8 @@ make.bat clean  # 清理HTML缓存
 - 官网：<https://readthedocs.org/>
 - 使用github登录
 - 导入项目
+
+## reStructuredText
+
+- 语法：<https://pythonhosted.org/an_example_pypi_project/sphinx.html#tables>
+- 快速入门指南：<http://www.bary.com/doc/a/228277572381775842/>

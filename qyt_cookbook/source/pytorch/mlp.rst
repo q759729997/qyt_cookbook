@@ -1,4 +1,4 @@
-.. _header-n0:
+.. _header-n664:
 
 多层感知器
 ==========
@@ -10,7 +10,64 @@
    .. figure:: D:/workspace/github_qyt/qyt_cookbook/qyt_cookbook/source/pytorch/imgs/多层感知器.png
       :alt: 
 
-.. _header-n6:
+-  多层感知机就是含有至少一个隐藏层的由全连接层组成的神经网络，且每个隐藏层的输出通过激活函数进行变换。多层感知机的层数和各隐藏层中隐藏单元个数都是超参数。多层感知机按以下方式计算输出：
+
+   .. math::
+
+      \begin{aligned}
+      \boldsymbol{H} &= \phi(\boldsymbol{X} \boldsymbol{W}_h + \boldsymbol{b}_h),\\
+      \boldsymbol{O} &= \boldsymbol{H} \boldsymbol{W}_o + \boldsymbol{b}_o,
+      \end{aligned}
+
+-  其中\ :math:`\phi`\ 表示激活函数。在分类问题中，我们可以对输出\ :math:`\boldsymbol{O}`\ 做softmax运算，并使用softmax回归中的交叉熵损失函数。在回归问题中，我们将输出层的输出个数设为1，并将输出\ :math:`\boldsymbol{O}`\ 直接提供给线性回归中使用的平方损失函数。
+
+.. _header-n675:
+
+激活函数
+--------
+
+-  激活函数（activation function）：全连接层只是对数据做仿射变换（affine
+   transformation），而多个仿射变换的叠加仍然是一个仿射变换。解决问题的一个方法是引入非线性变换，例如对隐藏变量使用按元素运算的非线性函数进行变换，然后再作为下一个全连接层的输入。这个\ **非线性函数被称为激活函数**\ 。
+
+.. _header-n679:
+
+ReLU
+~~~~
+
+-  ReLU（rectified linear
+   unit）函数提供了一个很简单的非线性变换。给定元素\ :math:`x`\ ，该函数定义为
+
+.. math:: \text{ReLU}(x) = \max(x, 0)
+
+-  当输入为负数时，ReLU函数的导数为0；当输入为正数时，ReLU函数的导数为1。尽管输入为0时ReLU函数不可导，但是我们可以取此处的导数为0。
+
+.. _header-n689:
+
+sigmoid
+~~~~~~~
+
+-  sigmoid函数可以将元素的值变换到0和1之间：
+
+.. math:: \text{sigmoid}(x) = \frac{1}{1 + \exp(-x)}
+
+-  依据链式法则，sigmoid函数的导数
+
+.. math:: \text{sigmoid}'(x) = \text{sigmoid}(x)\left(1-\text{sigmoid}(x)\right)
+
+-  当输入为0时，sigmoid函数的导数达到最大值0.25；当输入越偏离0时，sigmoid函数的导数越接近0。
+
+.. _header-n703:
+
+tanh
+~~~~
+
+-  tanh（双曲正切）函数可以将元素的值变换到-1和1之间：
+
+   .. math:: \text{tanh}(x) = \frac{1 - \exp(-2x)}{1 + \exp(-2x)}
+
+-  当输入为0时，tanh函数的导数达到最大值1；当输入越偏离0时，tanh函数的导数越接近0。
+
+.. _header-n713:
 
 损失函数
 --------
@@ -31,7 +88,7 @@
    y = torch.tensor([1, 1], dtype=torch.float)
    print(loss(pred_y, y))  # tensor(4.),数据类型不能为int
 
-.. _header-n15:
+.. _header-n722:
 
 优化算法
 --------
@@ -79,7 +136,7 @@
    for param_group in optimizer.param_groups:
        param_group['lr'] *= 0.1 # 学习率为之前的0.1倍
 
-.. _header-n32:
+.. _header-n739:
 
 模型定义
 --------
@@ -111,46 +168,46 @@
 
 .. code:: python
 
-   num_inputs = 5
-   # 写法一：module的name被自动设置为序号
-   net = nn.Sequential(
-       nn.Linear(num_inputs, 1)
-       # 此处还可以传入其他层
-   )
-   print(net)
-   """输出
-   Sequential(
-   (0): Linear(in_features=5, out_features=1, bias=True)
-   )
-   """
-   # 写法二：add_module第一个参数为module的name
-   net = nn.Sequential()
-   net.add_module('linear', nn.Linear(num_inputs, 1))
-   # net.add_module ......
-   print(net)
-   """输出
-   Sequential(
-   (linear): Linear(in_features=5, out_features=1, bias=True)
-   )
-   """
-   # 写法三
-   from collections import OrderedDict
-   net = nn.Sequential(
-       OrderedDict([
-           ('linear', nn.Linear(num_inputs, 1))
-           # ......
-       ])
-   )
-   print(net)
-   """输出
-   Sequential(
-   (linear): Linear(in_features=5, out_features=1, bias=True)
-   )
+   num_inputs = 5
+   # 写法一：module的name被自动设置为序号
+   net = nn.Sequential(
+       nn.Linear(num_inputs, 1)
+       # 此处还可以传入其他层
+   )
+   print(net)
+   """输出
+   Sequential(
+   (0): Linear(in_features=5, out_features=1, bias=True)
+   )
+   """
+   # 写法二：add_module第一个参数为module的name
+   net = nn.Sequential()
+   net.add_module('linear', nn.Linear(num_inputs, 1))
+   # net.add_module ......
+   print(net)
+   """输出
+   Sequential(
+   (linear): Linear(in_features=5, out_features=1, bias=True)
+   )
+   """
+   # 写法三
+   from collections import OrderedDict
+   net = nn.Sequential(
+       OrderedDict([
+           ('linear', nn.Linear(num_inputs, 1))
+           # ......
+       ])
+   )
+   print(net)
+   """输出
+   Sequential(
+   (linear): Linear(in_features=5, out_features=1, bias=True)
+   )
    """
 
 -  注意：\ ``torch.nn``\ 仅支持输入一个batch的样本不支持单个样本输入，如果\ **只有单个样本**\ ，可使用\ ``input.unsqueeze(0)``\ 来添加一维。
 
-.. _header-n44:
+.. _header-n751:
 
 模型参数
 --------
@@ -159,15 +216,15 @@
 
 .. code:: python
 
-   net = nn.Sequential()
-   net.add_module('linear', nn.Linear(5, 1))
-   for param in net.parameters():
-   print(param)
-   """输出
-   Parameter containing:
-   tensor([[-0.0567,  0.1161,  0.1954, -0.2397,  0.3248]], requires_grad=True)
-   Parameter containing:
-   tensor([-0.0782], requires_grad=True)
+   net = nn.Sequential()
+   net.add_module('linear', nn.Linear(5, 1))
+   for param in net.parameters():
+   print(param)
+   """输出
+   Parameter containing:
+   tensor([[-0.0567,  0.1161,  0.1954, -0.2397,  0.3248]], requires_grad=True)
+   Parameter containing:
+   tensor([-0.0782], requires_grad=True)
    """
 
 -  ``net.named_parameters()``\ 可以返回参数名称。
@@ -183,7 +240,7 @@
    tensor([-0.4374], requires_grad=True)
    """
 
-.. _header-n53:
+.. _header-n760:
 
 初始化模型参数
 ~~~~~~~~~~~~~~
@@ -221,7 +278,7 @@
 
 -  常用的还有\ ``xavier_normal_``\ 。
 
-.. _header-n65:
+.. _header-n772:
 
 训练模型
 --------
@@ -232,57 +289,57 @@
 
 .. code:: python
 
-   # 构造数据
-   num_samples = 200  # 样本个数
-   num_inputs = 2  # 特征个数
-   features = torch.randn(num_samples, num_inputs)
-   print('features shape:{}, dtype:{}'.format(features.shape, features.dtype))  # features shape:torch.Size([200, 2]), dtype:torch.float32
-   label_weight = [2.0, 5.0]  # 定义一个线性函数
-   label_bias = 6.0
-   labels = torch.randn(num_samples)
-   labels += label_weight[0] * features[:, 0] + label_weight[1] * features[:, 1] + label_bias
-   print('labels shape:{}, dtype:{}'.format(labels.shape, labels.dtype))  # labels shape:torch.Size([200]), dtype:torch.float32
-   # 加载数据
-   batch_size = 8
-   dataset = torch.utils.data.TensorDataset(features, labels)
-   data_iter = torch.utils.data.DataLoader(dataset, batch_size, shuffle=True)
-   print('data_iter len:{}'.format(len(data_iter)))
-   # for X, y in data_iter:
-   #     print(X, y)
-   #     break
-   # 定义模型
-   net = nn.Sequential()
-   net.add_module('linear', nn.Linear(num_inputs, 1))
-   print(net)
-   """
-   Sequential(
-   (linear): Linear(in_features=2, out_features=1, bias=True)
-   )
-   """
-   # 定义优化器
-   optimizer = torch.optim.SGD(net.parameters(), lr=0.03)
-   # 定义损失函数
-   loss = nn.MSELoss()
-   # 进行训练
-   num_epochs = 8
-   for epoch in range(1, num_epochs + 1):
-   	for X, y in data_iter:
-   		output = net(X)  # 模型前向传播
-   		loss_value = loss(output, y.view(-1, 1))  # 计算loss
-   		optimizer.zero_grad()  # 梯度清零，等价于net.zero_grad()
-   		loss_value.backward()  # 反向传播
-   		optimizer.step()  # 迭代模型参数
-   	print('epoch %d, loss: %f' % (epoch, loss_value.item()))
-   # 输出训练后的结果
-   print(label_weight, net[0].weight.data)  # [2.0, 5.0] tensor([[2.0171, 4.9683]])
-   print(label_bias, net[0].bias.data)  # 6.0 tensor([6.0194])
-   """
-   epoch 1, loss: 5.885800
-   epoch 2, loss: 0.424021
-   epoch 3, loss: 0.963439
-   epoch 4, loss: 1.011478
-   epoch 5, loss: 1.178113
-   epoch 6, loss: 0.847684
-   epoch 7, loss: 0.644298
-   epoch 8, loss: 0.848485
+   # 构造数据
+   num_samples = 200  # 样本个数
+   num_inputs = 2  # 特征个数
+   features = torch.randn(num_samples, num_inputs)
+   print('features shape:{}, dtype:{}'.format(features.shape, features.dtype))  # features shape:torch.Size([200, 2]), dtype:torch.float32
+   label_weight = [2.0, 5.0]  # 定义一个线性函数
+   label_bias = 6.0
+   labels = torch.randn(num_samples)
+   labels += label_weight[0] * features[:, 0] + label_weight[1] * features[:, 1] + label_bias
+   print('labels shape:{}, dtype:{}'.format(labels.shape, labels.dtype))  # labels shape:torch.Size([200]), dtype:torch.float32
+   # 加载数据
+   batch_size = 8
+   dataset = torch.utils.data.TensorDataset(features, labels)
+   data_iter = torch.utils.data.DataLoader(dataset, batch_size, shuffle=True)
+   print('data_iter len:{}'.format(len(data_iter)))
+   # for X, y in data_iter:
+   #     print(X, y)
+   #     break
+   # 定义模型
+   net = nn.Sequential()
+   net.add_module('linear', nn.Linear(num_inputs, 1))
+   print(net)
+   """
+   Sequential(
+   (linear): Linear(in_features=2, out_features=1, bias=True)
+   )
+   """
+   # 定义优化器
+   optimizer = torch.optim.SGD(net.parameters(), lr=0.03)
+   # 定义损失函数
+   loss = nn.MSELoss()
+   # 进行训练
+   num_epochs = 8
+   for epoch in range(1, num_epochs + 1):
+   	for X, y in data_iter:
+   		output = net(X)  # 模型前向传播
+   		loss_value = loss(output, y.view(-1, 1))  # 计算loss
+   		optimizer.zero_grad()  # 梯度清零，等价于net.zero_grad()
+   		loss_value.backward()  # 反向传播
+   		optimizer.step()  # 迭代模型参数
+   	print('epoch %d, loss: %f' % (epoch, loss_value.item()))
+   # 输出训练后的结果
+   print(label_weight, net[0].weight.data)  # [2.0, 5.0] tensor([[2.0171, 4.9683]])
+   print(label_bias, net[0].bias.data)  # 6.0 tensor([6.0194])
+   """
+   epoch 1, loss: 5.885800
+   epoch 2, loss: 0.424021
+   epoch 3, loss: 0.963439
+   epoch 4, loss: 1.011478
+   epoch 5, loss: 1.178113
+   epoch 6, loss: 0.847684
+   epoch 7, loss: 0.644298
+   epoch 8, loss: 0.848485
    """
