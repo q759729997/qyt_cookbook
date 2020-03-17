@@ -40,6 +40,8 @@
 
 `text`
 
+-  ``shell``\ 多行输入，使用\ ``\``\ 换行连接：
+
 ``inline literal``
 
 http://docutils.sf.net/ 孤立的网址会自动生成链接
