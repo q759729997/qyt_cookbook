@@ -1,14 +1,14 @@
-.. _header-n664:
-
+==================
 多层感知器
-==========
+==================
 
 -  多层感知器（multilayer
    perceptron，MLP）：分为输入层、隐藏层、输出层。隐藏层中的神经元和输入层中各个输入完全连接，输出层中的神经元和隐藏层中的各个神经元也完全连接。因此，多层感知机中的隐藏层和输出层都是全连接层（fully-connected
    layer，也叫稠密层dense layer）。
 
-   .. figure:: D:/workspace/github_qyt/qyt_cookbook/qyt_cookbook/source/pytorch/imgs/多层感知器.png
-      :alt: 
+.. image:: ./mlp.assets/mlp.png
+    :alt: 多层感知器
+    :align: center
 
 -  多层感知机就是含有至少一个隐藏层的由全连接层组成的神经网络，且每个隐藏层的输出通过激活函数进行变换。多层感知机的层数和各隐藏层中隐藏单元个数都是超参数。多层感知机按以下方式计算输出：
 
@@ -21,34 +21,43 @@
 
 -  其中\ :math:`\phi`\ 表示激活函数。在分类问题中，我们可以对输出\ :math:`\boldsymbol{O}`\ 做softmax运算，并使用softmax回归中的交叉熵损失函数。在回归问题中，我们将输出层的输出个数设为1，并将输出\ :math:`\boldsymbol{O}`\ 直接提供给线性回归中使用的平方损失函数。
 
-.. _header-n675:
-
 激活函数
---------
+######################
 
 -  激活函数（activation function）：全连接层只是对数据做仿射变换（affine
    transformation），而多个仿射变换的叠加仍然是一个仿射变换。解决问题的一个方法是引入非线性变换，例如对隐藏变量使用按元素运算的非线性函数进行变换，然后再作为下一个全连接层的输入。这个\ **非线性函数被称为激活函数**\ 。
 
-.. _header-n679:
-
 ReLU
-~~~~
+***************************
 
 -  ReLU（rectified linear
    unit）函数提供了一个很简单的非线性变换。给定元素\ :math:`x`\ ，该函数定义为
 
 .. math:: \text{ReLU}(x) = \max(x, 0)
 
+.. image:: ./mlp.assets/image-20200316225821002.png
+    :alt:
+    :align: center
+    :scale: 67
+
 -  当输入为负数时，ReLU函数的导数为0；当输入为正数时，ReLU函数的导数为1。尽管输入为0时ReLU函数不可导，但是我们可以取此处的导数为0。
 
-.. _header-n689:
+.. image:: ./mlp.assets/image-20200316230159193.png
+    :alt:
+    :align: center
+    :scale: 67
 
 sigmoid
-~~~~~~~
+***************************
 
 -  sigmoid函数可以将元素的值变换到0和1之间：
 
 .. math:: \text{sigmoid}(x) = \frac{1}{1 + \exp(-x)}
+
+.. image:: ./mlp.assets/image-20200316231711688.png
+    :alt:
+    :align: center
+    :scale: 67
 
 -  依据链式法则，sigmoid函数的导数
 
@@ -56,21 +65,32 @@ sigmoid
 
 -  当输入为0时，sigmoid函数的导数达到最大值0.25；当输入越偏离0时，sigmoid函数的导数越接近0。
 
-.. _header-n703:
+.. image:: ./mlp.assets/image-20200316231929192.png
+    :alt:
+    :align: center
+    :scale: 67
 
 tanh
-~~~~
+***************************
 
 -  tanh（双曲正切）函数可以将元素的值变换到-1和1之间：
 
    .. math:: \text{tanh}(x) = \frac{1 - \exp(-2x)}{1 + \exp(-2x)}
 
+.. image:: ./mlp.assets/image-20200316232255834.png
+    :alt:
+    :align: center
+    :scale: 67
+
 -  当输入为0时，tanh函数的导数达到最大值1；当输入越偏离0时，tanh函数的导数越接近0。
 
-.. _header-n713:
+.. image:: ./mlp.assets/image-20200316232411001.png
+    :alt:
+    :align: center
+    :scale: 67
 
 损失函数
---------
+######################
 
 -  在机器学习里，将衡量误差的函数称为损失函数（loss
    function）。例如常见的平方误差函数也称为平方损失（square
@@ -88,18 +108,14 @@ tanh
    y = torch.tensor([1, 1], dtype=torch.float)
    print(loss(pred_y, y))  # tensor(4.),数据类型不能为int
 
-.. _header-n722:
-
 优化算法
---------
+######################
 
 -  当模型和损失函数形式较为简单时，误差最小化问题的解可以直接用公式表达出来。这类解叫作\ **解析解（analytical
    solution）**\ 。然而，大多数深度学习模型并没有解析解，只能通过优化算法有限次迭代模型参数来尽可能降低损失函数的值。这类解叫作\ **数值解（numerical
    solution）**\ 。
-
 -  **小批量随机梯度下降**\ （mini-batch stochastic gradient
    descent）：在每次迭代中，先随机均匀采样一个由固定数目训练数据样本所组成的小批量（mini-batch）\ :math:`\mathcal{B}`\ ，然后求小批量中数据样本的平均损失有关模型参数的导数（梯度），最后用此结果与预先设定的一个正数的乘积作为模型参数在本次迭代的减小量。
-
 -  ``torch.optim``\ 模块提供了很多常用的优化算法比如SGD、Adam和RMSProp等。
 
 .. code:: python
@@ -136,10 +152,8 @@ tanh
    for param_group in optimizer.param_groups:
        param_group['lr'] *= 0.1 # 学习率为之前的0.1倍
 
-.. _header-n739:
-
 模型定义
---------
+######################
 
 -  ``torch.nn``\ 模块定义了大量神经网络的层。“nn”是neural
    networks（神经网络）的缩写。它利用\ ``autograd``\ 来定义模型。。\ ``nn``\ 的核心数据结构是\ ``Module``\ ，既可以表示神经网络中的某个层（layer），也可以表示一个包含很多层的神经网络。\ ``nn.Module``\ 实例应该包含一些层以及返回输出的前向传播（forward）方法。
@@ -207,10 +221,8 @@ tanh
 
 -  注意：\ ``torch.nn``\ 仅支持输入一个batch的样本不支持单个样本输入，如果\ **只有单个样本**\ ，可使用\ ``input.unsqueeze(0)``\ 来添加一维。
 
-.. _header-n751:
-
 模型参数
---------
+######################
 
 -  通过\ ``net.parameters()``\ 来查看模型所有的可学习参数，此函数将返回一个生成器。
 
@@ -240,13 +252,10 @@ tanh
    tensor([-0.4374], requires_grad=True)
    """
 
-.. _header-n760:
-
 初始化模型参数
-~~~~~~~~~~~~~~
+***************************
 
 -  在使用\ ``net``\ 前，我们需要初始化模型参数。PyTorch在\ ``init``\ 模块中提供了多种参数初始化方法。这里的\ ``init``\ 是\ ``initializer``\ 的缩写形式。
-
 -  通过\ ``init.normal_``\ 将权重参数每个元素初始化为随机采样于均值为0、标准差为0.01的正态分布。偏差会初始化为零。
 
 .. code:: python
@@ -278,13 +287,10 @@ tanh
 
 -  常用的还有\ ``xavier_normal_``\ 。
 
-.. _header-n772:
-
 训练模型
---------
+######################
 
 -  构造数据=》加载数据=》定义模型=》定义优化器=》定义损失函数=》进行训练。
-
 -  通过调用\ ``optim``\ 实例的\ ``step``\ 函数来迭代模型参数。训练时注意\ ``optimizer.zero_grad()``\ 梯度清零，防止梯度一直累加。
 
 .. code:: python

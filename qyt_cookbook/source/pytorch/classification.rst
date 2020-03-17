@@ -1,17 +1,15 @@
-.. _header-n100:
-
+==================
 分类模型
-========
-
-.. _header-n102:
+==================
 
 softmax
--------
+######################
 
 -  softmax回归同线性回归一样，也是一个单层神经网络。由于每个输出\ :math:`o_1, o_2, o_3`\ 的计算都要依赖于所有的输入\ :math:`x_1, x_2, x_3, x_4`\ ，softmax回归的输出层也是一个全连接层。
 
 .. figure:: D:/workspace/github_qyt/qyt_cookbook/qyt_cookbook/source/pytorch/classification.assets/image-20200315094241730.png
    :alt: 
+   :align: center
 
 -  分类问题需要得到离散的预测输出，一个简单的办法是将输出值\ :math:`o_i`\ 当作预测类别是\ :math:`i`\ 的置信度，并将值最大的输出所对应的类作为预测输出，即输出
    :math:`\underset{i}{\arg\max} o_i`\ 。例如，如果\ :math:`o_1,o_2,o_3`\ 分别为\ :math:`0.1,10,0.1`\ ，由于\ :math:`o_2`\ 最大，那么预测类别为2，其代表猫。直接使用输出层的输出有两个问题。\ **一方面**\ ，由于输出层的输出值的范围不确定，我们难以直观上判断这些值的意义。例如，刚才举的例子中的输出值10表示“很置信”图像类别为猫，因为该输出值是其他两类的输出值的100倍。但如果\ :math:`o_1=o_3=10^3`\ ，那么输出值10却又表示图像类别为猫的概率很低。\ **另一方面**\ ，由于真实标签是离散值，这些离散值与不确定范围的输出值之间的误差难以衡量。
@@ -33,10 +31,8 @@ softmax
 
    .. math:: \underset{i}{\arg\max} o_i = \underset{i}{\arg\max} \hat{y}_i
 
-.. _header-n117:
-
 小批量softmax
-~~~~~~~~~~~~~
+***************************
 
 -  给定一个小批量样本，其批量大小为\ :math:`n`\ ，输入个数（特征数）为\ :math:`d`\ ，输出个数（类别数）为\ :math:`q`\ 。设批量特征为\ :math:`\boldsymbol{X} \in \mathbb{R}^{n \times d}`\ 。假设softmax回归的权重和偏差参数分别为\ :math:`\boldsymbol{W} \in \mathbb{R}^{d \times q}`\ 和\ :math:`\boldsymbol{b} \in \mathbb{R}^{1 \times q}`\ 。softmax回归的矢量计算表达式为
 
@@ -49,15 +45,11 @@ softmax
 
 -  其中的加法运算使用了\ **广播机制**\ ，\ :math:`\boldsymbol{O}, \boldsymbol{\hat{Y}} \in \mathbb{R}^{n \times q}`\ 且这两个矩阵的第\ :math:`i`\ 行分别为样本\ :math:`i`\ 的输出\ :math:`\boldsymbol{o}^{(i)}`\ 和概率分布\ :math:`\boldsymbol{\hat{y}}^{(i)}`\ 。
 
-.. _header-n125:
-
 损失函数
---------
-
-.. _header-n126:
+######################
 
 交叉熵损失
-~~~~~~~~~~
+***************************
 
 -  交叉熵（cross entropy）适合衡量两个概率分布差异：
 
@@ -71,14 +63,10 @@ softmax
 
 -  其中\ :math:`\boldsymbol{\Theta}`\ 代表模型参数。同样地，如果每个样本只有一个标签，那么交叉熵损失可以简写成\ :math:`\ell(\boldsymbol{\Theta}) = -(1/n)  \sum_{i=1}^n \log \hat y_{y^{(i)}}^{(i)}`\ 。从另一个角度来看，我们知道最小化\ :math:`\ell(\boldsymbol{\Theta})`\ 等价于最大化\ :math:`\exp(-n\ell(\boldsymbol{\Theta}))=\prod_{i=1}^n \hat y_{y^{(i)}}^{(i)}`\ ，即最小化交叉熵损失函数等价于最大化训练数据集所有标签类别的联合预测概率。
 
-.. _header-n142:
-
 模型评价
---------
-
-.. _header-n143:
+######################
 
 准确率
-~~~~~~
+***************************
 
 -  准确率（accuracy）可以用来评价分类模型的表现。它等于正确预测数量与总预测数量之比。

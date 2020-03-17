@@ -1,26 +1,18 @@
-.. _header-n0:
-
+==================
 Pytorch 环境配置
-================
-
-.. _header-n2:
+==================
 
 参考资料
---------
+######################
 
--  官方网站： https://pytorch.org/
+-  官方网站： \ https://pytorch.org/
+-  官方示例： \ https://pytorch.org/tutorials/
+-  官方文档： \ https://pytorch.org/docs/stable/index.html
+-  《动手学深度学习》Pytorch实现： \ https://github.com/ShusenTang/Dive-into-DL-PyTorch
 
--  官方示例： https://pytorch.org/tutorials/
-
--  官方文档： https://pytorch.org/docs/stable/index.html
-
--  《动手学深度学习》Pytorch实现：
-   https://github.com/ShusenTang/Dive-into-DL-PyTorch
-
-.. _header-n13:
 
 Pytorch安装
------------
+######################
 
 -  务必参考官网安装，减少不必要的错误。
 

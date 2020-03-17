@@ -77,6 +77,10 @@ http://docutils.sf.net/ 孤立的网址会自动生成链接
     :alt: alternate text
     :align: center
 
+.. image:: ./imgs/多层感知器.png
+    :alt: 多层感知器
+    :align: center
+
 显示一个冒号的代码块::
 
     中间要空一行

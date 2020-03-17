@@ -1,32 +1,29 @@
-.. _header-n0:
-
+==================
 Tensor数据操作
-==============
+==================
 
 -  ``Tensor``\ 这个单词一般可译作“张量”，张量可以看作是一个多维数组。标量可以看作是0维张量，向量可以看作1维张量，矩阵可以看作是二维张量。
 
-.. _header-n5:
-
 创建Tensor
-----------
+######################
 
 -  创建\ ``Tensor``\ 函数列表：
 
-================================= =========================
-函数                              功能
-================================= =========================
-Tensor(*sizes)                    基础构造函数
-tensor(data,)                     类似np.array的构造函数
-empty(*sizes)                     未初始化的Tensor
-ones(*sizes)                      全1的Tensor
-zeros(*sizes)                     全0的Tensor
-eye(*sizes)                       对角线为1，其他为0
-arange(s,e,step)                  从s到e，步长为step
-linspace(s,e,steps)               从s到e，均匀切分成steps份
-rand/randn(*sizes)                均匀/标准分布
-normal(mean,std)/uniform(from,to) 正态分布/均匀分布
-randperm(m)                       随机排列
-================================= =========================
+=================================  =========================
+函数                               功能
+=================================  =========================
+Tensor(\*sizes)                     基础构造函数
+tensor(data,)                      类似np.array的构造函数
+empty(\*sizes)                      未初始化的Tensor
+ones(\*sizes)                       全1的Tensor
+zeros(\*sizes)                      全0的Tensor
+eye(\*sizes)                        对角线为1，其他为0
+arange(s,e,step)                   从s到e，步长为step
+linspace(s,e,steps)                从s到e，均匀切分成steps份
+rand/randn(\*sizes)                 均匀/标准分布
+normal(mean,std)/uniform(from,to)  正态分布/均匀分布
+randperm(m)                        随机排列
+=================================  =========================
 
 -  重要参数 ``dtype``\ ，\ **默认数据类型**\ 为 ``torch.float``
    ，32位浮点数。常用数据类型。
@@ -62,10 +59,8 @@ randperm(m)                       随机排列
    print('x:{}, dtype:{}'.format(x, x.dtype))
    # x:tensor([[0., 0., 0., 0., 0.]], dtype=torch.float64), dtype:torch.float64
 
-.. _header-n79:
-
 常用属性
---------
+######################
 
 -  ``Tensor`` 形状获取，通过 ``shape`` 或者 ``size()`` 来获取 ``Tensor``
    的形状。返回的 ``torch.Size`` 其实相当于一个 ``tuple`` , 支持所有
@@ -81,13 +76,11 @@ randperm(m)                       随机排列
    print(x.size()[1])  # 输出 28
    # x.shape[1] += 1，TypeError: 'torch.Size' object does not support item assignment
 
-.. _header-n84:
-
 数学计算
---------
+######################
 
--  几种不同形式的相加运算，计算结果都一致（\ **计算时需要注意数据类型**\ ）。\ **注：PyTorch操作inplace版本都有后缀\ ``_``,
-   例如\ ``x.copy_(y), x.t_()``**
+-  几种不同形式的相加运算，计算结果都一致（\ **计算时需要注意数据类型**\ ）。注：PyTorch操作inplace版本都有后缀\ ``_``,
+   例如\ ``x.copy_(y), x.t_()``
 
 .. code:: python
 
@@ -132,26 +125,27 @@ inverse                           求逆矩阵
 svd                               奇异值分解
 ================================= =================================
 
-.. _header-n127:
-
 按维度计算
-~~~~~~~~~~
+***************************
 
 -  对多维\ ``Tensor``\ 按维度操作。可以只对其中同一列（\ ``dim=0``\ ）或同一行（\ ``dim=1``\ ）的元素求和，并在结果中保留行和列这两个维度（\ ``keepdim=True``\ ）。求和操作中，被计算的dim最后变为size=1。
 
 .. code:: python
 
-   x = torch.tensor([[1, 2, 3], [4, 5, 6]])
-   print(x.shape)  # torch.Size([2, 3])
-   print(x.sum(dim=0, keepdim=True))  # tensor([[5, 7, 9]])
-   print(x.sum(dim=0, keepdim=True).shape)  # torch.Size([1, 3])
-   print(x.sum(dim=1, keepdim=True))  # tensor([[ 6], [15]])
+   x = torch.tensor([[1, 2, 3], [4, 5, 6]])
+
+   print(x.shape)  # torch.Size([2, 3])
+
+   print(x.sum(dim=0, keepdim=True))  # tensor([[5, 7, 9]])
+
+   print(x.sum(dim=0, keepdim=True).shape)  # torch.Size([1, 3])
+
+   print(x.sum(dim=1, keepdim=True))  # tensor([[ 6], [15]])
+
    print(x.sum(dim=1, keepdim=True).shape)  # torch.Size([2, 1])
 
-.. _header-n198:
-
 索引操作
---------
+######################
 
 -  使用类似NumPy的索引操作来访问\ ``Tensor``\ 的一部分，需要注意的是：\ **索引出来的结果与原数据共享内存，即修改一个，另一个会跟着修改。**
 
@@ -186,37 +180,35 @@ svd                               奇异值分解
 
 .. code:: python
 
-   y_hat = torch.tensor([[0.1, 0.3, 0.6], [0.3, 0.2, 0.5]])
-   print(y_hat.shape)  # torch.Size([2, 3])
-   index = torch.LongTensor([0, 2]).view(-1, 1)
-   print(index.shape)  # torch.Size([2, 1])
-   print(index)
-   """
-   tensor([[0],
-   [2]])
-   """
-   print(y_hat.gather(dim=1, index=index).shape)  # torch.Size([2, 1])
-   print(y_hat.gather(dim=1, index=index))
-   """
-   tensor([[0.1000],
-   [0.5000]])
+   y_hat = torch.tensor([[0.1, 0.3, 0.6], [0.3, 0.2, 0.5]])
+   print(y_hat.shape)  # torch.Size([2, 3])
+   index = torch.LongTensor([0, 2]).view(-1, 1)
+   print(index.shape)  # torch.Size([2, 1])
+   print(index)
+   """
+   tensor([[0],
+   [2]])
+   """
+   print(y_hat.gather(dim=1, index=index).shape)  # torch.Size([2, 1])
+   print(y_hat.gather(dim=1, index=index))
+   """
+   tensor([[0.1000],
+   [0.5000]])
    """
 
 -  ``y_hat.argmax(dim=1)``\ 返回矩阵\ ``y_hat``\ 每行中最大元素的索引。
 
 .. code:: python
 
-   y_hat = torch.tensor([[0.1, 0.3, 0.6], [0.3, 0.2, 0.5]])
-   print(y_hat.shape)  # torch.Size([2, 3])
-   print(y_hat.argmax(dim=1).shape)  # torch.Size([2])
+   y_hat = torch.tensor([[0.1, 0.3, 0.6], [0.3, 0.2, 0.5]])
+   print(y_hat.shape)  # torch.Size([2, 3])
+   print(y_hat.argmax(dim=1).shape)  # torch.Size([2])
    print(y_hat.argmax(dim=1))  # tensor([2, 2])
 
-.. _header-n223:
-
 形状改变操作
-------------
+######################
 
--  用\ ``view()``\ 来改变\ ``Tensor``\ 的形状。\ **注意\ ``view()``\ 返回的新\ ``Tensor``\ 与源\ ``Tensor``\ 虽然可能有不同的\ ``size``\ ，但是是共享\ ``data``\ 的，也即更改其中的一个，另外一个也会跟着改变。(顾名思义，view仅仅是改变了对这个张量的观察角度，内部数据并未改变)**
+-  用\ ``view()``\ 来改变\ ``Tensor``\ 的形状。注意\ ``view()``\ 返回的新\ ``Tensor``\ 与源\ ``Tensor``\ 虽然可能有不同的\ ``size``\ ，但是是共享\ ``data``\ 的，也即更改其中的一个，另外一个也会跟着改变。(顾名思义，view仅仅是改变了对这个张量的观察角度，内部数据并未改变)
 
 .. code:: python
 
@@ -232,7 +224,7 @@ svd                               奇异值分解
    y += 3
    print(x)  # tensor([3., 3., 3., 3., 3., 3., 3., 3., 3., 3.])
 
--  使用\ **``clone``\ 拷贝tensor，创建一个副本**\ ，使其不共享\ ``data``\ 。使用\ ``clone``\ 还有一个好处是会被记录在计算图中，即梯度回传到副本时也会传到源\ ``Tensor``\ 。\ *Pytorch还提供了一个\ ``reshape()``\ 可以改变形状，但是此函数并不能保证返回的是其拷贝，所以不推荐使用。*
+-  使用\ ``clone``\ 拷贝tensor，创建一个副本 ，使其不共享\ ``data``\ 。使用\ ``clone``\ 还有一个好处是会被记录在计算图中，即梯度回传到副本时也会传到源\ ``Tensor``\ 。\ *Pytorch还提供了一个reshape() 可以改变形状，但是此函数并不能保证返回的是其拷贝，所以不推荐使用。*
 
 .. code:: python
 
@@ -269,10 +261,8 @@ svd                               奇异值分解
    print(torch.squeeze(x, dim=0).shape)  # torch.Size([2, 1, 3, 1, 4])
    print(torch.squeeze(x, dim=1).shape)  # torch.Size([1, 2, 1, 3, 1, 4])
 
-.. _header-n168:
-
 Tensor与Python数据转换
-----------------------
+######################
 
 -  ``item()``,
    它可以将一个标量\ ``Tensor``\ 转换成一个\ ``Python number``\ ：
@@ -316,13 +306,11 @@ Tensor与Python数据转换
    y += 2
    print(x, '\t', y)  # [1. 1. 1.] tensor([2., 2., 2.], dtype=torch.float64)
 
-.. _header-n181:
 
 设备间移动
-----------
+######################
 
 -  用方法\ ``to()``\ 可以将\ ``Tensor``\ 在CPU和GPU（需要硬件支持）之间相互移动。
-
 -  GPU环境下操作如下，\ ``torch.cuda.is_available()``\ **用于判断cuda是否可用**\ ：
 
 .. code:: python
@@ -347,5 +335,4 @@ Tensor与Python数据转换
    print(x.to(device, dtype=torch.int))  # tensor([1, 1, 1], dtype=torch.int32)
 
 -  **Tensor运算需要保证都在相同的设备上**\ ，否则会报错：\ ``RuntimeError: expected device cuda:0 but got device cpu``
-
 -  Tensor转Python数据类型的操作（如\ ``.numpy()``\ ），若Tensor在cuda设备上，需要先将其转移至cpu上，再进行操作。否则会报错：\ ``TypeError: can't convert CUDA tensor to numpy. Use Tensor.cpu() to copy the tensor to host memory first.``

@@ -1,12 +1,9 @@
-.. _header-n0:
-
+==================
 数据读取与处理
-==============
-
-.. _header-n2:
+==================
 
 读取数据
---------
+######################
 
 -  PyTorch提供了\ ``data``\ 包来读取数据。
 
@@ -23,8 +20,8 @@
    data_iter = Data.DataLoader(dataset, batch_size, shuffle=True)
    print('data_iter len:', len(data_iter))  # data_iter len: 7
    for X, y in data_iter:
-   print(X, y)
-   break
+      print(X, y)
+      break
    """输出
    tensor([[0., 0.],
    [0., 0.],
@@ -32,45 +29,40 @@
    """
 
 -  ``Data.TensorDataset``\ ：输入的tensors需要\ **第一维的大小一致**.
-
 -  ``Data.DataLoader``\ ：重要参数：
 
-.. code:: wiki
+.. code:: shell
 
    batch_size(default: 1):批次大小;
    shuffle(default: False):每个epoch取数据时是否重新打乱数据;
    drop_last(default: False):不满batch_size时，最后一个批次是否删除;
    num_workers:(default: 0):多线程处理数据,windows下暂时不能设置多线程;
 
-.. _header-n13:
-
 常用数据集
-----------
-
-.. _header-n14:
+######################
 
 MNIST
-~~~~~
+***************************
 
 -  手写数字识别数据集。MNIST是深度学习最基本的数据集之一，由CNN鼻祖yann
    lecun建立的一个手写字符数据集，包含60000张训练图像和10000张测试图像，包含数字0-9共10个类别。
 
-.. figure:: D:/workspace/github_qyt/qyt_cookbook/qyt_cookbook/source/pytorch/dataLoader.assets/image-20200315103303047.png
+.. figure:: ./dataLoader.assets/image-20200315103303047.png
    :alt: 
+   :align: center
 
 -  所属文献：LeCun, Y., Cortes, C., & Burges, C.
    http://yann.lecun.com/exdb/mnist/
 
-.. _header-n19:
-
 FashionMNIST
-~~~~~~~~~~~~
+***************************
 
 -  10类衣服标签的数据集。zalando research的工作人员建立了fashion
    mnist数据集，该数据集由衣服、鞋子等服饰组成，包含70000张图像，其中60000张训练图像加10000张测试图像，图像大小为28x28，单通道，共分10个类，如下图，每3行表示一个类。数据大小：\ ``training.pt``\ 为45.3MB，\ ``test.pt``\ 为7.55MB。
 
-.. figure:: D:/workspace/github_qyt/qyt_cookbook/qyt_cookbook/source/pytorch/dataLoader.assets/image-20200315103506843.png
+.. figure:: ./dataLoader.assets/image-20200315103506843.png
    :alt: 
+   :align: center
 
 -  所属文献：Xiao, H., Rasul, K., & Vollgraf, R. (2017). Fashion-mnist:
    a novel image dataset for benchmarking machine learning algorithms.
@@ -97,23 +89,19 @@ Label Description 描述
 
 .. code:: python
 
-   mnist_train = torchvision.datasets.FashionMNIST(root='./data/FashionMNIST', train=True, download=True, transform=torchvision.transforms.ToTensor())
-   mnist_test = torchvision.datasets.FashionMNIST(root='./data/FashionMNIST', train=False, download=True, transform=torchvision.transforms.ToTensor())
-   print(type(mnist_train))  # <class 'torchvision.datasets.mnist.FashionMNIST'>
+   mnist_train = torchvision.datasets.FashionMNIST(root='./data/FashionMNIST', train=True, download=True, transform=torchvision.transforms.ToTensor())
+   mnist_test = torchvision.datasets.FashionMNIST(root='./data/FashionMNIST', train=False, download=True, transform=torchvision.transforms.ToTensor())
+   print(type(mnist_train))  # <class 'torchvision.datasets.mnist.FashionMNIST'>
    print(len(mnist_train), len(mnist_test))  # 60000 10000
 
-.. _header-n70:
-
 CIFAR10
-~~~~~~~
+***************************
 
 -  数据集由10个类中的60000个32x32彩色图像组成，每个类有6000个图像。
    有50000个训练图像和10000个测试图像。
 
-.. _header-n65:
-
 CIFAR100
-~~~~~~~~
+***************************
 
 -  CIFAR-10类似，不同之处在于它有100个类，每个类包含600个图像。
    每个类有500个训练图像和100个测试图像。
