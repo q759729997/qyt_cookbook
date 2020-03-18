@@ -7,7 +7,7 @@ softmax
 
 -  softmax回归同线性回归一样，也是一个单层神经网络。由于每个输出\ :math:`o_1, o_2, o_3`\ 的计算都要依赖于所有的输入\ :math:`x_1, x_2, x_3, x_4`\ ，softmax回归的输出层也是一个全连接层。
 
-.. figure:: D:/workspace/github_qyt/qyt_cookbook/qyt_cookbook/source/pytorch/classification.assets/image-20200315094241730.png
+.. figure:: ./classification.assets/image-20200315094241730.png
    :alt: 
    :align: center
 

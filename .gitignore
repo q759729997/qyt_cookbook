@@ -132,3 +132,4 @@ dmypy.json
 scripts/myconfig.py
 data/
 _build/
+scripts_home/
