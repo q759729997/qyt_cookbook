@@ -261,6 +261,15 @@ svd                               奇异值分解
    print(torch.squeeze(x, dim=0).shape)  # torch.Size([2, 1, 3, 1, 4])
    print(torch.squeeze(x, dim=1).shape)  # torch.Size([1, 2, 1, 3, 1, 4])
 
+-  ``cat`` 张量连接（拼接）。除了参数中指定的维度 ``dim=0`` ，其他位置的形状必须相同。指定dim的size进行加和。
+
+.. code:: python
+
+   x = torch.ones(2, 3, 4)
+   y = torch.ones(2, 1, 4)
+   z = torch.cat((x, y), dim=1)
+   print(z.shape)  # torch.Size([2, 4, 4])
+
 Tensor与Python数据转换
 ######################
 
