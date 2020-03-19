@@ -114,6 +114,23 @@ docker用户组设置
    cat /etc/group  # 检查一下创建是否有效
    systemctl restart docker  # 重启docker服务
 
+常用镜像
+######################
+
+Nginx镜像
+***************************
+
+- 用于部署启动web项目
+
+.. code:: shell
+
+   docker pull nginx  # 镜像拉取
+   docker run -dit -p 主机端口:80 -v 项目路径:/usr/share/nginx/html --privileged --name 容器名称 nginx  # 首次启动，根据镜像创建容器
+   docker start 容器名称  # 启动容器
+   docker stop 容器名称  # 关闭容器
+   docker logs 容器名称  # 查看容器日志
+   docker rm 容器名称  # 删除容器
+
 dockerfile
 ######################
 
