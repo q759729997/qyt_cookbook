@@ -48,6 +48,9 @@ http://docutils.sf.net/ 孤立的网址会自动生成链接
 
 显示为特定的文字的链接 `sohu <http://www.sohu.com>`_
 
+-  其中 \ :math:`\phi`\ 表示激活函数。
+- 权重衰减（weight decay）等价于 :math:`L_2`  范数正则化（regularization）。
+
 突出显示的
     上面文字
 

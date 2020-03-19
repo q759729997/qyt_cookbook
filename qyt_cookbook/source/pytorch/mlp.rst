@@ -349,3 +349,17 @@ tanh
    epoch 7, loss: 0.644298
    epoch 8, loss: 0.848485
    """
+
+模型调优
+######################
+
+- 权重衰减（weight decay）等价于 :math:`L_2`  范数正则化（regularization）。正则化通过为模型损失函数添加惩罚项使学出的模型参数值较小，是应对过拟合的常用手段。权重衰减可以通过优化器中的 ``weight_decay`` 超参数来指定。
+
+- 丢弃法（dropout）常常被用来应对过拟合问题。 **丢弃法不改变其输入的期望值。** 被丢弃的隐藏单元相关的权重的梯度均为0。由于在训练中隐藏层神经元的丢弃是随机的，输出层的计算无法过度依赖隐藏层中的任一个，从而在训练模型时起到正则化的作用，并可以用来应对过拟合。在测试模型时，我们为了拿到更加确定性的结果，一般不使用丢弃法。 **丢弃法只在训练模型时使用。** 参考文献：Dropout: a simple way to prevent neural networks from overfitting. JMLR
+
+.. image:: ./mlp.assets/dropout_20200319212355.png
+    :alt:
+    :align: center
+
+- 在PyTorch中，我们只需要在全连接层后添加Dropout层并指定丢弃概率。在训练模型时，Dropout层将以指定的丢弃概率随机丢弃上一层的输出元素；在测试模型时（即model.eval()后），Dropout层并不发挥作用。  ``nn.Dropout(p=0.2)`` p表示被丢弃的概率。
+
