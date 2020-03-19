@@ -17,6 +17,7 @@ class TestTensorCalculate(unittest.TestCase):
         test_add - Tensor相加测试.
         test_broadcasting - 广播机制测试.
         test_keepdim - 按维度求和.
+        test_max - max函数.
     """
     @unittest.skip('debug')
     def test_add(self):
@@ -53,7 +54,7 @@ class TestTensorCalculate(unittest.TestCase):
         print(x + torch.ones(2, 1))  # tensor([[2., 1.], [1., 2.]])
         print(x + torch.ones(2, 2))  # tensor([[2., 1.], [1., 2.]])
 
-    # @unittest.skip('debug')
+    @unittest.skip('debug')
     def test_keepdim(self):
         """按维度求和.
         """
@@ -64,6 +65,16 @@ class TestTensorCalculate(unittest.TestCase):
         print(x.sum(dim=0, keepdim=True).shape)  # torch.Size([1, 3])
         print(x.sum(dim=1, keepdim=True))  # tensor([[ 6], [15]])
         print(x.sum(dim=1, keepdim=True).shape)  # torch.Size([2, 1])
+
+    # @unittest.skip('debug')
+    def test_max(self):
+        """max函数.
+        """
+        print('{} test_max {}'.format('-'*15, '-'*15))
+        x = torch.tensor([-1, 0, 1])
+        print(x)
+        print(torch.max(x))  # tensor(1)
+        print(torch.max(x, torch.tensor(0)))  # tensor([0, 0, 1])
 
 
 if __name__ == "__main__":

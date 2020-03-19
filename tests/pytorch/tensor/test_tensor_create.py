@@ -26,7 +26,7 @@ class TestTensorCreate(unittest.TestCase):
         print('x:{}, dtype:{}'.format(x, x.dtype))
         # 输出：x:tensor([[1., 1.]]), dtype:torch.float32
 
-    # @unittest.skip('debug')
+    @unittest.skip('debug')
     def test_create(self):
         """Tensor创建测试.
         """

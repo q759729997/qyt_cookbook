@@ -109,6 +109,15 @@ randperm(m)                        随机排列
    print(x + torch.ones(2, 1))  # tensor([[2., 1.], [1., 2.]])
    print(x + torch.ones(2, 2))  # tensor([[2., 1.], [1., 2.]])
 
+- ``max`` 函数。传入一个tensor时，返回其最大的值，传入两个时，则进行元素比较，每个元素取较大的，形状不同时要能够进行广播计算。
+
+.. code-block:: python
+
+   x = torch.tensor([-1, 0, 1])
+   print(x)
+   print(torch.max(x))  # tensor(1)
+   print(torch.max(x, torch.tensor(0)))  # tensor([0, 0, 1])
+
 -  一些线性代数函数：
 
 ================================= =================================
