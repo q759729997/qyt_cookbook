@@ -9,4 +9,5 @@ Python手册
 
    性能测试 </python/performance>
    module详解 </python/module>
+   pypi相关 </python/pypi>
    单元测试 </python/unittest>
