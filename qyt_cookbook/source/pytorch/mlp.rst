@@ -227,7 +227,7 @@ tanh
 模型参数
 ######################
 
--  通过\ ``net.parameters()``\ 来查看模型所有的可学习参数，此函数将返回一个生成器。
+-  通过\ ``net.parameters()``\ 来查看模型所有的可学习参数，此函数将返回一个生成器（迭代器）。
 
 .. code:: python
 
@@ -254,6 +254,8 @@ tanh
    name:linear.bias, param:Parameter containing:
    tensor([-0.4374], requires_grad=True)
    """
+
+-  param的类型为torch.nn.parameter.Parameter，和Tensor不同的是如果一个Tensor是Parameter，那么它会自动被添加到模型的参数列表里。
 
 初始化模型参数
 ***************************
@@ -371,3 +373,105 @@ tanh
 
 - 在PyTorch中，我们只需要在全连接层后添加Dropout层并指定丢弃概率。在训练模型时，Dropout层将以指定的丢弃概率随机丢弃上一层的输出元素；在测试模型时（即model.eval()后），Dropout层并不发挥作用。  ``nn.Dropout(p=0.2)`` p表示被丢弃的概率。
 
+读取和存储
+######################
+
+读写模型
+***************************
+
+- ``state_dict`` 是一个从参数名称隐射到参数Tesnor的字典对象。
+
+.. code:: python
+
+    net = nn.Sequential(nn.Linear(2, 3), nn.Linear(3, 1))
+    print(net.state_dict())
+    """输出
+    OrderedDict([('0.weight', tensor([[-0.6398, -0.0105],
+    [ 0.2083, -0.5284],
+    [-0.1384,  0.0481]])), ('0.bias', tensor([ 0.0495,  0.1969, -0.5676])), ('1.weight', tensor([[-0.5332, -0.3395,  0.2963]])), ('1.bias', tensor([0.3041]))])
+    """
+
+- 注意，只有具有可学习参数的层(卷积层、线性层等)才有state_dict中的条目。优化器(optim)也有一个state_dict，其中包含关于优化器状态以及所使用的超参数的信息。
+
+.. code:: python
+
+    optimizer = torch.optim.RMSprop(net.parameters())
+    print(optimizer.state_dict())
+    """输出
+    {'state': {}, 'param_groups': [{'lr': 0.01, 'momentum': 0, 'alpha': 0.99, 'eps': 1e-08, 'centered': False, 'weight_decay': 0, 'params': [2209963174936, 2209963175008, 2209963175224, 2209963175296]}]}
+    """
+
+- 保存和加载state_dict(推荐方式):
+
+.. code:: python
+
+    net = nn.Sequential(nn.Linear(2, 3), nn.Linear(3, 1))
+    torch.save(net.state_dict(), './data/save/state_dict.pt')
+    net_state_dict = torch.load('./data/save/state_dict.pt')
+    print(net_state_dict)
+    """
+    OrderedDict([('0.weight', tensor([[-0.1572, -0.5445],
+    [-0.0474,  0.6642],
+    [-0.3742,  0.4575]])), ('0.bias', tensor([ 0.3841, -0.3620,  0.0496])), ('1.weight', tensor([[-0.4403,  0.0146,  0.0514]])), ('1.bias', tensor([0.1762]))])
+    """
+    net2 = nn.Sequential(nn.Linear(2, 3), nn.Linear(3, 1))
+    print(net2.state_dict())
+    """模型2随机初始化的参数，与模型1明显不同
+    OrderedDict([('0.weight', tensor([[-0.4988,  0.6664],
+    [ 0.4392,  0.1901],
+    [ 0.7048,  0.6054]])), ('0.bias', tensor([-0.4389, -0.6592,  0.1810])), ('1.weight', tensor([[-0.3644, -0.1919, -0.2438]])), ('1.bias', tensor([0.2472]))])
+    """
+    net2.load_state_dict(net_state_dict)
+    print(net2.state_dict())
+    """使用模型1的参数初始化后，模型2的参数变成与模型1一致
+    OrderedDict([('0.weight', tensor([[-0.1572, -0.5445],
+    [-0.0474,  0.6642],
+    [-0.3742,  0.4575]])), ('0.bias', tensor([ 0.3841, -0.3620,  0.0496])), ('1.weight', tensor([[-0.4403,  0.0146,  0.0514]])), ('1.bias', tensor([0.1762]))])
+    """
+
+- 保存和加载整个模型。
+
+.. code:: python
+
+    net = nn.Sequential(nn.Linear(2, 3), nn.Linear(3, 1))
+    print(net.state_dict())
+    """
+    OrderedDict([('0.weight', tensor([[-0.1631, -0.0345],
+    [ 0.3992, -0.1971],
+    [-0.2313, -0.2398]])), ('0.bias', tensor([-0.1279,  0.0706,  0.7025])), ('1.weight', tensor([[-0.3476,  0.0543,  0.4400]])), ('1.bias', tensor([-0.3389]))])
+    """
+    torch.save(net, './data/save/whole_model.pt')
+    net2 = torch.load('./data/save/whole_model.pt')
+    print(net2)
+    """
+    Sequential(
+    (0): Linear(in_features=2, out_features=3, bias=True)
+    (1): Linear(in_features=3, out_features=1, bias=True)
+    )
+    """
+    print(net2.state_dict())
+    """与保存前参数一致
+    OrderedDict([('0.weight', tensor([[-0.1631, -0.0345],
+    [ 0.3992, -0.1971],
+    [-0.2313, -0.2398]])), ('0.bias', tensor([-0.1279,  0.0706,  0.7025])), ('1.weight', tensor([[-0.3476,  0.0543,  0.4400]])), ('1.bias', tensor([-0.3389]))])
+    """
+
+读写tensor
+***************************
+
+-  可以直接使用 ``save`` 函数和 ``load`` 函数分别存储和读取Tensor。save使用Python的pickle实用程序将对象进行序列化，然后将序列化的对象保存到disk，使用save可以保存各种对象,包括模型、张量和字典等。而load使用pickle unpickle工具将pickle的对象文件反序列化为内存。
+
+.. code:: python
+
+    x = torch.ones(1)
+    torch.save(x, './data/save/x1.pt')
+    x1 = torch.load('./data/save/x1.pt')
+    print(x1)  # tensor([1.])
+    # 存储列表
+    torch.save([x, torch.ones(2)], './data/save/x2.pt')
+    x2 = torch.load('./data/save/x2.pt')
+    print(x2)  # [tensor([1.]), tensor([1., 1.])]
+    # 存储字典
+    torch.save({'x': x, 'y': torch.ones(3)}, './data/save/x3.pt')
+    x3 = torch.load('./data/save/x3.pt')
+    print(x3)  # {'x': tensor([1.]), 'y': tensor([1., 1., 1.])}
