@@ -475,3 +475,30 @@ tanh
     torch.save({'x': x, 'y': torch.ones(3)}, './data/save/x3.pt')
     x3 = torch.load('./data/save/x3.pt')
     print(x3)  # {'x': tensor([1.]), 'y': tensor([1., 1., 1.])}
+
+GPU计算
+######################
+
+- 通过 ``nvidia-smi`` 命令来查看显卡信息。
+- 用 ``torch.cuda.is_available()`` 查看GPU是否可用。
+
+.. code:: python
+
+    torch.cuda.is_available() # 查看GPU是否可用，输出 True
+    torch.cuda.device_count() # 查看GPU数量，输出 1
+    torch.cuda.current_device()  # 查看当前GPU索引号，索引号从0开始
+    torch.cuda.get_device_name(0)  # 根据索引号查看GPU名字，输出 'GeForce GTX xxx'
+
+- 使用 ``.cuda()`` 可以将CPU上的Tensor转换（复制）到GPU上。如果有多块GPU，我们用.cuda(i)来表示第 ii 块GPU及相应的显存（ii从0开始）且cuda(0)和cuda()等价。通过Tensor的device属性来查看该Tensor所在的设备。
+
+- 创建tensor的时候就指定设备。
+
+.. code:: python
+
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    x = torch.tensor([1, 2, 3], device=device)
+    x = torch.tensor([1, 2, 3]).to(device)
+
+- 需要注意的是， **存储在不同位置中的数据是不可以直接进行计算的** 。即存放在CPU上的数据不可以直接与存放在GPU上的数据进行运算，位于不同GPU上的数据也是不能直接进行计算的。
+- 同Tensor类似，PyTorch模型也可以通过.cuda转换到GPU上。我们可以通过检查模型的参数的device属性来查看存放模型的设备。
+- 前向传播时需要保证模型输入的Tensor和模型都在同一设备上，否则会报错。PyTorch要求计算的所有输入数据都在内存或同一块显卡的显存上。
