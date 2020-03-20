@@ -157,6 +157,7 @@ tanh
 
 -  ``torch.nn``\ 模块定义了大量神经网络的层。“nn”是neural
    networks（神经网络）的缩写。它利用\ ``autograd``\ 来定义模型。。\ ``nn``\ 的核心数据结构是\ ``Module``\ ，既可以表示神经网络中的某个层（layer），也可以表示一个包含很多层的神经网络。\ ``nn.Module``\ 实例应该包含一些层以及返回输出的前向传播（forward）方法。
+-   ``nn.Module`` 构造的网络，无须定义反向传播函数。系统将通过自动求梯度而自动生成反向传播所需的 ``backward`` 函数。
 
 .. code:: python
 
@@ -220,6 +221,8 @@ tanh
    """
 
 -  注意：\ ``torch.nn``\ 仅支持输入一个batch的样本不支持单个样本输入，如果\ **只有单个样本**\ ，可使用\ ``input.unsqueeze(0)``\ 来添加一维。
+-  Sequential与ModuleList区别：ModuleList仅仅是一个储存各种模块的列表，这些模块之间没有联系也没有顺序（所以不用保证相邻层的输入输出维度匹配），而且没有实现forward功能需要自己实现，所以上面执行net(x)会报NotImplementedError；而Sequential内的模块需要按照顺序排列，要保证相邻层的输入输出大小相匹配，内部forward功能已经实现。
+- ``ModuleList`` 不同于一般的Python的list，加入到ModuleList里面的所有模块的 **参数会被自动添加** 到整个网络中。 ``ModuleDict`` 与其功能类似。
 
 模型参数
 ######################
