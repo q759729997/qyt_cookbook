@@ -12,5 +12,6 @@ Pytorch手册
    梯度计算 </pytorch/gradient>
    多层感知器 </pytorch/mlp>
    数据读取与处理 </pytorch/dataLoader>
+   卷积神经网络 </pytorch/cnn>
    分类模型 </pytorch/classification>
    计算机视觉 </pytorch/computerVision>
