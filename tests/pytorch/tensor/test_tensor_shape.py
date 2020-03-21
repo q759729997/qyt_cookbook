@@ -19,6 +19,7 @@ class TestTensorShape(unittest.TestCase):
         test_unsqueeze - unsqueeze增加维度函数测试.
         test_squeeze - squeeze减少维度函数测试.
         test_cat - cat函数，两个tensor拼接.
+        test_stack - stack函数，连接多个tensor.
     """
     @unittest.skip('debug')
     def test_view(self):
@@ -75,7 +76,7 @@ class TestTensorShape(unittest.TestCase):
         print(torch.squeeze(x, dim=0).shape)  # torch.Size([2, 1, 3, 1, 4])
         print(torch.squeeze(x, dim=1).shape)  # torch.Size([1, 2, 1, 3, 1, 4])
 
-    # @unittest.skip('debug')
+    @unittest.skip('debug')
     def test_cat(self):
         """cat函数，两个tensor拼接.
         """
@@ -84,6 +85,34 @@ class TestTensorShape(unittest.TestCase):
         y = torch.ones(2, 1, 4)
         z = torch.cat((x, y), dim=1)
         print(z.shape)  # torch.Size([2, 4, 4])
+
+    # @unittest.skip('debug')
+    def test_stack(self):
+        """stack函数，连接多个tensor.
+        """
+        print('{} test_stack {}'.format('-'*15, '-'*15))
+        x = torch.ones(2, 3)
+        y = torch.zeros(2, 3)
+        z = torch.stack((x, y), dim=1)
+        print(z.shape)  # torch.Size([2, 2, 3])
+        print(z)
+        """
+        tensor([[[1., 1., 1.],
+         [0., 0., 0.]],
+        [[1., 1., 1.],
+         [0., 0., 0.]]])
+        """
+        x = torch.ones(2, 3)
+        y = torch.zeros(2, 3)
+        z = torch.stack((x, y), dim=0)
+        print(z.shape)  # torch.Size([2, 2, 3])
+        print(z)
+        """
+        tensor([[[1., 1., 1.],
+         [1., 1., 1.]],
+        [[0., 0., 0.],
+         [0., 0., 0.]]])
+        """
 
 
 if __name__ == "__main__":

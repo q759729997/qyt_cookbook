@@ -279,6 +279,33 @@ svd                               奇异值分解
    z = torch.cat((x, y), dim=1)
    print(z.shape)  # torch.Size([2, 4, 4])
 
+- ``stack`` 沿新维度连接张量序列。所有的张量必须是相同的大小。
+
+.. code:: python
+
+    x = torch.ones(2, 3)
+    y = torch.zeros(2, 3)
+    z = torch.stack((x, y), dim=1)
+    print(z.shape)  # torch.Size([2, 2, 3])
+    print(z)
+    """
+    tensor([[[1., 1., 1.],
+     [0., 0., 0.]],
+    [[1., 1., 1.],
+     [0., 0., 0.]]])
+    """
+    x = torch.ones(2, 3)
+    y = torch.zeros(2, 3)
+    z = torch.stack((x, y), dim=0)
+    print(z.shape)  # torch.Size([2, 2, 3])
+    print(z)
+    """
+    tensor([[[1., 1., 1.],
+     [1., 1., 1.]],
+    [[0., 0., 0.],
+     [0., 0., 0.]]])
+    """
+
 Tensor与Python数据转换
 ######################
 
