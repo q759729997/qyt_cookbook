@@ -40,6 +40,15 @@
 
 - 使用多通道可以拓展卷积层的模型参数。
 
+.. code:: python
+
+    net = nn.Sequential(
+        nn.Conv2d(in_channels=1, out_channels=2, kernel_size=3, stride=3, padding=1)
+    )
+    x = torch.ones(8, 1, 28, 28)  # 批量大小, 通道, 高, 宽
+    y = net(x)
+    print(y.shape)  # torch.Size([8, 2, 10, 10])
+
 池化层
 ***************************
 
@@ -53,15 +62,62 @@
 - **平均池化** 二维平均池化的工作原理与二维最大池化类似，但将最大运算符替换成平均运算符。池化窗口形状为 :math:`p \times q` 的池化层称为 :math:`p \times q` 池化层，其中的池化运算叫作 :math:`p \times q` 池化。
 - **填充和步幅** 同卷积层一样，池化层也可以在输入的高和宽两侧的填充并调整窗口的移动步幅来改变输出形状。池化层填充和步幅与卷积层填充和步幅的工作机制一样。
 - **多通道** 在处理多通道输入数据时，池化层对每个输入通道分别池化，而不是像卷积层那样将各通道的输入按通道相加。这意味着 **池化层的输出通道数与输入通道数相等** 。
+- **步长大小默认与kernel_size一致。**
+
+.. code:: python
+
+    net = nn.Sequential(
+        nn.MaxPool2d(kernel_size=3, stride=3, padding=1)  # the stride of the window. Default value is kernel_size
+    )
+    x = torch.ones(8, 1, 28, 28)  # 批量大小, 通道, 高, 宽
+    y = net(x)
+    print(y.shape)  # torch.Size([8, 1, 10, 10])
 
 输出形状计算
 ***************************
 
-- 假设输入形状是 :math:`n_h\times n_w` ，卷积核窗口形状是 :math:`k_h\times k_w` ；在高的两侧一共填充 :math:`p_h` 行，在宽的两侧一共填充 :math:`p_w` 列；当高上步幅为 :math:`s_h` ，宽上步幅为 :math:`s_w` 时，输出形状为（除不尽时向下取整）：
+- 计算公式可参考pytorch官网API。
+- **卷积输出** 假设输入形状是 :math:`n_h\times n_w` ，卷积核窗口形状是 :math:`k_h\times k_w` ；在高的两侧一共填充 :math:`p_h` 行，在宽的两侧一共填充 :math:`p_w` 列；当高上步幅为 :math:`s_h` ，宽上步幅为 :math:`s_w` 时，输出形状为（除不尽时向下取整）：
 
 .. math::
 
 	\lfloor(n_h-k_h+p_h+s_h)/s_h\rfloor \times \lfloor(n_w-k_w+p_w+s_w)/s_w\rfloor
+
+.. code:: python
+
+    net = nn.Sequential(
+        nn.Conv2d(in_channels=1, out_channels=2, kernel_size=3)
+    )
+    x = torch.ones(8, 1, 28, 28)  # 批量大小, 通道, 高, 宽
+    y = net(x)
+    print(y.shape)  # torch.Size([8, 2, 26, 26])
+    net = nn.Sequential(
+        nn.Conv2d(in_channels=1, out_channels=2, kernel_size=3, stride=3, padding=1)
+    )
+    x = torch.ones(8, 1, 28, 28)  # 批量大小, 通道, 高, 宽
+    y = net(x)
+    print(y.shape)  # torch.Size([8, 2, 10, 10])
+
+- **最大池化输出** 假设输入形状是 :math:`n_h\times n_w` ，核窗口形状是 :math:`k_h\times k_w` ；在高的两侧一共填充 :math:`p_h` 行，在宽的两侧一共填充 :math:`p_w` 列；当高上步幅为 :math:`s_h` ，宽上步幅为 :math:`s_w` 时，输出形状为（除不尽时向下取整）：
+
+.. math::
+
+	\lfloor(n_h-k_h+p_h+s_h)/s_h\rfloor \times \lfloor(n_w-k_w+p_w+s_w)/s_w\rfloor
+
+.. code:: python
+
+    net = nn.Sequential(
+        nn.MaxPool2d(kernel_size=3, stride=1)  # the stride of the window. Default value is kernel_size
+    )
+    x = torch.ones(8, 1, 28, 28)  # 批量大小, 通道, 高, 宽
+    y = net(x)
+    print(y.shape)  # torch.Size([8, 1, 26, 26])
+    net = nn.Sequential(
+        nn.MaxPool2d(kernel_size=3, stride=3, padding=1)
+    )
+    x = torch.ones(8, 1, 28, 28)  # 批量大小, 通道, 高, 宽
+    y = net(x)
+    print(y.shape)  # torch.Size([8, 1, 10, 10])
 
 其他形式卷积
 ######################
