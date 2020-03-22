@@ -30,3 +30,20 @@ torchvision
 -  (C x H x W)，第一维是通道数，通道数为1代表是灰度图像。
 -  注意：
    由于像素值为0到255的整数，所以刚好是uint8所能表示的范围，包括\ ``transforms.ToTensor()``\ 在内的一些关于图片的函数就默认输入的是uint8型，若不是，可能不会报错但可能得不到想要的结果。所以，\ **如果用像素值(0-255整数)表示图片数据，那么一律将其类型设置成uint8，避免不必要的bug。**
+
+常用图片变换
+***************************
+
+- 图片转tensor: ``ToTensor`` ，图片大小调整: ``Resize`` 。
+
+.. code:: python
+   
+    trans = []
+    # 原始大小torch.Size([1, 28, 28])
+    trans.append(torchvision.transforms.Resize(size=224))
+    trans.append(torchvision.transforms.ToTensor())
+    transform = torchvision.transforms.Compose(trans)
+    mnist_train = torchvision.datasets.FashionMNIST(root='./data/FashionMNIST', train=True, download=True, transform=transform)
+    feature, label = mnist_train[0]
+    print(feature.shape, label)  # Channel x Height x Width
+    # 输出：torch.Size([1, 224, 224]) 9
