@@ -129,3 +129,74 @@ AlexNet模型
     """
 
 - 参考文献：Krizhevsky, A., Sutskever, I., & Hinton, G. E. (2012). Imagenet classification with deep convolutional neural networks. In Advances in neural information processing systems (pp. 1097-1105).
+
+VGG模型
+######################
+
+- VGG，它的名字来源于论文作者所在的实验室Visual Geometry Group。VGG提出了可以通过 **重复使用简单的基础块** 来构建深度模型的思路。
+- **VGG块** 的组成规律是：连续使用数个相同的填充为1、窗口形状为 :math:`3\times 3` 的卷积层后接上一个步幅为2、窗口形状为 :math:`2\times 2` 的最大池化层。卷积层保持输入的高和宽不变，而池化层则对其减半。 *对于给定的感受野（与输出有关的输入图片的局部大小），采用堆积的小卷积核优于采用大的卷积核，因为可以增加网络深度来保证学习更复杂的模式，而且代价还比较小（参数更少）* 。
+
+.. code:: python
+
+    def vgg_block(num_convs, in_channels, out_channels):
+	    blk = []
+	    for i in range(num_convs):
+	        if i == 0:
+	            blk.append(nn.Conv2d(in_channels, out_channels, kernel_size=3, padding=1))
+	        else:
+	            blk.append(nn.Conv2d(out_channels, out_channels, kernel_size=3, padding=1))
+	        blk.append(nn.ReLU())
+	    blk.append(nn.MaxPool2d(kernel_size=2, stride=2)) # 这里会使宽高减半
+	    return nn.Sequential(*blk)
+
+- 与AlexNet和LeNet一样，VGG网络由卷积层模块后接全连接层模块构成。卷积层模块串联数个vgg_block，其超参数由变量conv_arch定义。该变量指定了每个VGG块里卷积层个数和输入输出通道数。全连接模块则跟AlexNet中的一样。下面为使用了8个卷积层和3个全连接层的网络，所以经常被称为VGG-11。参数量： ``total: 128806154, trainable: 128806154``
+
+.. code:: python
+
+    class VGG11(nn.Module):
+	    """VGG-11：通过重复使用简单的基础块来构建深度模型"""
+	    def __init__(self):
+	        super().__init__()
+	        conv_arch = ((1, 1, 64), (1, 64, 128), (2, 128, 256), (2, 256, 512), (2, 512, 512))
+	        # ratio = 8
+	        # small_conv_arch = [(1, 1, 64//ratio), (1, 64//ratio, 128//ratio), (2, 128//ratio, 256//ratio), 
+	        #            (2, 256//ratio, 512//ratio), (2, 512//ratio, 512//ratio)]
+	        # 经过5个vgg_block, 宽高会减半5次, 变成 224/32 = 7
+	        fc_features = 512 * 7 * 7  # c * w * h
+	        fc_hidden_units = 4096  # 任意
+	        # 定义VGG网络
+	        # 卷积层部分
+	        self.conv = nn.Sequential()
+	        for i, (num_convs, in_channels, out_channels) in enumerate(conv_arch):
+	            # 每经过一个vgg_block都会使宽高减半
+	            self.conv.add_module("vgg_block_" + str(i+1), self._vgg_block(num_convs, in_channels, out_channels))
+	        # 全连接层部分
+	        # 输入形状：1, 1, 224, 224
+	        self.fc = nn.Sequential(
+	            nn.Linear(fc_features, fc_hidden_units),
+	            nn.ReLU(),
+	            nn.Dropout(0.5),
+	            nn.Linear(fc_hidden_units, fc_hidden_units),
+	            nn.ReLU(),
+	            nn.Dropout(0.5),
+	            nn.Linear(fc_hidden_units, 10)
+	        )
+
+	    def _vgg_block(self, num_convs, in_channels, out_channels):
+	        """VGG块"""
+	        blk = []
+	        for i in range(num_convs):
+	            if i == 0:
+	                blk.append(nn.Conv2d(in_channels, out_channels, kernel_size=3, padding=1))
+	            else:
+	                blk.append(nn.Conv2d(out_channels, out_channels, kernel_size=3, padding=1))
+	            blk.append(nn.ReLU())
+	        blk.append(nn.MaxPool2d(kernel_size=2, stride=2))  # 这里会使宽高减半
+	        return nn.Sequential(*blk)
+
+	    def forward(self, img):
+	        feature = self.conv(img)
+	        output = self.fc(feature.view(img.shape[0], -1))
+	        return output
+
+- 参考文献：Simonyan, K., & Zisserman, A. (2014). Very deep convolutional networks for large-scale image recognition. arXiv preprint arXiv:1409.1556.
