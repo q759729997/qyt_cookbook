@@ -200,3 +200,65 @@ VGG模型
 	        return output
 
 - 参考文献：Simonyan, K., & Zisserman, A. (2014). Very deep convolutional networks for large-scale image recognition. arXiv preprint arXiv:1409.1556.
+
+NIN模型
+######################
+
+- 网络中的网络（NiN）。它提出了另外一个思路，即串联多个由卷积层和“全连接”层构成的小网络来构建一个深层网络。
+- 卷积层的输入和输出通常是 **四维数组（样本，通道，高，宽）** ，而全连接层的输入和输出则通常是 **二维数组（样本，特征）** 。如果想在全连接层后再接上卷积层，则需要将全连接层的输出变换为四维。 :math:`1\times 1` 卷积层可以看成全连接层，其中空间维度（高和宽）上的每个元素相当于样本，通道相当于特征。因此，NiN使用 :math:`1\times 1` 卷积层来替代全连接层，从而使空间信息能够自然传递到后面的层中去。下对比了NiN同AlexNet和VGG等网络在结构上的主要区别。
+
+.. image:: ./cnnModels.assets/nin_20200322222234.png
+    :alt:
+    :align: center
+
+- NiN块是NiN中的基础块。它由一个卷积层加两个充当全连接层的 :math:`1\times 1` 卷积层串联而成。其中第一个卷积层的超参数可以自行设置，而第二和第三个卷积层的超参数一般是固定的。
+
+.. code:: python
+
+    def nin_block(in_channels, out_channels, kernel_size, stride, padding):
+	    blk = nn.Sequential(nn.Conv2d(in_channels, out_channels, kernel_size, stride, padding),
+	                        nn.ReLU(),
+	                        nn.Conv2d(out_channels, out_channels, kernel_size=1),
+	                        nn.ReLU(),
+	                        nn.Conv2d(out_channels, out_channels, kernel_size=1),
+	                        nn.ReLU())
+	    return blk
+
+- 除使用NiN块以外，NiN还有一个设计与AlexNet显著不同：NiN去掉了AlexNet最后的3个全连接层，取而代之地，NiN使用了输出通道数等于标签类别数的NiN块，然后使用全局平均池化层对每个通道中所有元素求平均并直接用于分类。这里的全局平均池化层即窗口形状等于输入空间维形状的平均池化层。NiN的这个设计的好处是可以显著减小模型参数尺寸，从而缓解过拟合。然而，该设计有时会造成获得有效模型的训练时间的增加。参数数量： ``total: 1992166, trainable: 1992166``
+
+.. code:: python
+
+    class NiN(nn.Module):
+	    """串联多个由卷积层和“全连接”层构成的小网络来构建一个深层网络"""
+	    def __init__(self):
+	        super().__init__()
+	        # 输出形状：1, 1, 224, 224
+	        self.net = nn.Sequential(
+	            self._nin_block(1, 96, kernel_size=11, stride=4, padding=0),
+	            nn.MaxPool2d(kernel_size=3, stride=2),
+	            self._nin_block(96, 256, kernel_size=5, stride=1, padding=2),
+	            nn.MaxPool2d(kernel_size=3, stride=2),
+	            self._nin_block(256, 384, kernel_size=3, stride=1, padding=1),
+	            nn.MaxPool2d(kernel_size=3, stride=2),
+	            nn.Dropout(0.5),
+	            # 标签类别数是10
+	            self._nin_block(384, 10, kernel_size=3, stride=1, padding=1),
+	            GlobalAvgPool2d(),
+	            # 将四维的输出转成二维的输出，其形状为(批量大小, 10)
+	            FlattenLayer())
+
+	    def _nin_block(self, in_channels, out_channels, kernel_size, stride, padding):
+	        """NiN块"""
+	        blk = nn.Sequential(nn.Conv2d(in_channels, out_channels, kernel_size, stride, padding),
+	                            nn.ReLU(),
+	                            nn.Conv2d(out_channels, out_channels, kernel_size=1),
+	                            nn.ReLU(),
+	                            nn.Conv2d(out_channels, out_channels, kernel_size=1),
+	                            nn.ReLU())
+	        return blk
+
+	    def forward(self, img):
+	        output = self.net(img)
+	        return output
+
+- 参考文献：Lin, M., Chen, Q., & Yan, S. (2013). Network in network. arXiv preprint arXiv:1312.4400.
