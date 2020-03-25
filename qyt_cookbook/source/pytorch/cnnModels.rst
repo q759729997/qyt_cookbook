@@ -353,3 +353,78 @@ GoogLeNet模型
 - GoogLeNet模型的计算复杂，而且不如VGG那样便于修改通道数。GoogLeNet将多个设计精细的Inception块和其他层串联起来。其中Inception块的通道数分配之比是在ImageNet数据集上通过大量的实验得来的。GoogLeNet和它的后继者们一度是ImageNet上最高效的模型之一：在类似的测试精度下，它们的计算复杂度往往更低。
 - Inception块相当于一个有4条线路的子网络。它通过不同窗口形状的卷积层和最大池化层来并行抽取信息，并使用 :math:`1\times 1` 卷积层减少通道数从而降低模型复杂度。
 - 参考文献：Szegedy, C., Ioffe, S., Vanhoucke, V., & Alemi, A. A. (2017, February). Inception-v4, inception-resnet and the impact of residual connections on learning. In Proceedings of the AAAI Conference on Artificial Intelligence (Vol. 4, p. 12).
+
+ResNet模型
+######################
+
+- 在实践中，添加过多的层后训练误差往往不降反升。针对这一问题，何恺明等人提出了残差网络（ResNet）。它在2015年的ImageNet图像识别挑战赛夺魁，并深刻影响了后来的深度神经网络的设计。
+- 残差块通过 **跨层的数据通道** 从而能够训练出有效的深度神经网络。
+- **残差块** 如下图所示，设输入为 :math:`\boldsymbol{x}` 。假设我们希望学出的理想映射为 :math:`f(\boldsymbol{x})` ，从而作为下图上方激活函数的输入。左图虚线框中的部分需要直接拟合出该映射 :math:`f(\boldsymbol{x})` ，而右图虚线框中的部分则需要拟合出有关恒等映射的残差映射 :math:`f(\boldsymbol{x})-\boldsymbol{x}` 。残差映射在实际中往往更容易优化。以本节开头提到的恒等映射作为我们希望学出的理想映射 :math:`f(\boldsymbol{x})` 。我们只需将下图中右图虚线框内上方的加权运算（如仿射）的权重和偏差参数学成0，那么 :math:`f(\boldsymbol{x})` 即为恒等映射。实际中，当理想映射 :math:`f(\boldsymbol{x})$极接近于恒等映射时，残差映射也易于捕捉恒等映射的细微波动。下图右图也是ResNet的基础块，即残差块（residual block）。在残差块中，输入可通过跨层的数据线路更快地向前传播。
+
+.. image:: ./cnnModels.assets/resnet_block_20200325224906.png
+    :alt:
+    :align: center
+
+- ResNet沿用了VGG全 :math:`3\times 3` 卷积层的设计。残差块里首先有2个有相同输出通道数的 :math:`3\times 3` 卷积层。每个卷积层后接一个批量归一化层和ReLU激活函数。然后我们将输入跳过这两个卷积运算后直接加在最后的ReLU激活函数前。这样的设计要求两个卷积层的输出与输入形状一样，从而可以相加。如果想改变通道数，就需要引入一个额外的 :math:`1\times 1` 卷积层来将输入变换成需要的形状后再做相加运算。残差块的实现如下。
+
+.. code-block:: python
+
+    class Residual(nn.Module):
+	    def __init__(self, in_channels, out_channels, use_1x1conv=False, stride=1):
+	        super(Residual, self).__init__()
+	        self.conv1 = nn.Conv2d(in_channels, out_channels, kernel_size=3, padding=1, stride=stride)
+	        self.conv2 = nn.Conv2d(out_channels, out_channels, kernel_size=3, padding=1)
+	        if use_1x1conv:
+	            self.conv3 = nn.Conv2d(in_channels, out_channels, kernel_size=1, stride=stride)
+	        else:
+	            self.conv3 = None
+	        self.bn1 = nn.BatchNorm2d(out_channels)
+	        self.bn2 = nn.BatchNorm2d(out_channels)
+
+	    def forward(self, X):
+	        Y = F.relu(self.bn1(self.conv1(X)))
+	        Y = self.bn2(self.conv2(Y))
+	        if self.conv3:
+	            X = self.conv3(X)
+	        return F.relu(Y + X)
+
+- 模型结构如下。参数量 ``total:11.178 Million, trainable:11.178 Million``
+
+.. code-block:: python
+
+    class ResNet18(nn.Module):
+	    """残差模型,卷积层和最后的全连接层，共计18层,通常也被称为ResNet-18"""
+	    def __init__(self):
+	        super().__init__()
+	        self.net = nn.Sequential(
+	            nn.Conv2d(1, 64, kernel_size=7, stride=2, padding=3),
+	            nn.BatchNorm2d(64),
+	            nn.ReLU(),
+	            nn.MaxPool2d(kernel_size=3, stride=2, padding=1))
+	        # 残差块,每个模块使用两个残差块
+	        self.net.add_module("resnet_block1", self._resnet_block(64, 64, 2, first_block=True))
+	        self.net.add_module("resnet_block2", self._resnet_block(64, 128, 2))
+	        self.net.add_module("resnet_block3", self._resnet_block(128, 256, 2))
+	        self.net.add_module("resnet_block4", self._resnet_block(256, 512, 2))
+	        # 全连接层
+	        self.net.add_module("global_avg_pool", GlobalAvgPool2d())  # GlobalAvgPool2d的输出: (Batch, 512, 1, 1)
+	        self.net.add_module("fc", nn.Sequential(FlattenLayer(), nn.Linear(512, 10)))
+
+	    def _resnet_block(self, in_channels, out_channels, num_residuals, first_block=False):
+	        """使用若干个同样输出通道数的残差块。第一个模块的通道数同输入通道数一致。由于之前已经使用了步幅为2的最大池化层，所以无须减小高和宽。之后的每个模块在第一个残差块里将上一个模块的通道数翻倍，并将高和宽减半。"""
+	        if first_block:
+	            assert in_channels == out_channels  # 第一个模块的通道数同输入通道数一致
+	        blk = []
+	        for i in range(num_residuals):
+	            if i == 0 and not first_block:
+	                blk.append(Residual(in_channels, out_channels, use_1x1conv=True, stride=2))
+	            else:
+	                blk.append(Residual(out_channels, out_channels))
+	        return nn.Sequential(*blk)
+
+	    def forward(self, img):
+	        output = self.net(img)
+	        return output
+
+- 参考文献:He, K., Zhang, X., Ren, S., & Sun, J. (2016). Deep residual learning for image recognition. In Proceedings of the IEEE conference on computer vision and pattern recognition (pp. 770-778).
+- 参考文献:He, K., Zhang, X., Ren, S., & Sun, J. (2016, October). Identity mappings in deep residual networks. In European Conference on Computer Vision (pp. 630-645). Springer, Cham.
