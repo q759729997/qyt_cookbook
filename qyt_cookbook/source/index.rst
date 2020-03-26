@@ -24,6 +24,15 @@ Python手册
    
    Python手册 </python/index>
 
+自然语言处理
+----------------
+
+.. toctree::
+   :maxdepth: 3
+   :numbered:
+   
+   自然语言处理 </nlp/index>
+
 TensorFlow手册
 ----------------
 
