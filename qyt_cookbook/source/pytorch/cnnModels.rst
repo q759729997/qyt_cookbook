@@ -428,3 +428,101 @@ ResNet模型
 
 - 参考文献:He, K., Zhang, X., Ren, S., & Sun, J. (2016). Deep residual learning for image recognition. In Proceedings of the IEEE conference on computer vision and pattern recognition (pp. 770-778).
 - 参考文献:He, K., Zhang, X., Ren, S., & Sun, J. (2016, October). Identity mappings in deep residual networks. In European Conference on Computer Vision (pp. 630-645). Springer, Cham.
+
+DenseNet模型
+######################
+
+- 稠密连接网络（DenseNet）。它与ResNet的主要区别如图：
+
+.. image:: ./cnnModels.assets/densenet_block_20200325231650.png
+    :alt:
+    :align: center
+
+- 上图中将部分前后相邻的运算抽象为模块为A和模块为B。与ResNet的主要区别在于，DenseNet里模块为B的输出不是像ResNet那样和模块为A的输出相加，而是 **在通道维上连结** 。这样模块A的输出可以直接传入模块B后面的层。在这个设计里， *模块A直接跟模块B后面的所有层连接在了一起* 。这也是它被称为“稠密连接”的原因。
+- DenseNet的主要构建模块是稠密块（dense block）和过渡层（transition layer）。前者定义了输入和输出是如何连结的，后者则用来控制通道数，使之不过大。
+- **稠密块** DenseNet使用了ResNet改良版的“批量归一化、激活和卷积”结构。稠密块由多个conv_block组成，每块使用相同的输出通道数。卷积块的通道数控制了输出通道数相对于输入通道数的增长，因此也被称为增长率（growth rate）。当有2个输出通道数为10的卷积块。使用通道数为3的输入时，我们会得到通道数为 :math:`3+2\times 10=23` 的输出。
+
+.. code-block:: python
+
+    class DenseBlock(nn.Module):
+	    """稠密块"""
+	    def __init__(self, num_convs, in_channels, out_channels):
+	        super().__init__()
+	        net = []
+	        for i in range(num_convs):
+	            in_c = in_channels + i * out_channels
+	            net.append(self._conv_block(in_c, out_channels))
+	        self.net = nn.ModuleList(net)
+	        self.out_channels = in_channels + num_convs * out_channels  # 计算输出通道数
+
+	    def _conv_block(self, in_channels, out_channels):
+	        blk = nn.Sequential(nn.BatchNorm2d(in_channels), 
+	                            nn.ReLU(),
+	                            nn.Conv2d(in_channels, out_channels, kernel_size=3, padding=1))
+	        return blk
+
+	    def forward(self, X):
+	        for blk in self.net:
+	            Y = blk(X)
+	            X = torch.cat((X, Y), dim=1)  # 在通道维上将输入和输出连结
+	        return X
+
+- **过渡层** 由于每个稠密块都会带来通道数的增加，使用过多则会带来过于复杂的模型。过渡层用来控制模型复杂度。它通过 :math:`1\times1` 卷积层来减小通道数，并使用步幅为2的平均池化层减半高和宽，从而进一步降低模型复杂度。
+
+.. code-block:: python
+
+    def transition_block(in_channels, out_channels):
+	    blk = nn.Sequential(
+	            nn.BatchNorm2d(in_channels), 
+	            nn.ReLU(),
+	            nn.Conv2d(in_channels, out_channels, kernel_size=1),
+	            nn.AvgPool2d(kernel_size=2, stride=2))
+	    return blk
+
+- DenseNet模型:在跨层连接上，不同于ResNet中将输入与输出相加，DenseNet在通道维上连结输入与输出。参数量: ``total:758.226 Thousand, trainable:758.226 Thousand``
+
+.. code-block:: python
+
+    class DenseNet(nn.Module):
+	    """稠密网络模型"""
+	    def __init__(self):
+	        super().__init__()
+	        # 首先使用同ResNet一样的单卷积层和最大池化层
+	        self.net = nn.Sequential(
+	            nn.Conv2d(1, 64, kernel_size=7, stride=2, padding=3),
+	            nn.BatchNorm2d(64),
+	            nn.ReLU(),
+	            nn.MaxPool2d(kernel_size=3, stride=2, padding=1))
+	        # 类似于ResNet接下来使用的4个残差块，DenseNet使用的是4个稠密块
+	        # 稠密块里的卷积层通道数（即增长率）设为32，所以每个稠密块将增加128个通道
+	        num_channels, growth_rate = 64, 32  # num_channels为当前的通道数
+	        num_convs_in_dense_blocks = [4, 4, 4, 4]
+	        for i, num_convs in enumerate(num_convs_in_dense_blocks):
+	            DB = DenseBlock(num_convs, num_channels, growth_rate)
+	            self.net.add_module("DenseBlosk_%d" % i, DB)
+	            # 上一个稠密块的输出通道数
+	            num_channels = DB.out_channels
+	            # 在稠密块之间加入通道数减半的过渡层
+	            if i != len(num_convs_in_dense_blocks) - 1:
+	                self.net.add_module("transition_block_%d" % i, self._transition_block(num_channels, num_channels // 2))
+	                num_channels = num_channels // 2
+	        # 最后接上全局池化层和全连接层来输出
+	        self.net.add_module("BN", nn.BatchNorm2d(num_channels))
+	        self.net.add_module("relu", nn.ReLU())
+	        self.net.add_module("global_avg_pool", GlobalAvgPool2d())  # GlobalAvgPool2d的输出: (Batch, num_channels, 1, 1)
+	        self.net.add_module("fc", nn.Sequential(FlattenLayer(), nn.Linear(num_channels, 10)))
+
+	    def _transition_block(self, in_channels, out_channels):
+	        """过渡层,过渡层用来控制模型复杂度。它通过1×1卷积层来减小通道数，并使用步幅为2的平均池化层减半高和宽，从而进一步降低模型复杂度。"""
+	        blk = nn.Sequential(
+	                nn.BatchNorm2d(in_channels),
+	                nn.ReLU(),
+	                nn.Conv2d(in_channels, out_channels, kernel_size=1),
+	                nn.AvgPool2d(kernel_size=2, stride=2))
+	        return blk
+
+	    def forward(self, img):
+	        output = self.net(img)
+	        return output
+
+- 参考文献：Huang, G., Liu, Z., Weinberger, K. Q., & van der Maaten, L. (2017). Densely connected convolutional networks. In Proceedings of the IEEE conference on computer vision and pattern recognition (Vol. 1, No. 2).
