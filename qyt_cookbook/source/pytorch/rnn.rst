@@ -59,6 +59,39 @@ RNN模型定义
 	- batch_first:是否将batch放到第一维。默认输入为(seq_len, batch, input_size)，该参数为真时，输入为(batch, seq_len, input_size)
 	- bidirectional：是否使用双向RNN
 
+长短期记忆LSTM
+######################
+
+- 长短期记忆（long short-term memory，LSTM）是一种常用的门控循环神经网络。
+- LSTM 中引入了3个门，即输入门（input gate）、遗忘门（forget gate）和输出门（output gate），以及与隐藏状态形状相同的记忆细胞（某些文献把记忆细胞当成一种特殊的隐藏状态），从而记录额外的信息。
+- **输入门、遗忘门和输出门** 它们由激活函数为sigmoid函数计算得到。值域均为 :math:`[0,1]` 。假设隐藏单元个数为 :math:`h` ，给定时间步 :math:`t` 的小批量输入 :math:`\boldsymbol{X}_t \in \mathbb{R}^{n \times d}` （样本数为 :math:`n` ，输入个数为 :math:`d` ）和上一时间步隐藏状态 :math:`\boldsymbol{H}_{t-1} \in \mathbb{R}^{n \times h}` 。时间步 :math:`t` 的输入门 :math:`\boldsymbol{I}_t \in \mathbb{R}^{n \times h}` 、遗忘门 :math:`\boldsymbol{F}_t \in \mathbb{R}^{n \times h}` 和输出门 :math:`\boldsymbol{O}_t \in \mathbb{R}^{n \times h}` 分别计算如下：
+
+.. math::
+
+	\begin{aligned}
+	\boldsymbol{I}_t &= \sigma(\boldsymbol{X}_t \boldsymbol{W}_{xi} + \boldsymbol{H}_{t-1} \boldsymbol{W}_{hi} + \boldsymbol{b}_i),\\
+	\boldsymbol{F}_t &= \sigma(\boldsymbol{X}_t \boldsymbol{W}_{xf} + \boldsymbol{H}_{t-1} \boldsymbol{W}_{hf} + \boldsymbol{b}_f),\\
+	\boldsymbol{O}_t &= \sigma(\boldsymbol{X}_t \boldsymbol{W}_{xo} + \boldsymbol{H}_{t-1} \boldsymbol{W}_{ho} + \boldsymbol{b}_o),
+	\end{aligned}
+
+- 其中的 :math:`\boldsymbol{W}_{xi}, \boldsymbol{W}_{xf}, \boldsymbol{W}_{xo} \in \mathbb{R}^{d \times h}` 和 :math:`\boldsymbol{W}_{hi}, \boldsymbol{W}_{hf}, \boldsymbol{W}_{ho} \in \mathbb{R}^{h \times h}` 是权重参数， :math:`\boldsymbol{b}_i, \boldsymbol{b}_f, \boldsymbol{b}_o \in \mathbb{R}^{1 \times h}` 是偏差参数。
+
+.. image:: ./rnn.assets/lstm_input_gate_20200327231353.png
+    :alt:
+    :align: center
+
+- **候选记忆细胞** 计算方式与上述几个门类似，但是使用了值域在 :math:`[-1, 1]` 的tanh函数作为激活函数。时间步 :math:`t` 的候选记忆细胞  :math:`\tilde{\boldsymbol{C}}_t \in \mathbb{R}^{n \times h}` 的计算为
+
+.. math::
+
+	\tilde{\boldsymbol{C}}_t = \text{tanh}(\boldsymbol{X}_t \boldsymbol{W}_{xc} + \boldsymbol{H}_{t-1} \boldsymbol{W}_{hc} + \boldsymbol{b}_c),
+
+- 其中 :math:`\boldsymbol{W}_{xc} \in \mathbb{R}^{d \times h}` 和 :math:`\boldsymbol{W}_{hc} \in \mathbb{R}^{h \times h}` 是权重参数， :math:`\boldsymbol{b}_c \in \mathbb{R}^{1 \times h}` 是偏差参数。
+
+.. image:: ./rnn.assets/lstm_cell_hat_20200327232548.png
+    :alt:
+    :align: center
+
 门控循环单元GRU
 ######################
 
