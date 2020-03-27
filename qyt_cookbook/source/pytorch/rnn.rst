@@ -15,3 +15,46 @@
 .. image:: ./rnn.assets/character_level_lm__20200326232923.png
     :alt:
     :align: center
+
+RNN模型定义
+######################
+
+- 示例中 ``rnn_layer`` 的输入形状为(时间步数, 批量大小, 输入个数)。其中输入个数即one-hot向量长度（词典大小）。此外， ``rnn_layer`` 作为 ``nn.RNN`` 实例，在前向计算后会分别返回输出和隐藏状态h，其中输出指的是隐藏层在 **各个时间步** 上计算并输出的隐藏状态，它们通常作为后续输出层的输入。需要强调的是，该“输出”本身并不涉及输出层计算，形状为(时间步数, 批量大小, 隐藏单元个数)。而 ``nn.RNN`` 实例在前向计算返回的隐藏状态指的是隐藏层在 **最后时间步** 的隐藏状态：当隐藏层有多层时，每一层的隐藏状态都会记录在该变量中；对于像长短期记忆（LSTM），隐藏状态是一个元组(h, c)，即hidden state和cell state。下图其LSTM的输出：
+
+.. image:: ./rnn.assets/lstm_output_20200327214325.png
+    :alt:
+    :align: center
+
+- 构造示例  ``rnn_layer`` :
+- 输入输出形状(seq_len, batch, input_size)；
+- 输出形状为(seq_len, batch, num_directions\*hidden_size)；此时可以使用 ``torch.transpose(x, 0, 1)`` 将batch转换为第一维。
+- 隐藏状态h的形状为(num_layers\*num_directions, batch, hidden_size)
+- 详见:  https://pytorch.org/docs/stable/nn.html?highlight=rnn#torch.nn.RNN
+
+.. code-block:: python
+
+    vocab_size = 200
+	rnn_layer = nn.RNN(input_size=vocab_size, hidden_size=10)
+	seq_len = 35
+	batch_size = 8
+	state = None
+	X = torch.rand(seq_len, batch_size, vocab_size)
+	print(X.shape)  # 输入形状为 (seq_len, batch, input_size)；torch.Size([35, 8, 200])
+	Y, state_new = rnn_layer(X, state)
+	print(Y.shape)  # 输出形状为(seq_len, batch, num_directions * hidden_size)；torch.Size([35, 8, 10])
+	print(state_new.shape)  # 隐藏状态h的形状为(num_layers * num_directions, batch, hidden_size);torch.Size([1, 8, 10])
+	print('{} num_layers=3,bidirectional {}'.format('-'*15, '-'*15))
+	rnn_layer = nn.RNN(input_size=vocab_size, hidden_size=10, num_layers=3, bidirectional=True)
+	state = None
+	X = torch.rand(seq_len, batch_size, vocab_size)
+	print(X.shape)  # 输入形状为(seq_len, batch, input_size)；torch.Size([35, 8, 200])
+	Y, state_new = rnn_layer(X, state)
+	print(Y.shape)  # 输出形状为(seq_len, batch, num_directions * hidden_size)；torch.Size([35, 8, 20])
+	print(state_new.shape)  # 隐藏状态h的形状为(num_layers * num_directions, batch, hidden_size)；torch.Size([6, 8, 10])
+
+- ``nn.RNN`` 重要参数：
+	- input_size：输入X的特征数目
+	- hidden_size：隐藏状态h的特征数目
+	- num_layers:RNN层数
+	- batch_first:是否将batch放到第一维。默认输入为(seq_len, batch, input_size)，该参数为真时，输入为(batch, seq_len, input_size)
+	- bidirectional：是否使用双向RNN
