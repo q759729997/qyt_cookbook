@@ -58,3 +58,15 @@ RNN模型定义
 	- num_layers:RNN层数
 	- batch_first:是否将batch放到第一维。默认输入为(seq_len, batch, input_size)，该参数为真时，输入为(batch, seq_len, input_size)
 	- bidirectional：是否使用双向RNN
+
+门控循环单元GRU
+######################
+
+- 门控循环单元（gated recurrent unit，GRU）是一种常用的门控循环神经网络，为了更好地捕捉时间序列中时间步距离较大的依赖关系。它引入了重置门（reset gate）和更新门（update gate）的概念，从而修改了循环神经网络中隐藏状态的计算方式。
+- 重置门有助于捕捉时间序列里短期的依赖关系；更新门有助于捕捉时间序列里长期的依赖关系。
+
+.. image:: ./rnn.assets/gru_20200327225318.png
+    :alt:
+    :align: center
+
+- 参考文献：Chung, J., Gulcehre, C., Cho, K., & Bengio, Y. (2014). Empirical evaluation of gated recurrent neural networks on sequence modeling. arXiv preprint arXiv:1412.3555.
