@@ -319,3 +319,26 @@
     \boldsymbol{v}_t \leftarrow \gamma \boldsymbol{v}_{t-1} + (1 - \gamma) \left(\frac{\eta_t}{1 - \gamma} \boldsymbol{g}_t\right).
 
 - 由指数加权移动平均的形式可得，速度变量 :math:`\boldsymbol{v}_t` 实际上对序列 :math:`\{\eta_{t-i}\boldsymbol{g}_{t-i} /(1-\gamma):i=0,\ldots,1/(1-\gamma)-1\}` 做了指数加权移动平均。换句话说，相比于小批量随机梯度下降，动量法在每个时间步的自变量更新量近似于将最近 :math:`1/(1-\gamma)` 个时间步的普通更新量（即学习率乘以梯度）做了指数加权移动平均后再除以 :math:`1-\gamma`。所以，在动量法中，自变量在各个方向上的移动幅度不仅取决当前梯度，还取决于过去的各个梯度在各个方向上是否一致。在本节之前示例的优化问题中，所有梯度在水平方向上为正（向右），而在竖直方向上时正（向上）时负（向下）。这样，我们就可以使用较大的学习率，从而使自变量向最优解更快移动。
+
+AdaGrad算法
+######################
+
+- AdaGrad算法，它根据自变量在每个维度的梯度值的大小来调整各个维度上的学习率，从而避免统一的学习率难以适应所有维度的问题。
+- AdaGrad算法在迭代过程中不断调整学习率，并让目标函数自变量中 **每个元素都分别拥有自己的学习率** 。
+- 使用AdaGrad算法时，自变量中每个元素的学习率在迭代过程中一直在降低（或不变）。
+- 通过名称为Adagrad的优化器方法，我们便可使用PyTorch提供的AdaGrad算法来训练模型。
+- AdaGrad算法会使用一个小批量随机梯度 :math:`\boldsymbol{g}_t` 按元素平方的累加变量 :math:`\boldsymbol{s}_t` 。在时间步0，AdaGrad将 :math:`\boldsymbol{s}_0` 中每个元素初始化为0。在时间步 :math:`t` ，首先将小批量随机梯度 :math:`\boldsymbol{g}_t` 按元素平方后累加到变量 :math:`\boldsymbol{s}_t` ：
+
+.. math::
+
+    \boldsymbol{s}_t \leftarrow \boldsymbol{s}_{t-1} + \boldsymbol{g}_t \odot \boldsymbol{g}_t,
+
+- 其中 :math:`\odot` 是按元素相乘。接着，我们将目标函数自变量中每个元素的学习率通过按元素运算重新调整一下：
+
+.. math::
+
+    \boldsymbol{x}_t \leftarrow \boldsymbol{x}_{t-1} - \frac{\eta}{\sqrt{\boldsymbol{s}_t + \epsilon}} \odot \boldsymbol{g}_t,
+
+- 其中 :math:`\eta` 是学习率， :math:`\epsilon` 是为了维持数值稳定性而添加的常数，如 :math:`10^{-6}` 。这里开方、除法和乘法的运算都是按元素运算的。这些按元素运算使得目标函数自变量中每个元素都分别拥有自己的学习率。
+- 需要强调的是，小批量随机梯度按元素平方的累加变量 :math:`\boldsymbol{s}_t` 出现在学习率的分母项中。因此，如果目标函数有关自变量中某个元素的偏导数一直都较大，那么该元素的学习率将下降较快；反之，如果目标函数有关自变量中某个元素的偏导数一直都较小，那么该元素的学习率将下降较慢。然而，由于 :math:`\boldsymbol{s}_t` 一直在累加按元素平方的梯度，自变量中每个元素的学习率在迭代过程中一直在降低（或不变）。所以， **当学习率在迭代早期降得较快且当前解依然不佳时，AdaGrad算法在迭代后期由于学习率过小，可能较难找到一个有用的解** 。
+- 参考文献： Duchi, J., Hazan, E., & Singer, Y. (2011). Adaptive subgradient methods for online learning and stochastic optimization. Journal of Machine Learning Research, 12(Jul), 2121-2159.
