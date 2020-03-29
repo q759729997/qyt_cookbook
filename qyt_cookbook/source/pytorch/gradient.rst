@@ -363,3 +363,37 @@ RMSProp算法
 
 - 其中 :math:`\eta` 是学习率， :math:`\epsilon` 是为了维持数值稳定性而添加的常数，如 :math:`10^{-6}` 。因为RMSProp算法的状态变量 :math:`\boldsymbol{s}_t` 是对平方项 :math:`\boldsymbol{g}_t \odot \boldsymbol{g}_t` 的指数加权移动平均，所以可以看作是最近 :math:`1/(1-\gamma)` 个时间步的小批量随机梯度平方项的加权平均。如此一来，自变量每个元素的学习率在迭代过程中就不再一直降低（或不变）。
 - 参考文献： Tieleman, T., & Hinton, G. (2012). Lecture 6.5-rmsprop: Divide the gradient by a running average of its recent magnitude. COURSERA: Neural networks for machine learning, 4(2), 26-31.
+
+AdaDelta算法
+######################
+
+- 除了RMSProp算法以外，另一个常用优化算法AdaDelta算法也针对AdaGrad算法在迭代后期可能较难找到有用解的问题做了改进。有意思的是，AdaDelta算法没有学习率这一超参数。
+- AdaDelta算法没有学习率超参数，它通过使用有关自变量更新量平方的指数加权移动平均的项来替代RMSProp算法中的学习率。
+- 通过名称为 ``Adadelta`` 的优化器方法，我们便可使用PyTorch提供的AdaDelta算法。它的超参数可以通过 ``rho`` 来指定。
+- AdaDelta算法也像RMSProp算法一样，使用了小批量随机梯度 :math:`\boldsymbol{g}_t` 按元素平方的指数加权移动平均变量 :math:`\boldsymbol{s}_t` 。在时间步0，它的所有元素被初始化为0。给定超参数 :math:`0 \leq \rho < 1` （对应RMSProp算法中的 :math:`\gamma` ），在时间步 :math:`t>0` ，同RMSProp算法一样计算
+
+.. math::
+
+    \boldsymbol{s}_t \leftarrow \rho \boldsymbol{s}_{t-1} + (1 - \rho) \boldsymbol{g}_t \odot \boldsymbol{g}_t.
+
+- 与RMSProp算法不同的是，AdaDelta算法还维护一个额外的状态变量 :math:`\Delta\boldsymbol{x}_t` ，其元素同样在时间步0时被初始化为0。我们使用 :math:`\Delta\boldsymbol{x}_{t-1}` 来计算自变量的变化量：
+
+.. math::
+
+    \boldsymbol{g}_t' \leftarrow \sqrt{\frac{\Delta\boldsymbol{x}_{t-1} + \epsilon}{\boldsymbol{s}_t + \epsilon}}   \odot \boldsymbol{g}_t,
+
+- 其中 :math:`\epsilon` 是为了维持数值稳定性而添加的常数，如 :math:`10^{-5}` 。接着更新自变量：
+
+.. math::
+
+    \boldsymbol{x}_t \leftarrow \boldsymbol{x}_{t-1} - \boldsymbol{g}'_t.
+
+- 最后，我们使用 :math:`\Delta\boldsymbol{x}_t` 来记录自变量变化量 :math:`\boldsymbol{g}'_t` 按元素平方的指数加权移动平均：
+
+.. math::
+
+    \Delta\boldsymbol{x}_t \leftarrow \rho \Delta\boldsymbol{x}_{t-1} + (1 - \rho) \boldsymbol{g}'_t \odot \boldsymbol{g}'_t.
+
+- 可以看到，如不考虑 :math:`\epsilon` 的影响，AdaDelta算法跟RMSProp算法的不同之处在于使用 :math:`\sqrt{\Delta\boldsymbol{x}_{t-1}}` 来替代学习率 :math:`\eta` 。
+
+- 参考文献：Zeiler, M. D. (2012). ADADELTA: an adaptive learning rate method. arXiv preprint arXiv:1212.5701.
