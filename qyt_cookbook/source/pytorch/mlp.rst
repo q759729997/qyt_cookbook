@@ -576,3 +576,28 @@ GPU计算
 - 需要注意的是， **存储在不同位置中的数据是不可以直接进行计算的** 。即存放在CPU上的数据不可以直接与存放在GPU上的数据进行运算，位于不同GPU上的数据也是不能直接进行计算的。
 - 同Tensor类似，PyTorch模型也可以通过.cuda转换到GPU上。我们可以通过检查模型的参数的device属性来查看存放模型的设备。
 - 前向传播时需要保证模型输入的Tensor和模型都在同一设备上，否则会报错。PyTorch要求计算的所有输入数据都在内存或同一块显卡的显存上。
+
+多GPU计算
+***************************
+
+- 要想使用PyTorch进行多GPU计算，最简单的方法是直接用 ``torch.nn.DataParallel`` 将模型wrap一下即可：
+
+.. code-block:: python
+
+    net = torch.nn.Linear(10, 1).cuda()
+    net = torch.nn.DataParallel(net)
+    print(net)
+    """
+    DataParallel(
+      (module): Linear(in_features=10, out_features=1, bias=True)
+    )
+    """
+
+- 这时，默认所有存在的GPU都会被使用。如果我们机子中有很多GPU(例如上面显示我们有4张显卡，但是只有第0、3块还剩下一点点显存)，但我们只想使用0、3号显卡，那么我们可以用参数device_ids指定即可: ``torch.nn.DataParallel(net, device_ids=[0, 3])`` 。
+- DataParallel也是一个nn.Module，只是这个类其中有一个module就是传入的实际模型。因此当我们调用DataParallel后，模型结构变了（在外面加了一层而已）。所以直接加载肯定会报错的，因为模型结构对不上。所以正确的方法是保存的时候只保存net.module:
+
+.. code-block:: python
+
+    torch.save(net.module.state_dict(), "./DataParallel_model.pt")
+    new_net = torch.nn.Linear(10, 1)
+    new_net.load_state_dict(torch.load("./DataParallel_model.pt")) # 加载成功
