@@ -152,6 +152,16 @@ tanh
 - 随机矩阵理论告诉我们，对于一个大的高斯随机矩阵来说，任一特征值是正或者是负的概率都是0.5。那么，以上第一种情况的概率为  :math:`0.5^k` 。由于深度学习模型参数通常都是高维的（ :math:`k` 很大），目标函数的鞍点通常比局部最小值更常见。
 - 参考文献： Wigner, E. P. (1958). On the distribution of the roots of certain symmetric matrices. Annals of Mathematics, 325-327.
 
+海森矩阵
+***************************
+
+- 海森矩阵（Hessian matrix）:又译作黑塞矩阵、海瑟矩阵、海塞矩阵等，是一个多元函数的二阶偏导数构成的方阵，描述了函数的局部曲率。
+
+.. image:: ./mlp.assets/hessian_matrix_20200329152816.png
+    :alt:
+    :align: center
+    :scale: 70
+
 优化算法
 ######################
 
