@@ -131,3 +131,38 @@ RNN模型定义
     :align: center
 
 - 参考文献：Chung, J., Gulcehre, C., Cho, K., & Bengio, Y. (2014). Empirical evaluation of gated recurrent neural networks on sequence modeling. arXiv preprint arXiv:1412.3555.
+
+深度循环神经网络
+######################
+
+- 深度循环神经网络：含有多个隐藏层的循环神经网络。
+- 下图为一个有 :math:`L` 个隐藏层的深度循环神经网络，每个隐藏状态不断传递至当前层的下一时间步和当前时间步的下一层。
+
+.. image:: ./rnn.assets/deep_rnn_20200329094708.png
+    :alt:
+    :align: center
+
+- 在时间步 :math:`t` 里，设小批量输入 :math:`\boldsymbol{X}_t \in \mathbb{R}^{n \times d}` （样本数为 :math:`n` ，输入个数为 :math:`d` ），第 :math:`\ell` 隐藏层（ :math:`\ell=1,\ldots,L` ）的隐藏状态为 :math:`\boldsymbol{H}_t^{(\ell)}  \in \mathbb{R}^{n \times h}` （隐藏单元个数为 :math:`h` ），输出层变量为 :math:`\boldsymbol{O}_t \in \mathbb{R}^{n \times q}` （输出个数为 :math:`q` ），且隐藏层的激活函数为 :math:`\phi` 。第1隐藏层的隐藏状态和之前的计算一样：
+
+.. math::
+
+	\boldsymbol{H}_t^{(1)} = \phi(\boldsymbol{X}_t \boldsymbol{W}_{xh}^{(1)} + \boldsymbol{H}_{t-1}^{(1)} \boldsymbol{W}_{hh}^{(1)}  + \boldsymbol{b}_h^{(1)})
+
+
+- 其中权重 :math:`\boldsymbol{W}_{xh}^{(1)} \in \mathbb{R}^{d \times h}` 、 :math:`\boldsymbol{W}_{hh}^{(1)} \in \mathbb{R}^{h \times h}` 和偏差  :math:`\boldsymbol{b}_h^{(1)} \in \mathbb{R}^{1 \times h}` 分别为第1隐藏层的模型参数。
+- 当 :math:`1 < \ell \leq L` 时，第 :math:`\ell` 隐藏层的隐藏状态的表达式为
+
+.. math::
+
+	\boldsymbol{H}_t^{(\ell)} = \phi(\boldsymbol{H}_t^{(\ell-1)} \boldsymbol{W}_{xh}^{(\ell)} + \boldsymbol{H}_{t-1}^{(\ell)} \boldsymbol{W}_{hh}^{(\ell)}  + \boldsymbol{b}_h^{(\ell)})
+
+
+- 其中权重 :math:`\boldsymbol{W}_{xh}^{(\ell)} \in \mathbb{R}^{h \times h}` 、 :math:`\boldsymbol{W}_{hh}^{(\ell)} \in \mathbb{R}^{h \times h}` 和偏差  :math:`\boldsymbol{b}_h^{(\ell)} \in \mathbb{R}^{1 \times h}` 分别为第 :math:`\ell` 隐藏层的模型参数。
+- 最终，输出层的输出只需基于第$L$隐藏层的隐藏状态：
+
+.. math::
+
+	\boldsymbol{O}_t = \boldsymbol{H}_t^{(L)} \boldsymbol{W}_{hq} + \boldsymbol{b}_q
+
+- 其中权重 :math:`\boldsymbol{W}_{hq} \in \mathbb{R}^{h \times q}` 和偏差 :math:`\boldsymbol{b}_q \in \mathbb{R}^{1 \times q}` 为输出层的模型参数。
+- 同多层感知机一样，隐藏层个数 :math:`L` 和隐藏单元个数$h$都是超参数。此外，如果将隐藏状态的计算换成门控循环单元或者长短期记忆的计算，我们可以得到深度门控循环神经网络。
