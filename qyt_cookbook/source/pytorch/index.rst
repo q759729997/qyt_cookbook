@@ -16,4 +16,3 @@ Pytorch手册
    循环神经网络 </pytorch/rnn>
    经典卷积模型 </pytorch/cnnModels>
    分类模型 </pytorch/classification>
-   计算机视觉 </pytorch/computerVision>

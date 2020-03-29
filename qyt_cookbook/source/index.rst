@@ -33,6 +33,15 @@ Python手册
    
    自然语言处理 </nlp/index>
 
+计算机视觉
+----------------
+
+.. toctree::
+   :maxdepth: 3
+   :numbered:
+   
+   计算机视觉 </cv/index>
+
 TensorFlow手册
 ----------------
 

@@ -53,6 +53,7 @@ RNN模型定义
 	print(state_new.shape)  # 隐藏状态h的形状为(num_layers * num_directions, batch, hidden_size)；torch.Size([6, 8, 10])
 
 - ``nn.RNN`` 重要参数：
+
 	- input_size：输入X的特征数目
 	- hidden_size：隐藏状态h的特征数目
 	- num_layers:RNN层数
