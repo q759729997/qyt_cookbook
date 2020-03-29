@@ -342,3 +342,24 @@ AdaGrad算法
 - 其中 :math:`\eta` 是学习率， :math:`\epsilon` 是为了维持数值稳定性而添加的常数，如 :math:`10^{-6}` 。这里开方、除法和乘法的运算都是按元素运算的。这些按元素运算使得目标函数自变量中每个元素都分别拥有自己的学习率。
 - 需要强调的是，小批量随机梯度按元素平方的累加变量 :math:`\boldsymbol{s}_t` 出现在学习率的分母项中。因此，如果目标函数有关自变量中某个元素的偏导数一直都较大，那么该元素的学习率将下降较快；反之，如果目标函数有关自变量中某个元素的偏导数一直都较小，那么该元素的学习率将下降较慢。然而，由于 :math:`\boldsymbol{s}_t` 一直在累加按元素平方的梯度，自变量中每个元素的学习率在迭代过程中一直在降低（或不变）。所以， **当学习率在迭代早期降得较快且当前解依然不佳时，AdaGrad算法在迭代后期由于学习率过小，可能较难找到一个有用的解** 。
 - 参考文献： Duchi, J., Hazan, E., & Singer, Y. (2011). Adaptive subgradient methods for online learning and stochastic optimization. Journal of Machine Learning Research, 12(Jul), 2121-2159.
+
+RMSProp算法
+######################
+
+- 当学习率在迭代早期降得较快且当前解依然不佳时，AdaGrad算法在迭代后期由于学习率过小，可能较难找到一个有用的解。为了解决这一问题，RMSProp算法对AdaGrad算法做了一点小小的修改。该算法源自Coursera上的一门课程，即“机器学习的神经网络”。
+- RMSProp算法和AdaGrad算法的不同在于，RMSProp算法使用了小批量随机梯度按元素平方的指数加权移动平均来调整学习率。
+- 通过名称为 ``RMSprop`` 的优化器方法，我们便可使用PyTorch提供的RMSProp算法来训练模型。注意，超参数 :math:`\gamma` 通过 ``alpha`` 指定。
+- 不同于AdaGrad算法里状态变量 :math:`\boldsymbol{s}_t` 是截至时间步 :math:`t` 所有小批量随机梯度 :math:`\boldsymbol{g}_t` 按元素平方和，RMSProp算法将这些梯度按元素平方做指数加权移动平均。具体来说，给定超参数 :math:`0 \leq \gamma < 1` ，RMSProp算法在时间步 :math:`t>0` 计算
+
+.. math::
+
+    \boldsymbol{s}_t \leftarrow \gamma \boldsymbol{s}_{t-1} + (1 - \gamma) \boldsymbol{g}_t \odot \boldsymbol{g}_t.
+
+- 和AdaGrad算法一样，RMSProp算法将目标函数自变量中每个元素的学习率通过按元素运算重新调整，然后更新自变量
+
+.. math::
+
+    \boldsymbol{x}_t \leftarrow \boldsymbol{x}_{t-1} - \frac{\eta}{\sqrt{\boldsymbol{s}_t + \epsilon}} \odot \boldsymbol{g}_t,
+
+- 其中 :math:`\eta` 是学习率， :math:`\epsilon` 是为了维持数值稳定性而添加的常数，如 :math:`10^{-6}` 。因为RMSProp算法的状态变量 :math:`\boldsymbol{s}_t` 是对平方项 :math:`\boldsymbol{g}_t \odot \boldsymbol{g}_t` 的指数加权移动平均，所以可以看作是最近 :math:`1/(1-\gamma)` 个时间步的小批量随机梯度平方项的加权平均。如此一来，自变量每个元素的学习率在迭代过程中就不再一直降低（或不变）。
+- 参考文献： Tieleman, T., & Hinton, G. (2012). Lecture 6.5-rmsprop: Divide the gradient by a running average of its recent magnitude. COURSERA: Neural networks for machine learning, 4(2), 26-31.
