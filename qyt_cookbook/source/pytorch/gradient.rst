@@ -397,3 +397,47 @@ AdaDelta算法
 - 可以看到，如不考虑 :math:`\epsilon` 的影响，AdaDelta算法跟RMSProp算法的不同之处在于使用 :math:`\sqrt{\Delta\boldsymbol{x}_{t-1}}` 来替代学习率 :math:`\eta` 。
 
 - 参考文献：Zeiler, M. D. (2012). ADADELTA: an adaptive learning rate method. arXiv preprint arXiv:1212.5701.
+
+Adam算法
+######################
+
+- Adam算法在RMSProp算法基础上对小批量随机梯度也做了指数加权移动平均。Adam算法可以看做是RMSProp算法与动量法的结合。使用了偏差修正。
+- 通过名称为“Adam”的优化器实例，我们便可使用PyTorch提供的Adam算法。
+- Adam算法使用了动量变量 :math:`\boldsymbol{v}_t` 和RMSProp算法中小批量随机梯度按元素平方的指数加权移动平均变量 :math:`\boldsymbol{s}_t` ，并在时间步0将它们中每个元素初始化为0。给定超参数 :math:`0 \leq \beta_1 < 1` （算法作者建议设为0.9），时间步 :math:`t` 的动量变量 :math:`\boldsymbol{v}_t` 即小批量随机梯度 :math:`\boldsymbol{g}_t` 的指数加权移动平均：
+
+.. math::
+
+    \boldsymbol{v}_t \leftarrow \beta_1 \boldsymbol{v}_{t-1} + (1 - \beta_1) \boldsymbol{g}_t.
+
+- 和RMSProp算法中一样，给定超参数 :math:`0 \leq \beta_2 < 1` （算法作者建议设为0.999），
+- 将小批量随机梯度按元素平方后的项 :math:`\boldsymbol{g}_t \odot \boldsymbol{g}_t` 做指数加权移动平均得到 :math:`\boldsymbol{s}_t` ：
+
+.. math::
+
+    \boldsymbol{s}_t \leftarrow \beta_2 \boldsymbol{s}_{t-1} + (1 - \beta_2) \boldsymbol{g}_t \odot \boldsymbol{g}_t.
+
+- 由于我们将 :math:`\boldsymbol{v}_0` 和 :math:`\boldsymbol{s}_0` 中的元素都初始化为0，
+- 在时间步 :math:`t` 我们得到 :math:`\boldsymbol{v}_t =  (1-\beta_1) \sum_{i=1}^t \beta_1^{t-i} \boldsymbol{g}_i` 。将过去各时间步小批量随机梯度的权值相加，得到  :math:`(1-\beta_1) \sum_{i=1}^t \beta_1^{t-i} = 1 - \beta_1^t` 。需要注意的是，当 :math:`t` 较小时，过去各时间步小批量随机梯度权值之和会较小。例如，当 :math:`\beta_1 = 0.9` 时， :math:`\boldsymbol{v}_1 = 0.1\boldsymbol{g}_1` 。为了消除这样的影响，对于任意时间步 :math:`t` ，我们可以将 :math:`\boldsymbol{v}_t` 再除以 :math:`1 - \beta_1^t` ，从而使过去各时间步小批量随机梯度权值之和为1。这也叫作偏差修正。在Adam算法中，我们对变量 :math:`\boldsymbol{v}_t` 和 :math:`\boldsymbol{s}_t` 均作偏差修正：
+
+.. math::
+
+    \hat{\boldsymbol{v}}_t \leftarrow \frac{\boldsymbol{v}_t}{1 - \beta_1^t},
+
+
+.. math::
+
+    \hat{\boldsymbol{s}}_t \leftarrow \frac{\boldsymbol{s}_t}{1 - \beta_2^t}.
+
+- 接下来，Adam算法使用以上偏差修正后的变量 :math:`\hat{\boldsymbol{v}}_t` 和 :math:`\hat{\boldsymbol{s}}_t` ，将模型参数中每个元素的学习率通过按元素运算重新调整：
+
+.. math::
+
+    \boldsymbol{g}_t' \leftarrow \frac{\eta \hat{\boldsymbol{v}}_t}{\sqrt{\hat{\boldsymbol{s}}_t} + \epsilon},
+
+- 其中 :math:`\eta` 是学习率， :math:`\epsilon` 是为了维持数值稳定性而添加的常数，如 :math:`10^{-8}` 。和AdaGrad算法、RMSProp算法以及AdaDelta算法一样，目标函数自变量中每个元素都分别拥有自己的学习率。最后，使用 :math:`\boldsymbol{g}_t'` 迭代自变量：
+
+.. math::
+
+    \boldsymbol{x}_t \leftarrow \boldsymbol{x}_{t-1} - \boldsymbol{g}_t'.
+
+- 参考文献：Kingma, D. P., & Ba, J. (2014). Adam: A method for stochastic optimization. arXiv preprint arXiv:1412.6980.
