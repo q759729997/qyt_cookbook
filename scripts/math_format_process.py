@@ -14,10 +14,25 @@ from qytPython.tools.file import read_file_iter
 if __name__ == "__main__":
     file_name = './data/math.txt'
     file_iter = read_file_iter(file_name)
+    texts = list()
+    for row_text in file_iter:
+        text = row_text.strip()
+        texts.append(text)
+    # 行间公式预处理
+    original_texts = deepcopy(texts)
+    texts = list()
+    for text in original_texts:
+        if text.startswith('$$') and text.endswith('$$'):
+            texts.append('$$')
+            texts.append(text.strip('$$'))
+            texts.append('$$')
+        else:
+            texts.append(text)
     # 处理行间公式
+    original_texts = deepcopy(texts)
     texts = list()
     math_start = True
-    for row_text in file_iter:
+    for row_text in original_texts:
         text = row_text.strip()
         if text == '$$':
             if math_start:
@@ -33,7 +48,7 @@ if __name__ == "__main__":
                 texts.append('    {}'.format(text))
             else:
                 texts.append(text)
-    # print('\n'.join(texts))
+    print('\n'.join(texts))
     # 处理行间公式
     original_texts = deepcopy(texts)
     texts = list()

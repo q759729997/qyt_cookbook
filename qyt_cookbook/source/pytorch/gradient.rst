@@ -123,3 +123,112 @@
    y = (x * x).sum()
    y.backward()
    print(x.grad)  # tensor([2., 2.])
+
+梯度下降
+######################
+
+- 梯度下降（gradient descent），使用适当的学习率，沿着梯度反方向更新自变量可能降低目标函数值。梯度下降重复这一更新过程直到得到满足要求的解。
+
+一维梯度下降
+***************************
+
+- 我们先以简单的一维梯度下降为例，解释梯度下降算法可能降低目标函数值的原因。假设连续可导的函数 :math:`f: \mathbb{R} \rightarrow \mathbb{R}` 的输入和输出都是标量。给定绝对值足够小的数 :math:`\epsilon` ，根据泰勒展开公式，我们得到以下的近似：
+
+.. math::
+
+    f(x + \epsilon) \approx f(x) + \epsilon f'(x)
+
+- 这里 :math:`f'(x)` 是函数 :math:`f` 在 :math:`x` 处的梯度。一维函数的梯度是一个标量，也称导数。
+- 接下来，找到一个常数 :math:`\eta > 0` ，使得 :math:`\left|\eta f'(x)\right|` 足够小，那么可以将 :math:`\epsilon` 替换为 :math:`-\eta f'(x)` 并得到
+
+.. math::
+
+    f(x - \eta f'(x)) \approx f(x) -  \eta f'(x)^2
+
+- 如果导数 :math:`f'(x) \neq 0` ，那么 :math:`\eta f'(x)^2>0` ，所以
+
+.. math::
+
+    f(x - \eta f'(x)) \lesssim f(x)
+
+- 这意味着，如果通过
+
+.. math::
+
+    x \leftarrow x - \eta f'(x)
+
+- 来迭代 :math:`x` ，函数 :math:`f(x)` 的值可能会降低。因此在梯度下降中，我们先选取一个初始值 :math:`x` 和常数 :math:`\eta > 0` ，然后不断通过上式来迭代 :math:`x` ，直到达到停止条件，例如 :math:`f'(x)^2` 的值已足够小或迭代次数已达到某个值。
+- 如果使用 **过大的学习率** ， :math:`\left|\eta f'(x)\right|` 可能会过大从而使前面提到的一阶泰勒展开公式不再成立：这时我们无法保证迭代 :math:`x` 会降低 :math:`f(x)` 的值。
+
+多维梯度下降
+***************************
+
+- 一种更广义的情况：目标函数的输入为向量，输出为标量。假设目标函数 :math:`f: \mathbb{R}^d \rightarrow \mathbb{R}` 的输入是一个 :math:`d` 维向量 :math:`\boldsymbol{x} = [x_1, x_2, \ldots, x_d]^\top` 。目标函数 :math:`f(\boldsymbol{x})` 有关 :math:`\boldsymbol{x}` 的梯度是一个由 :math:`d` 个偏导数组成的向量：
+
+.. math::
+
+    \nabla_{\boldsymbol{x}} f(\boldsymbol{x}) = \bigg[\frac{\partial f(\boldsymbol{x})}{\partial x_1}, \frac{\partial f(\boldsymbol{x})}{\partial x_2}, \ldots, \frac{\partial f(\boldsymbol{x})}{\partial x_d}\bigg]^\top.
+
+- 为表示简洁，我们用 :math:`\nabla f(\boldsymbol{x})` 代替 :math:`\nabla_{\boldsymbol{x}} f(\boldsymbol{x})` 。梯度中每个偏导数元素 :math:`\partial f(\boldsymbol{x})/\partial x_i` 代表着 :math:`f` 在 :math:`\boldsymbol{x}` 有关输入 :math:`x_i` 的变化率。为了测量 :math:`f` 沿着单位向量 :math:`\boldsymbol{u}` （即 :math:`\|\boldsymbol{u}\|=1` ）方向上的变化率，在多元微积分中，我们定义 :math:`f` 在 :math:`\boldsymbol{x}` 上沿着 :math:`\boldsymbol{u}` 方向的方向导数为
+
+.. math::
+
+    \text{D}_{\boldsymbol{u}} f(\boldsymbol{x}) = \lim_{h \rightarrow 0}  \frac{f(\boldsymbol{x} + h \boldsymbol{u}) - f(\boldsymbol{x})}{h}.
+
+- 依据方向导数性质，以上方向导数可以改写为
+
+.. math::
+
+    \text{D}_{\boldsymbol{u}} f(\boldsymbol{x}) = \nabla f(\boldsymbol{x}) \cdot \boldsymbol{u}.
+
+- 方向导数 :math:`\text{D}_{\boldsymbol{u}} f(\boldsymbol{x})` 给出了 :math:`f` 在 :math:`\boldsymbol{x}` 上沿着所有可能方向的变化率。为了最小化 :math:`f` ，我们希望找到 :math:`f` 能被降低最快的方向。因此，我们可以通过单位向量 :math:`\boldsymbol{u}` 来最小化方向导数 :math:`\text{D}_{\boldsymbol{u}} f(\boldsymbol{x})` 。
+- 由于 :math:`\text{D}_{\boldsymbol{u}} f(\boldsymbol{x}) = \|\nabla f(\boldsymbol{x})\| \cdot \|\boldsymbol{u}\|  \cdot \text{cos} (\theta) = \|\nabla f(\boldsymbol{x})\|  \cdot \text{cos} (\theta)` ，
+- 其中 :math:`\theta` 为梯度 :math:`\nabla f(\boldsymbol{x})` 和单位向量 :math:`\boldsymbol{u}` 之间的夹角，当 :math:`\theta = \pi` 时， :math:`\text{cos}(\theta)` 取得最小值 :math:`-1` 。因此，当 :math:`\boldsymbol{u}` 在梯度方向 :math:`\nabla f(\boldsymbol{x})` 的相反方向时，方向导数 :math:`\text{D}_{\boldsymbol{u}} f(\boldsymbol{x})` 被最小化。因此，我们可能通过梯度下降算法来不断降低目标函数 :math:`f` 的值：
+
+.. math::
+
+    \boldsymbol{x} \leftarrow \boldsymbol{x} - \eta \nabla f(\boldsymbol{x}).
+
+- 同样，其中 :math:`\eta` （取正数）称作学习率。
+- 下图为一个输入为二维向量 :math:`\boldsymbol{x} = [x_1, x_2]^\top` 和输出为标量的目标函数 :math:`f(\boldsymbol{x})=x_1^2+2x_2^2` 。
+
+.. image:: ./gradient.assets/multi_dim_20200329155324.png
+    :alt:
+    :align: center
+
+随机梯度下降
+######################
+
+- 随机梯度下降（stochastic gradient descent，SGD），当训练数据集的样本较多时，梯度下降每次迭代的计算开销较大，因而随机梯度下降通常更受青睐。。
+- 在深度学习里，目标函数通常是训练数据集中有关各个样本的损失函数的平均。设 :math:`f_i(\boldsymbol{x})` 是有关索引为 :math:`i` 的训练数据样本的损失函数， :math:`n` 是训练数据样本数， :math:`\boldsymbol{x}` 是模型的参数向量，那么目标函数定义为
+
+.. math::
+
+    f(\boldsymbol{x}) = \frac{1}{n} \sum_{i = 1}^n f_i(\boldsymbol{x}).
+
+- 目标函数在 :math:`\boldsymbol{x}` 处的梯度计算为
+
+.. math::
+
+    \nabla f(\boldsymbol{x}) = \frac{1}{n} \sum_{i = 1}^n \nabla f_i(\boldsymbol{x}).
+
+- 如果使用梯度下降，每次自变量迭代的计算开销为 :math:`\mathcal{O}(n)` ，它随着 :math:`n` 线性增长。因此，当训练数据样本数很大时，梯度下降每次迭代的计算开销很高。
+- 随机梯度下降（stochastic gradient descent，SGD）减少了每次迭代的计算开销。在随机梯度下降的每次迭代中，我们随机均匀采样的一个样本索引 :math:`i\in\{1,\ldots,n\}` ，并计算梯度 :math:`\nabla f_i(\boldsymbol{x})` 来迭代 :math:`\boldsymbol{x}` ：
+
+.. math::
+
+    \boldsymbol{x} \leftarrow \boldsymbol{x} - \eta \nabla f_i(\boldsymbol{x}).
+
+- 这里 :math:`\eta` 同样是学习率。可以看到每次迭代的计算开销从梯度下降的 :math:`\mathcal{O}(n)` 降到了常数 :math:`\mathcal{O}(1)` 。值得强调的是，随机梯度 :math:`\nabla f_i(\boldsymbol{x})` 是对梯度 :math:`\nabla f(\boldsymbol{x})` 的无偏估计：
+
+.. math::
+
+    E_i \nabla f_i(\boldsymbol{x}) = \frac{1}{n} \sum_{i = 1}^n \nabla f_i(\boldsymbol{x}) = \nabla f(\boldsymbol{x}).
+
+- 这意味着，平均来说，随机梯度是对梯度的一个良好的估计。
+
+.. image:: ./gradient.assets/sgd_20200329155615.png
+    :alt:
+    :align: center
+
+- 可以看到，随机梯度下降中自变量的迭代轨迹相对于梯度下降中的来说更为曲折。
