@@ -98,6 +98,7 @@ tanh
 
 .. math:: \ell^{(i)}(w, b) = \frac{1}{2} \left(\hat{y}^{(i)} - y^{(i)}\right)^2
 
+- 在一个深度学习问题中，我们通常会预先定义一个损失函数。有了损失函数以后，我们就可以使用优化算法试图将其最小化。在优化中，这样的损失函数通常被称作优化问题的目标函数（objective function）。依据惯例，优化算法通常只考虑最小化目标函数。其实，任何最大化问题都可以很容易地转化为最小化问题，只需令目标函数的相反数为新的目标函数即可。
 -  PyTorch在\ ``nn``\ 模块中提供了各种损失函数，这些损失函数可看作是一种特殊的层，PyTorch也将这些损失函数实现为\ ``nn.Module``\ 的子类。
 
 .. code:: python
@@ -107,6 +108,49 @@ tanh
    pred_y = torch.tensor([-1, -1], dtype=torch.float)
    y = torch.tensor([1, 1], dtype=torch.float)
    print(loss(pred_y, y))  # tensor(4.),数据类型不能为int
+
+局部最小值
+***************************
+
+- 局部最小值（local minimum）:对于目标函数 :math:`f(x)` ，如果 :math:`f(x)` 在 :math:`x` 上的值比在 :math:`x` 邻近的其他点的值更小，那么 :math:`f(x)` 可能是一个局部最小值（local minimum）。如果 :math:`f(x)` 在 :math:`x` 上的值是目标函数在整个定义域上的最小值，那么 :math:`f(x)` 是全局最小值（global minimum）。举个例子，给定函数
+
+.. math::
+
+    f(x) = x \cdot \text{cos}(\pi x), \qquad -1.0 \leq x \leq 2.0,
+
+- 我们可以大致找出该函数的局部最小值和全局最小值的位置。需要注意的是，图中箭头所指示的只是大致位置。
+
+.. image:: ./mlp.assets/local_minimum_20200329144322.png
+    :alt:
+    :align: center
+    :scale: 67
+
+鞍点
+***************************
+
+- 鞍点（saddle point）:也会导致梯度接近或变成零。由于深度学习模型参数通常都是高维的，目标函数的鞍点通常比局部最小值更常见。
+- 下图为函数 :math:`f(x) = x^3` 的示例：
+
+.. image:: ./mlp.assets/saddle_point_20200329145247.png
+    :alt:
+    :align: center
+    :scale: 67
+
+- 下图为二维空间的函数 :math:`f(x, y) = x^2 - y^2` 的示例。该函数看起来像一个马鞍，而鞍点恰好是马鞍上可坐区域的中心。
+
+.. image:: ./mlp.assets/saddle_point_3d_20200329145247.png
+    :alt:
+    :align: center
+    :scale: 80
+
+- 在图的鞍点位置，目标函数在 :math:`x` 轴方向上是局部最小值，但在 :math:`y` 轴方向上是局部最大值。假设一个函数的输入为 :math:`k` 维向量，输出为标量，那么它的海森矩阵（Hessian matrix）有 :math:`k` 个特征值。该函数在梯度为0的位置上可能是局部最小值、局部最大值或者鞍点。
+
+    - 当函数的海森矩阵在梯度为零的位置上的特征值全为正时，该函数得到局部最小值。
+    - 当函数的海森矩阵在梯度为零的位置上的特征值全为负时，该函数得到局部最大值。
+    - 当函数的海森矩阵在梯度为零的位置上的特征值有正有负时，该函数得到鞍点。
+
+- 随机矩阵理论告诉我们，对于一个大的高斯随机矩阵来说，任一特征值是正或者是负的概率都是0.5。那么，以上第一种情况的概率为  :math:`0.5^k` 。由于深度学习模型参数通常都是高维的（ :math:`k` 很大），目标函数的鞍点通常比局部最小值更常见。
+- 参考文献： Wigner, E. P. (1958). On the distribution of the roots of certain symmetric matrices. Annals of Mathematics, 325-327.
 
 优化算法
 ######################
