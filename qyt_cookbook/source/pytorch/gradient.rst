@@ -256,3 +256,66 @@
 
 - 基于随机采样得到的梯度的方差在迭代过程中无法减小，因此在实际中，（小批量）随机梯度下降的学习率可以在迭代过程中自我衰减，例如 :math:`\eta_t=\eta t^\alpha` （通常 :math:`\alpha=-1` 或者 :math:`-0.5` ）、 :math:`\eta_t = \eta \alpha^t` （如 :math:`\alpha=0.95` ）或者每迭代若干次后将学习率衰减一次。如此一来，学习率和（小批量）随机梯度乘积的方差会减小。而梯度下降在迭代过程中一直使用目标函数的真实梯度，无须自我衰减学习率。
 - 小批量随机梯度下降中每次迭代的计算开销为 :math:`\mathcal{O}(|\mathcal{B}|)` 。当批量大小为1时，该算法即为随机梯度下降；当批量大小等于训练数据样本数时，该算法即为梯度下降。当批量较小时，每次迭代中使用的样本少，这会导致并行处理和内存使用效率变低。这使得在计算同样数目样本的情况下比使用更大批量时所花时间更多。当批量较大时，每个小批量梯度里可能含有更多的冗余信息。为了得到较好的解，批量较大时比批量较小时需要计算的样本数目可能更多，例如增大迭代周期数。
+
+动量法
+######################
+
+- 小批量随机梯度下降中时间步 :math:`t` 的小批量随机梯度 :math:`\boldsymbol{g}_t` 的定义。设时间步 :math:`t` 的自变量为 :math:`\boldsymbol{x}_t` ，学习率为 :math:`\eta_t` 。
+- 在时间步 :math:`0` ，动量法创建速度变量 :math:`\boldsymbol{v}_0` ，并将其元素初始化成0。在时间步 :math:`t>0` ，动量法对每次迭代的步骤做如下修改：
+
+.. math:: 
+
+    \begin{aligned}
+    \boldsymbol{v}_t &\leftarrow \gamma \boldsymbol{v}_{t-1} + \eta_t \boldsymbol{g}_t, \\
+    \boldsymbol{x}_t &\leftarrow \boldsymbol{x}_{t-1} - \boldsymbol{v}_t,
+    \end{aligned} 
+
+- 其中，动量超参数 :math:`\gamma` 满足 :math:`0 \leq \gamma < 1` 。当 :math:`\gamma=0` 时，动量法等价于小批量随机梯度下降。
+- 在PyTorch中，只需要通过参数 ``momentum`` 来指定动量超参数即可使用动量法。
+- 动量法使用了指数加权移动平均的思想。它将过去时间步的梯度做了加权平均，且权重按时间步指数衰减。
+- 动量法使得相邻时间步的自变量更新在方向上更加一致。
+
+指数加权移动平均
+***************************
+
+- 为了从数学上理解动量法，让我们先解释一下指数加权移动平均（exponentially weighted moving average）。给定超参数 :math:`0 \leq \gamma < 1` ，当前时间步 :math:`t` 的变量 :math:`y_t` 是上一时间步 :math:`t-1` 的变量 :math:`y_{t-1}` 和当前时间步另一变量 :math:`x_t` 的线性组合：
+
+.. math::
+
+    y_t = \gamma y_{t-1} + (1-\gamma) x_t.
+
+- 我们可以对 :math:`y_t` 展开：
+
+.. math::
+
+   \begin{aligned}
+   y_t  &= (1-\gamma) x_t + \gamma y_{t-1}\\
+   &= (1-\gamma)x_t + (1-\gamma) \cdot \gamma x_{t-1} + \gamma^2y_{t-2}\\
+   &= (1-\gamma)x_t + (1-\gamma) \cdot \gamma x_{t-1} + (1-\gamma) \cdot \gamma^2x_{t-2} + \gamma^3y_{t-3}\\
+   &\ldots
+   \end{aligned}
+
+- 令 :math:`n = 1/(1-\gamma)` ，那么  :math:`\left(1-1/n\right)^n = \gamma^{1/(1-\gamma)}` 。因为
+
+.. math::
+
+    \lim_{n \rightarrow \infty}  \left(1-\frac{1}{n}\right)^n = \exp(-1) \approx 0.3679,
+
+- 所以当 :math:`\gamma \rightarrow 1` 时， :math:`\gamma^{1/(1-\gamma)}=\exp(-1)` ，如 :math:`0.95^{20} \approx \exp(-1)` 。如果把 :math:`\exp(-1)` 当作一个比较小的数，我们可以在近似中忽略所有含 :math:`\gamma^{1/(1-\gamma)}` 和比 :math:`\gamma^{1/(1-\gamma)}` 更高阶的系数的项。例如，当 :math:`\gamma=0.95` 时，
+
+.. math::
+
+    y_t \approx 0.05 \sum_{i=0}^{19} 0.95^i x_{t-i}.
+
+- 因此，在实际中，我们常常将 :math:`y_t` 看作是对最近 :math:`1/(1-\gamma)` 个时间步的 :math:`x_t` 值的加权平均。例如，当 :math:`\gamma = 0.95` 时， :math:`y_t` 可以被看作对最近20个时间步的 :math:`x_t` 值的加权平均；当 :math:`\gamma = 0.9` 时， :math:`y_t` 可以看作是对最近10个时间步的 :math:`x_t` 值的加权平均。而且，离当前时间步 :math:`t` 越近的 :math:`x_t` 值获得的权重越大（越接近1）。
+
+由指数加权移动平均理解动量法
+******************************************************
+
+- 现在，我们对动量法的速度变量做变形：
+
+.. math::
+
+    \boldsymbol{v}_t \leftarrow \gamma \boldsymbol{v}_{t-1} + (1 - \gamma) \left(\frac{\eta_t}{1 - \gamma} \boldsymbol{g}_t\right).
+
+- 由指数加权移动平均的形式可得，速度变量 :math:`\boldsymbol{v}_t` 实际上对序列 :math:`\{\eta_{t-i}\boldsymbol{g}_{t-i} /(1-\gamma):i=0,\ldots,1/(1-\gamma)-1\}` 做了指数加权移动平均。换句话说，相比于小批量随机梯度下降，动量法在每个时间步的自变量更新量近似于将最近 :math:`1/(1-\gamma)` 个时间步的普通更新量（即学习率乘以梯度）做了指数加权移动平均后再除以 :math:`1-\gamma`。所以，在动量法中，自变量在各个方向上的移动幅度不仅取决当前梯度，还取决于过去的各个梯度在各个方向上是否一致。在本节之前示例的优化问题中，所有梯度在水平方向上为正（向右），而在竖直方向上时正（向上）时负（向下）。这样，我们就可以使用较大的学习率，从而使自变量向最优解更快移动。
