@@ -92,6 +92,31 @@ RNN模型定义
     :alt:
     :align: center
 
+- **记忆细胞** 我们通过元素值域在 :math:`[0, 1]` 的输入门、遗忘门和输出门来控制隐藏状态中信息的流动，这一般也是通过使用按元素乘法（符号为 :math:`\odot` ）来实现的。当前时间步记忆细胞 :math:`\boldsymbol{C}_t \in \mathbb{R}^{n \times h}` 的计算组合了上一时间步记忆细胞和当前时间步候选记忆细胞的信息，并通过遗忘门和输入门来控制信息的流动：
+
+.. math::
+
+	\boldsymbol{C}_t = \boldsymbol{F}_t \odot \boldsymbol{C}_{t-1} + \boldsymbol{I}_t \odot \tilde{\boldsymbol{C}}_t
+
+
+- 如下图所示，遗忘门控制上一时间步的记忆细胞 :math:`\boldsymbol{C}_{t-1}` 中的信息是否传递到当前时间步，而输入门则控制当前时间步的输入 :math:`\boldsymbol{X}_t` 通过候选记忆细胞 :math:`\tilde{\boldsymbol{C}}_t` 如何流入当前时间步的记忆细胞。如果遗忘门一直近似1且输入门一直近似0，过去的记忆细胞将一直通过时间保存并传递至当前时间步。这个设计可以应对循环神经网络中的梯度衰减问题，并更好地捕捉时间序列中时间步距离较大的依赖关系。
+
+.. image:: ./rnn.assets/lstm_cell_20200329090305.png
+    :alt:
+    :align: center
+
+- **隐藏状态** 通过输出门来控制从记忆细胞到隐藏状态 :math:`\boldsymbol{H}_t \in \mathbb{R}^{n \times h}` 的信息的流动：
+
+.. math::
+
+	\boldsymbol{H}_t = \boldsymbol{O}_t \odot \text{tanh}(\boldsymbol{C}_t)
+
+- 这里的tanh函数确保隐藏状态元素值在-1到1之间。需要注意的是，当输出门近似1时，记忆细胞信息将传递到隐藏状态供输出层使用；当输出门近似0时，记忆细胞信息只自己保留。下图展示了长短期记忆中隐藏状态的计算。
+
+.. image:: ./rnn.assets/lstm_hidden_20200329090615.png
+    :alt:
+    :align: center
+
 门控循环单元GRU
 ######################
 
