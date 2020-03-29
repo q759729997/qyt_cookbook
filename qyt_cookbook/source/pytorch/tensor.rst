@@ -142,16 +142,31 @@ svd                               奇异值分解
 .. code:: python
 
    x = torch.tensor([[1, 2, 3], [4, 5, 6]])
-
    print(x.shape)  # torch.Size([2, 3])
-
    print(x.sum(dim=0, keepdim=True))  # tensor([[5, 7, 9]])
-
    print(x.sum(dim=0, keepdim=True).shape)  # torch.Size([1, 3])
-
    print(x.sum(dim=1, keepdim=True))  # tensor([[ 6], [15]])
-
    print(x.sum(dim=1, keepdim=True).shape)  # torch.Size([2, 1])
+
+点乘与矩阵乘
+***************************
+
+- **矩阵乘** ，行乘列求和作为输出元素, (1, 2)矩阵乘(2, 3)变为(1, 3)
+- **点乘** ，输入tensor形状一致，对应位置的元素相乘
+
+.. code-block:: python
+
+    # 矩阵乘是矩阵的运算，点乘是矩阵中元素的运算
+    x = torch.eye(1, 2)
+    print(x)  # tensor([[1., 0.]])
+    y = torch.ones(2, 3)
+    print(y)
+    # 矩阵乘，行乘列求和作为输出元素, (1, 2)矩阵乘(2, 3)变为(1, 3)
+    print(torch.matmul(x, y))  # tensor([[1., 1., 1.]])
+    y = torch.tensor([2, 2])
+    print(y)  # tensor([2, 2])
+    # 点乘，输入tensor形状一致，对应位置的元素相乘
+    print(x * y)  # tensor([[2., 0.]])
 
 索引操作
 ######################

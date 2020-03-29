@@ -18,6 +18,7 @@ class TestTensorCalculate(unittest.TestCase):
         test_broadcasting - 广播机制测试.
         test_keepdim - 按维度求和.
         test_max - max函数.
+        test_product_and_dot_product - 点乘与矩阵乘.
     """
     @unittest.skip('debug')
     def test_add(self):
@@ -66,7 +67,7 @@ class TestTensorCalculate(unittest.TestCase):
         print(x.sum(dim=1, keepdim=True))  # tensor([[ 6], [15]])
         print(x.sum(dim=1, keepdim=True).shape)  # torch.Size([2, 1])
 
-    # @unittest.skip('debug')
+    @unittest.skip('debug')
     def test_max(self):
         """max函数.
         """
@@ -75,6 +76,23 @@ class TestTensorCalculate(unittest.TestCase):
         print(x)
         print(torch.max(x))  # tensor(1)
         print(torch.max(x, torch.tensor(0)))  # tensor([0, 0, 1])
+
+    # @unittest.skip('debug')
+    def test_product_and_dot_product(self):
+        """点乘与矩阵乘.
+        """
+        print('{} test_product_and_dot_product {}'.format('-'*15, '-'*15))
+        # 矩阵乘是矩阵的运算，点乘是矩阵中元素的运算
+        x = torch.eye(1, 2)
+        print(x)  # tensor([[1., 0.]])
+        y = torch.ones(2, 3)
+        print(y)
+        # 矩阵乘，行*列求和作为输出元素, (1, 2)矩阵乘(2, 3)变为(1, 3)
+        print(torch.matmul(x, y))  # tensor([[1., 1., 1.]])
+        y = torch.tensor([2, 2])
+        print(y)  # tensor([2, 2])
+        # 点乘，输入tensor形状一致，对应位置的元素相乘
+        print(x * y)  # tensor([[2., 0.]])
 
 
 if __name__ == "__main__":
