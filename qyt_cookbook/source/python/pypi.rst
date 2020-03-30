@@ -22,6 +22,13 @@ Python库收藏
 
 - 时间操作： \ https://github.com/crsmithdev/arrow
 
+文本处理
+***************************
+
+- 字符串模糊匹配： https://github.com/seatgeek/fuzzywuzzy
+- 倒排索引： https://github.com/willf/inverted_index
+- SQLLITE倒排： https://github.com/lsq960124/Inverted-index-BM25
+
 自然语言处理
 ***************************
 
@@ -31,6 +38,11 @@ Python库收藏
 ***************************
 
 - web搜索封装： \ https://github.com/fossasia/query-server
+
+UI界面
+***************************
+
+- 开源UI框架： https://github.com/kivy/kivy
 
 pip安装报错解决
 ######################
