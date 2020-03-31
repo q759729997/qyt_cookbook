@@ -8,3 +8,4 @@
    :maxdepth: 2
 
    语言模型 </nlp/language_model>
+   词嵌入 </nlp/word_embedding>
