@@ -38,6 +38,7 @@ Word2vec
 
 - Word2Vec-知其然知其所以然: https://www.zybuluo.com/Dounm/note/591752
 - word2vec工具的提出正是为了解决“由于任何两个不同词的one-hot向量的余弦相似度都为0，多个不同词之间的相似度难以通过one-hot向量准确地体现出来”这个问题。它将每个词表示成一个定长的向量，并使得这些向量能较好地表达不同词之间的相似和类比关系。word2vec工具包含了两个模型，即跳字模型（skip-gram）和连续词袋模型（continuous bag of words，CBOW）。
+- 参考文献：Mikolov, T., Sutskever, I., Chen, K., Corrado, G. S., & Dean, J. (2013). Distributed representations of words and phrases and their compositionality. In Advances in neural information processing systems (pp. 3111-3119).
 
 跳字模型
 ***************************
@@ -257,3 +258,18 @@ word2vec的实现
     \sum_{w \in \mathcal{V}} P(w \mid w_c) = 1.
 
 - 此外，由于 :math:`L(w_o)-1` 的数量级为 :math:`\mathcal{O}(\text{log}_2|\mathcal{V}|)` ，当词典 :math:`\mathcal{V}` 很大时，层序softmax在训练中每一步的梯度计算开销相较未使用近似训练时大幅降低。
+
+子词嵌入（fastText）
+######################
+
+- fastText提出了子词嵌入方法。它在word2vec中的跳字模型的基础上，将中心词向量表示成单词的子词向量之和。
+- 子词嵌入利用构词上的规律，通常可以提升生僻词表示的质量。
+- 在fastText中，每个中心词被表示成子词的集合。下面我们用单词“where”作为例子来了解子词是如何产生的。首先，我们在单词的首尾分别添加特殊字符“<”和“>”以区分作为前后缀的子词。然后，将单词当成一个由字符构成的序列来提取 :math:`n` 元语法。例如，当 :math:`n=3` 时，我们得到所有长度为3的子词：“<wh>”“whe”“her”“ere”“<re>”以及特殊子词“<where>”。
+- 在fastText中，对于一个词 :math:`w` ，我们将它所有长度在 :math:`3 \sim 6` 的子词和特殊子词的并集记为 :math:`\mathcal{G}_w` 。那么词典则是所有词的子词集合的并集。假设词典中子词 :math:`g` 的向量为 :math:`\boldsymbol{z}_g` ，那么跳字模型中词 :math:`w` 的作为中心词的向量 :math:`\boldsymbol{v}_w` 则表示成
+
+.. math::
+
+    \boldsymbol{v}_w = \sum_{g\in\mathcal{G}_w} \boldsymbol{z}_g.
+
+- fastText的其余部分同跳字模型一致，不在此重复。可以看到，与跳字模型相比，fastText中词典规模更大，造成模型参数更多，同时一个词的向量需要对所有子词向量求和，继而导致计算复杂度更高。但与此同时，较生僻的复杂单词，甚至是词典中没有的单词，可能会从同它结构类似的其他词那里获取更好的词向量表示。
+- 参考文献：Bojanowski, P., Grave, E., Joulin, A., & Mikolov, T. (2016). Enriching word vectors with subword information. arXiv preprint arXiv:1607.04606.
