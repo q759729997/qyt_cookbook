@@ -168,6 +168,17 @@ svd                               奇异值分解
     # 点乘，输入tensor形状一致，对应位置的元素相乘
     print(x * y)  # tensor([[2., 0.]])
 
+小批量乘法
+***************************
+
+- 我们可以使用小批量乘法运算`bmm`对两个小批量中的矩阵一一做乘法。假设第一个小批量中包含 :math:`n` 个形状为 :math:`a\times b` 的矩阵 :math:`\boldsymbol{X}_1, \ldots, \boldsymbol{X}_n` ，第二个小批量中包含 :math:`n` 个形状为 :math:`b\times c` 的矩阵 :math:`\boldsymbol{Y}_1, \ldots, \boldsymbol{Y}_n` 。这两个小批量的矩阵乘法输出为 :math:`n` 个形状为 :math:`a\times c` 的矩阵 :math:`\boldsymbol{X}_1\boldsymbol{Y}_1, \ldots, \boldsymbol{X}_n\boldsymbol{Y}_n` 。因此，给定两个形状分别为( :math:`n` ,  :math:`a` ,  :math:`b` )和( :math:`n` ,  :math:`b` ,  :math:`c` )的`Tensor`，小批量乘法输出的形状为( :math:`n` ,  :math:`a` ,  :math:`c` )。
+
+.. code-block:: python
+
+    x = torch.ones(8, 2, 3)
+    y = torch.zeros(8, 3, 4)
+    print(torch.bmm(x, y).shape)  # torch.Size([8, 2, 4])
+
 索引操作
 ######################
 

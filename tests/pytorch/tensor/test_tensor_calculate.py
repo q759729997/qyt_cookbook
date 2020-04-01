@@ -19,6 +19,7 @@ class TestTensorCalculate(unittest.TestCase):
         test_keepdim - 按维度求和.
         test_max - max函数.
         test_product_and_dot_product - 点乘与矩阵乘.
+        test_batchmm - 小批量乘法.
     """
     @unittest.skip('debug')
     def test_add(self):
@@ -77,7 +78,7 @@ class TestTensorCalculate(unittest.TestCase):
         print(torch.max(x))  # tensor(1)
         print(torch.max(x, torch.tensor(0)))  # tensor([0, 0, 1])
 
-    # @unittest.skip('debug')
+    @unittest.skip('debug')
     def test_product_and_dot_product(self):
         """点乘与矩阵乘.
         """
@@ -93,6 +94,15 @@ class TestTensorCalculate(unittest.TestCase):
         print(y)  # tensor([2, 2])
         # 点乘，输入tensor形状一致，对应位置的元素相乘
         print(x * y)  # tensor([[2., 0.]])
+
+    # @unittest.skip('debug')
+    def test_batchmm(self):
+        """小批量乘法.
+        """
+        print('{} test_batchmm {}'.format('-'*15, '-'*15))
+        x = torch.ones(8, 2, 3)
+        y = torch.zeros(8, 3, 4)
+        print(torch.bmm(x, y).shape)  # torch.Size([8, 2, 4])
 
 
 if __name__ == "__main__":

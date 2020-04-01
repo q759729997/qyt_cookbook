@@ -4,6 +4,35 @@
 
 - 词嵌入（word embedding）：词向量是用来表示词的向量，也可被认为是词的特征向量或表征。把词映射为实数域向量的技术也叫词嵌入。
 
+嵌入层
+######################
+
+- 获取词嵌入的层称为嵌入层，在PyTorch中可以通过创建 ``nn.Embedding`` 实例得到。嵌入层的权重是一个矩阵，其行数为词典大小（num_embeddings），列数为每个词向量的维度（embedding_dim）。我们设词典大小为10，词向量的维度为4。
+- 输入形状： ``Input: (*)`` 输出形状： ``Output: (*, embedding_dim)``  输入类型：  ``LongTensor``
+- 嵌入层的输入为词的索引。输入一个词的索引 :math:`i` ，嵌入层返回权重矩阵的第 :math:`i` 行作为它的词向量。假设形状为(2, 3)的索引输入进嵌入层，由于词向量的维度为4，我们得到形状为(2, 3, 4)的词向量。
+
+.. code-block:: python
+
+    vocabulary_size = 20
+    embed = nn.Embedding(num_embeddings=vocabulary_size, embedding_dim=4)
+    print(embed.weight.shape)  # torch.Size([20, 4])
+    x = torch.LongTensor([[1, 2, 4, 5], [4, 3, 2, 9]])
+    print(x.shape)  # torch.Size([2, 4])
+    y = embed(x)
+    print(y.shape)  # torch.Size([2, 4, 4])
+    print(y)
+    """
+    tensor([[[ 2.0844,  0.4803, -0.8572,  0.5418],
+        [ 0.9904,  1.0953,  0.4437, -0.2486],
+        [-0.5855, -0.3845,  0.9660,  2.9621],
+        [ 0.7133, -0.2607, -0.3606,  0.9859]],
+
+    [[-0.5855, -0.3845,  0.9660,  2.9621],
+        [ 0.8078,  0.9533,  0.1714, -0.1832],
+        [ 0.9904,  1.0953,  0.4437, -0.2486],
+        [ 0.7199, -0.0607,  0.1369, -1.6945]]], grad_fn=<EmbeddingBackward>)
+    """
+
 Word2vec
 ######################
 
@@ -45,7 +74,7 @@ Word2vec
 
 
 训练跳字模型
-========================
+***************************
 
 - 跳字模型的参数是每个词所对应的中心词向量和背景词向量。训练中我们通过最大化似然函数来学习模型参数，即最大似然估计。这等价于最小化以下损失函数：
 
@@ -105,7 +134,7 @@ Word2vec
     \prod_{t=1}^{T}  P(w^{(t)} \mid  w^{(t-m)}, \ldots,  w^{(t-1)},  w^{(t+1)}, \ldots,  w^{(t+m)}).
 
 训练连续词袋模型
-========================
+***************************
 
 - 训练连续词袋模型同训练跳字模型基本一致。连续词袋模型的最大似然估计等价于最小化损失函数
 
@@ -126,6 +155,25 @@ Word2vec
     \frac{\partial \log\, P(w_c \mid \mathcal{W}_o)}{\partial \boldsymbol{v}_{o_i}} = \frac{1}{2m} \left(\boldsymbol{u}_c - \sum_{j \in \mathcal{V}} \frac{\exp(\boldsymbol{u}_j^\top \bar{\boldsymbol{v}}_o)\boldsymbol{u}_j}{ \sum_{i \in \mathcal{V}} \text{exp}(\boldsymbol{u}_i^\top \bar{\boldsymbol{v}}_o)} \right) = \frac{1}{2m}\left(\boldsymbol{u}_c - \sum_{j \in \mathcal{V}} P(w_j \mid \mathcal{W}_o) \boldsymbol{u}_j \right).
 
 - 有关其他词向量的梯度同理可得。同跳字模型不一样的一点在于，我们一般使用连续词袋模型的背景词向量作为词的表征向量。
+
+word2vec的实现
+***************************
+
+- word2vec的实现: https://tangshusen.me/Dive-into-DL-PyTorch/#/chapter10_natural-language-processing/10.3_word2vec-pytorch
+- **掩码变量** 我们可以通过掩码变量指定小批量中参与损失函数计算的部分预测值和标签：当掩码为1时，相应位置的预测值和标签将参与损失函数的计算；当掩码为0时，相应位置的预测值和标签则不参与损失函数的计算。掩码变量可用于避免填充项对损失函数计算的影响。
+- 掩码变量用途：可以将长度不同的样本填充至长度相同的小批量，并通过掩码变量区分非填充和填充，然后只令非填充参与损失函数的计算。
+
+二次采样
+========================
+
+- 二次采样（subsampling）:文本数据中一般会出现一些高频词，如英文中的“the”“a”和“in”。通常来说，在一个背景窗口中，一个词（如“chip”）和较低频词（如“microprocessor”）同时出现比和较高频词（如“the”）同时出现对训练词嵌入模型更有益。因此，训练词嵌入模型时可以对词进行二次采样。
+- 具体来说，数据集中每个被索引词 :math:`w_i` 将有一定概率被丢弃，该丢弃概率为
+
+.. math:: 
+
+    P(w_i) = \max\left(1 - \sqrt{\frac{t}{f(w_i)}}, 0\right),
+
+- 其中  :math:`f(w_i)`  是数据集中词 :math:`w_i` 的个数与总词数之比，常数 :math:`t` 是一个超参数（实验中设为 :math:`10^{-4}` ）。可见，只有当 :math:`f(w_i) > t` 时，我们才有可能在二次采样中丢弃词 :math:`w_i` ，并且越高频的词被丢弃的概率越大。
 
 近似训练
 ######################
