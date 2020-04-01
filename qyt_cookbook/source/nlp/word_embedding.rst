@@ -273,3 +273,25 @@ word2vec的实现
 
 - fastText的其余部分同跳字模型一致，不在此重复。可以看到，与跳字模型相比，fastText中词典规模更大，造成模型参数更多，同时一个词的向量需要对所有子词向量求和，继而导致计算复杂度更高。但与此同时，较生僻的复杂单词，甚至是词典中没有的单词，可能会从同它结构类似的其他词那里获取更好的词向量表示。
 - 参考文献：Bojanowski, P., Grave, E., Joulin, A., & Mikolov, T. (2016). Enriching word vectors with subword information. arXiv preprint arXiv:1607.04606.
+
+GloVe模型
+######################
+
+- GloVe模型的命名取“全局向量”（Global Vectors）之意。
+- 词典中往往有大量生僻词，它们在数据集中出现的次数极少。而有关大量生僻词的条件概率分布在交叉熵损失函数中的最终预测往往并不准确。
+- 在有些情况下，交叉熵损失函数有劣势。GloVe模型采用了平方损失，并通过词向量拟合预先基于整个数据集计算得到的全局统计信息。任意词的中心词向量和背景词向量在GloVe模型中是等价的。
+- 作为在word2vec之后提出的词嵌入模型，GloVe模型采用了平方损失，并基于该损失对跳字模型做了3点改动：
+
+	- 1. 使用非概率分布的变量 :math:`p'_{ij}=x_{ij}` 和 :math:`q'_{ij}=\exp(\boldsymbol{u}_j^\top \boldsymbol{v}_i)` ，并对它们取对数。因此，平方损失项是 :math:`\left(\log\,p'_{ij} - \log\,q'_{ij}\right)^2 = \left(\boldsymbol{u}_j^\top \boldsymbol{v}_i - \log\,x_{ij}\right)^2` 。
+	- 2. 为每个词 :math:`w_i` 增加两个为标量的模型参数：中心词偏差项 :math:`b_i` 和背景词偏差项 :math:`c_i` 。
+	- 3. 将每个损失项的权重替换成函数 :math:`h(x_{ij})` 。权重函数 :math:`h(x)` 是值域在 :math:`[0,1]` 的单调递增函数。
+
+- 如此一来，GloVe模型的目标是最小化损失函数
+
+.. math::
+
+    \sum_{i\in\mathcal{V}} \sum_{j\in\mathcal{V}} h(x_{ij}) \left(\boldsymbol{u}_j^\top \boldsymbol{v}_i + b_i + c_j - \log\,x_{ij}\right)^2.
+
+- 其中权重函数 :math:`h(x)` 的一个建议选择是：当 :math:`x < c` 时（如 :math:`c = 100` ），令 :math:`h(x) = (x/c)^\alpha` （如 :math:`\alpha = 0.75` ），反之令 :math:`h(x) = 1` 。因为 :math:`h(0)=0` ，所以对于 :math:`x_{ij}=0` 的平方损失项可以直接忽略。当使用小批量随机梯度下降来训练时，每个时间步我们随机采样小批量非零 :math:`x_{ij}` ，然后计算梯度来迭代模型参数。这些非零 :math:`x_{ij}` 是预先基于整个数据集计算得到的，包含了数据集的全局统计信息。因此，GloVe模型的命名取“全局向量”（Global Vectors）之意。
+- 需要强调的是，如果词 :math:`w_i` 出现在词 :math:`w_j` 的背景窗口里，那么词 :math:`w_j` 也会出现在词 :math:`w_i` 的背景窗口里。也就是说， :math:`x_{ij}=x_{ji}` 。不同于word2vec中拟合的是非对称的条件概率 :math:`p_{ij}` ，GloVe模型拟合的是对称的 :math:`\log\, x_{ij}` 。因此，任意词的中心词向量和背景词向量在GloVe模型中是等价的。但由于初始化值的不同，同一个词最终学习到的两组词向量可能不同。当学习得到所有词向量以后，GloVe模型使用中心词向量与背景词向量之和作为该词的最终词向量。
+- 参考文献：Pennington, J., Socher, R., & Manning, C. (2014). Glove: Global vectors for word representation. In Proceedings of the 2014 conference on empirical methods in natural language processing (EMNLP) (pp. 1532-1543).
