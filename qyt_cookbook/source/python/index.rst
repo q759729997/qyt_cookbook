@@ -7,6 +7,7 @@ Python手册
 .. toctree::
    :maxdepth: 2
 
+   工具模块 </python/Pythontools>
    Python服务器 </python/server>
    性能测试 </python/performance>
    module详解 </python/module>
