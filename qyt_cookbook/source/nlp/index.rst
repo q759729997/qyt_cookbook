@@ -11,4 +11,5 @@
    词嵌入 </nlp/word_embedding>
    torchtext工具包 </nlp/torchtext>
    NLP数据集 </nlp/dataset>
+   文本分类 </nlp/text_classification>
    参考框架 </nlp/framework>
