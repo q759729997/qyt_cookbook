@@ -14,5 +14,6 @@ Pytorch手册
    数据读取与处理 </pytorch/dataLoader>
    卷积神经网络 </pytorch/cnn>
    循环神经网络 </pytorch/rnn>
+   注意力机制 </pytorch/attention>
    经典卷积模型 </pytorch/cnnModels>
    分类模型 </pytorch/classification>
