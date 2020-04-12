@@ -22,6 +22,7 @@ if __name__ == "__main__":
     original_texts = deepcopy(texts)
     texts = list()
     for text in original_texts:
+        text = text.replace('&lt;', '<').replace('&gt;', '>')
         if text.startswith('$$') and text.endswith('$$'):
             texts.append('$$')
             texts.append(text.strip('$$'))
