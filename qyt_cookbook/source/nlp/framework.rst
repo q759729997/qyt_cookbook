@@ -17,3 +17,8 @@ Pytorch-NLP工具包
 ######################
 
 - PyTorch-based knowledge distillation toolkit： https://github.com/airaria/TextBrewer
+
+实体链指
+######################
+
+- CCKS&百度 2019中文短文本的实体链指 第一名解决方案： https://github.com/panchunguang/ccks_baidu_entity_link

@@ -171,3 +171,44 @@ dockerfile
    # 压缩镜像：tar -czvf docker_test.tar.gz docker_test.tar
    # 解压镜像：tar -xzvf docker_test.tar.gz
    # 导入镜像：docker load -i docker_test.tar
+
+MySQL镜像
+######################
+
+- 下载镜像： ``docker pull mysql``
+- 创建，并配置 ``conf.d`` ,创建目录： ``mysql`` 与 ``mysql-files``
+
+.. code:: shell
+
+    [mysqld]
+    # 表名不区分大小写
+    lower_case_table_names=1 
+    #server-id=1
+    datadir=/var/lib/mysql
+    #socket=/var/lib/mysql/mysqlx.sock
+    #symbolic-links=0
+    # sql_mode=NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES 
+    [mysqld_safe]
+    log-error=/var/log/mysqld.log
+    pid-file=/var/run/mysqld/mysqld.pid
+
+- 容器启动：
+
+.. code:: shell
+
+    docker run -p 11100:3306 --name mysql_db \
+    -v /root/mysql:/etc/mysql \
+    -v /root/mysql/logs:/var/log/mysql \
+    -v /root/mysql/mysql-files:/var/lib/mysql-files/ \
+    -v /root/mysql/data:/var/lib/mysql \
+    -e MYSQL_ROOT_PASSWORD=kd123456 \
+    -d --privileged mysql
+
+- 修改root访问权限，使其允许外网访问：
+
+.. code:: shell
+
+    docker exec -it mysql_db /bin/sh  # 进入docker镜像
+    SHOW DATABASES;  USE XX; SHOW TABLES;
+    mysql -uroot -pkd123456
+    ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY 'kd123456';
