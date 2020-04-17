@@ -175,6 +175,7 @@ dockerfile
 MySQL镜像
 ######################
 
+- python使用mysql： https://www.liaoxuefeng.com/wiki/1016959663602400/1017802264972000
 - 下载镜像： ``docker pull mysql``
 - 创建，并配置 ``conf.d`` ,创建目录： ``mysql`` 与 ``mysql-files``
 
@@ -202,7 +203,8 @@ MySQL镜像
     -v /root/mysql/mysql-files:/var/lib/mysql-files/ \
     -v /root/mysql/data:/var/lib/mysql \
     -e MYSQL_ROOT_PASSWORD=kd123456 \
-    -d --privileged mysql
+    --privileged \
+    -d mysql
 
 - 修改root访问权限，使其允许外网访问：
 
@@ -212,3 +214,27 @@ MySQL镜像
     SHOW DATABASES;  USE XX; SHOW TABLES;
     mysql -uroot -pkd123456
     ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY 'kd123456';
+
+tmocat镜像
+######################
+
+- tomcat安装： https://www.cnblogs.com/skyflask/p/9023749.html
+- 下载镜像： ``docker pull tomcat:jdk8-corretto``
+- 其他版本： ``docker pull tomcat:7.0-jdk8-openjdk``
+- 创建目录： ``tomcat/webapps`` ，webapps中放入Tomact示例文件，则可以正常访问，否则会有404问题。
+- 容器启动：
+
+.. code:: shell
+
+    docker run --name kd_tomcat \
+    -p 11110:8080 \
+    -v /root/tomcat/webapps:/usr/local/tomcat/webapps/ \
+    --privileged \
+    -d tomcat:jdk8-corretto
+
+- 启动后测试：
+
+.. code:: shell
+
+    http://39.104.161.233:11110
+    docker exec -it kd_tomcat /bin/sh  # 进入docker镜像

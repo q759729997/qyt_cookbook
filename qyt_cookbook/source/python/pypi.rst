@@ -44,6 +44,11 @@ UI界面
 
 - 开源UI框架： https://github.com/kivy/kivy
 
+数据库操作
+***************************
+
+- ORM和MySQL数据库的操作： https://www.liaoxuefeng.com/wiki/1016959663602400/1017803857459008
+
 pip安装报错解决
 ######################
 
