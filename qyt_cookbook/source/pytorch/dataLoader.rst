@@ -97,8 +97,19 @@ Label Description 描述
 CIFAR10
 ***************************
 
--  数据集由10个类中的60000个32x32彩色图像组成，每个类有6000个图像。
-   有50000个训练图像和10000个测试图像。
+-  数据集由10个类中的60000个32x32彩色图像组成，每个类有6000个图像。有50000个训练图像和10000个测试图像。
+- 数据集介绍： https://www.cs.toronto.edu/~kriz/cifar.html
+- 与 MNIST 数据集中目比， CIFAR-10 具有以下不同点：
+
+   - CIFAR-10 是 3 通道的彩色 RGB 图像，而 MNIST 是灰度图像。
+   - CIFAR-10 的图片尺寸为 32×32， 而 MNIST 的图片尺寸为 28×28，比 MNIST 稍大。
+   - 相比于手写字符， CIFAR-10 含有的是现实世界中真实的物体，不仅噪声很大，而且物体的比例、 特征都不尽相同，这为识别带来很大困难。 直接的线性模型如 Softmax 在 CIFAR-10 上表现得很差。
+
+- CIFAR-10 是由 Hinton 的学生 Alex Krizhevsky 和 Ilya Sutskever 整理的一个用于识别普适物体的小型数据集。一共包含 10 个类别的 RGB 彩色图 片：飞机（ a叩lane ）、汽车（ automobile ）、鸟类（ bird ）、猫（ cat ）、鹿（ deer ）、狗（ dog ）、蛙类（ frog ）、马（ horse ）、船（ ship ）和卡车（ truck ）。图片的尺寸为 32×32 ，数据集中一共有 50000 张训练圄片和 10000 张测试图片。 CIFAR-10 的图片样例如图所示。
+
+.. figure:: ./dataLoader.assets/CIFAR10_20200419165431.png
+   :alt: 
+   :align: center
 
 .. code:: python
 
