@@ -34,6 +34,7 @@ torchvision
 常用图片变换
 ***************************
 
+- 可参考 ``图像增广`` 章节。
 - 图片转tensor: ``ToTensor`` ，图片大小调整: ``Resize`` 。
 
 .. code:: python

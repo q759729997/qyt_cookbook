@@ -101,6 +101,12 @@ http://docutils.sf.net/ 孤立的网址会自动生成链接
     print("")
     print("有行号和高亮")
 
+.. code-block:: python
+
+    print("专业的代码块")
+    print("")
+    print("有行号和高亮")
+
 .. code-block:: shell
 
 	docker save -o 镜像名.tar 镜像名  # 导出镜像

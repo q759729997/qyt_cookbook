@@ -16,3 +16,4 @@
    torchtext工具包 </nlp/torchtext>
    NLP数据集 </nlp/dataset>
    参考框架 </nlp/framework>
+   AI会议 </nlp/ai_conference>

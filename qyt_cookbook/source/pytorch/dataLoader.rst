@@ -100,6 +100,10 @@ CIFAR10
 -  数据集由10个类中的60000个32x32彩色图像组成，每个类有6000个图像。
    有50000个训练图像和10000个测试图像。
 
+.. code:: python
+
+    torchvision.datasets.CIFAR10(train=True, root="~/Datasets/CIFAR", download=True)
+
 CIFAR100
 ***************************
 
