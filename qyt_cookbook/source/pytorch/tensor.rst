@@ -332,6 +332,24 @@ svd                               奇异值分解
      [0., 0., 0.]]])
     """
 
+维度交换
+######################
+
+- ``permute`` 维度交换。
+
+.. code:: python
+
+    img = torch.ones(3, 32, 32)
+    print(img.shape)  # torch.Size([3, 32, 32])
+    img = img.permute(1, 2, 0)
+    print(img.shape)  # torch.Size([32, 32, 3])
+
+    >>> x = torch.randn(2, 3, 5)
+    >>> x.size()
+    torch.Size([2, 3, 5])
+    >>> x.permute(2, 0, 1).size()
+    torch.Size([5, 2, 3])
+
 Tensor与Python数据转换
 ######################
 

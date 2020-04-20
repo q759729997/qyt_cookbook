@@ -13,4 +13,5 @@ Python手册
    module详解 </python/module>
    pypi相关 </python/pypi>
    单元测试 </python/unittest>
+   绘图 </python/matplotlib>
    常见问题汇总 </python/problems>

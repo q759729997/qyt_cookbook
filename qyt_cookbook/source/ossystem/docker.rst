@@ -197,11 +197,11 @@ MySQL镜像
 
 .. code:: shell
 
-    docker run -p 11100:3306 --name mysql_db \
-    -v /root/mysql:/etc/mysql \
-    -v /root/mysql/logs:/var/log/mysql \
-    -v /root/mysql/mysql-files:/var/lib/mysql-files/ \
-    -v /root/mysql/data:/var/lib/mysql \
+    docker run -p 3306:3306 --name mysql_db \
+    -v /media/sf_vbshare/mysql:/etc/mysql \
+    -v /media/sf_vbshare/mysql/logs:/var/log/mysql \
+    -v /media/sf_vbshare/mysql/mysql-files:/var/lib/mysql-files/ \
+    -v /media/sf_vbshare/mysql/data:/var/lib/mysql \
     -e MYSQL_ROOT_PASSWORD=kd123456 \
     --privileged \
     -d mysql
