@@ -34,31 +34,31 @@ RNN模型定义
 .. code-block:: python
 
     vocab_size = 200
-	rnn_layer = nn.RNN(input_size=vocab_size, hidden_size=10)
-	seq_len = 35
-	batch_size = 8
-	state = None
-	X = torch.rand(seq_len, batch_size, vocab_size)
-	print(X.shape)  # 输入形状为 (seq_len, batch, input_size)；torch.Size([35, 8, 200])
-	Y, state_new = rnn_layer(X, state)
-	print(Y.shape)  # 输出形状为(seq_len, batch, num_directions * hidden_size)；torch.Size([35, 8, 10])
-	print(state_new.shape)  # 隐藏状态h的形状为(num_layers * num_directions, batch, hidden_size);torch.Size([1, 8, 10])
-	print('{} num_layers=3,bidirectional {}'.format('-'*15, '-'*15))
-	rnn_layer = nn.RNN(input_size=vocab_size, hidden_size=10, num_layers=3, bidirectional=True)
-	state = None
-	X = torch.rand(seq_len, batch_size, vocab_size)
-	print(X.shape)  # 输入形状为(seq_len, batch, input_size)；torch.Size([35, 8, 200])
-	Y, state_new = rnn_layer(X, state)
-	print(Y.shape)  # 输出形状为(seq_len, batch, num_directions * hidden_size)；torch.Size([35, 8, 20])
-	print(state_new.shape)  # 隐藏状态h的形状为(num_layers * num_directions, batch, hidden_size)；torch.Size([6, 8, 10])
+    rnn_layer = nn.RNN(input_size=vocab_size, hidden_size=10)
+    seq_len = 35
+    batch_size = 8
+    state = None
+    X = torch.rand(seq_len, batch_size, vocab_size)
+    print(X.shape)  # 输入形状为 (seq_len, batch, input_size)；torch.Size([35, 8, 200])
+    Y, state_new = rnn_layer(X, state)
+    print(Y.shape)  # 输出形状为(seq_len, batch, num_directions * hidden_size)；torch.Size([35, 8, 10])
+    print(state_new.shape)  # 隐藏状态h的形状为(num_layers * num_directions, batch, hidden_size);torch.Size([1, 8, 10])
+    print('{} num_layers=3,bidirectional {}'.format('-'*15, '-'*15))
+    rnn_layer = nn.RNN(input_size=vocab_size, hidden_size=10, num_layers=3, bidirectional=True)
+    state = None
+    X = torch.rand(seq_len, batch_size, vocab_size)
+    print(X.shape)  # 输入形状为(seq_len, batch, input_size)；torch.Size([35, 8, 200])
+    Y, state_new = rnn_layer(X, state)
+    print(Y.shape)  # 输出形状为(seq_len, batch, num_directions * hidden_size)；torch.Size([35, 8, 20])
+    print(state_new.shape)  # 隐藏状态h的形状为(num_layers * num_directions, batch, hidden_size)；torch.Size([6, 8, 10])
 
 - ``nn.RNN`` 重要参数：
 
-	- input_size：输入X的特征数目
-	- hidden_size：隐藏状态h的特征数目
-	- num_layers:RNN层数
-	- batch_first:是否将batch放到第一维。默认输入为(seq_len, batch, input_size)，该参数为真时，输入为(batch, seq_len, input_size)
-	- bidirectional：是否使用双向RNN
+    - input_size：输入X的特征数目
+    - hidden_size：隐藏状态h的特征数目
+    - num_layers:RNN层数
+    - batch_first:是否将batch放到第一维。默认输入为(seq_len, batch, input_size)，该参数为真时，输入为(batch, seq_len, input_size)
+    - bidirectional：是否使用双向RNN
 
 长短期记忆LSTM
 ######################
@@ -70,11 +70,11 @@ RNN模型定义
 
 .. math::
 
-	\begin{aligned}
-	\boldsymbol{I}_t &= \sigma(\boldsymbol{X}_t \boldsymbol{W}_{xi} + \boldsymbol{H}_{t-1} \boldsymbol{W}_{hi} + \boldsymbol{b}_i),\\
-	\boldsymbol{F}_t &= \sigma(\boldsymbol{X}_t \boldsymbol{W}_{xf} + \boldsymbol{H}_{t-1} \boldsymbol{W}_{hf} + \boldsymbol{b}_f),\\
-	\boldsymbol{O}_t &= \sigma(\boldsymbol{X}_t \boldsymbol{W}_{xo} + \boldsymbol{H}_{t-1} \boldsymbol{W}_{ho} + \boldsymbol{b}_o),
-	\end{aligned}
+    \begin{aligned}
+    \boldsymbol{I}_t &= \sigma(\boldsymbol{X}_t \boldsymbol{W}_{xi} + \boldsymbol{H}_{t-1} \boldsymbol{W}_{hi} + \boldsymbol{b}_i),\\
+    \boldsymbol{F}_t &= \sigma(\boldsymbol{X}_t \boldsymbol{W}_{xf} + \boldsymbol{H}_{t-1} \boldsymbol{W}_{hf} + \boldsymbol{b}_f),\\
+    \boldsymbol{O}_t &= \sigma(\boldsymbol{X}_t \boldsymbol{W}_{xo} + \boldsymbol{H}_{t-1} \boldsymbol{W}_{ho} + \boldsymbol{b}_o),
+    \end{aligned}
 
 - 其中的 :math:`\boldsymbol{W}_{xi}, \boldsymbol{W}_{xf}, \boldsymbol{W}_{xo} \in \mathbb{R}^{d \times h}` 和 :math:`\boldsymbol{W}_{hi}, \boldsymbol{W}_{hf}, \boldsymbol{W}_{ho} \in \mathbb{R}^{h \times h}` 是权重参数， :math:`\boldsymbol{b}_i, \boldsymbol{b}_f, \boldsymbol{b}_o \in \mathbb{R}^{1 \times h}` 是偏差参数。
 
@@ -86,7 +86,7 @@ RNN模型定义
 
 .. math::
 
-	\tilde{\boldsymbol{C}}_t = \text{tanh}(\boldsymbol{X}_t \boldsymbol{W}_{xc} + \boldsymbol{H}_{t-1} \boldsymbol{W}_{hc} + \boldsymbol{b}_c),
+    \tilde{\boldsymbol{C}}_t = \text{tanh}(\boldsymbol{X}_t \boldsymbol{W}_{xc} + \boldsymbol{H}_{t-1} \boldsymbol{W}_{hc} + \boldsymbol{b}_c),
 
 - 其中 :math:`\boldsymbol{W}_{xc} \in \mathbb{R}^{d \times h}` 和 :math:`\boldsymbol{W}_{hc} \in \mathbb{R}^{h \times h}` 是权重参数， :math:`\boldsymbol{b}_c \in \mathbb{R}^{1 \times h}` 是偏差参数。
 
@@ -98,7 +98,7 @@ RNN模型定义
 
 .. math::
 
-	\boldsymbol{C}_t = \boldsymbol{F}_t \odot \boldsymbol{C}_{t-1} + \boldsymbol{I}_t \odot \tilde{\boldsymbol{C}}_t
+    \boldsymbol{C}_t = \boldsymbol{F}_t \odot \boldsymbol{C}_{t-1} + \boldsymbol{I}_t \odot \tilde{\boldsymbol{C}}_t
 
 
 - 如下图所示，遗忘门控制上一时间步的记忆细胞 :math:`\boldsymbol{C}_{t-1}` 中的信息是否传递到当前时间步，而输入门则控制当前时间步的输入 :math:`\boldsymbol{X}_t` 通过候选记忆细胞 :math:`\tilde{\boldsymbol{C}}_t` 如何流入当前时间步的记忆细胞。如果遗忘门一直近似1且输入门一直近似0，过去的记忆细胞将一直通过时间保存并传递至当前时间步。这个设计可以应对循环神经网络中的梯度衰减问题，并更好地捕捉时间序列中时间步距离较大的依赖关系。
@@ -111,7 +111,7 @@ RNN模型定义
 
 .. math::
 
-	\boldsymbol{H}_t = \boldsymbol{O}_t \odot \text{tanh}(\boldsymbol{C}_t)
+    \boldsymbol{H}_t = \boldsymbol{O}_t \odot \text{tanh}(\boldsymbol{C}_t)
 
 - 这里的tanh函数确保隐藏状态元素值在-1到1之间。需要注意的是，当输出门近似1时，记忆细胞信息将传递到隐藏状态供输出层使用；当输出门近似0时，记忆细胞信息只自己保留。下图展示了长短期记忆中隐藏状态的计算。
 
@@ -147,7 +147,7 @@ RNN模型定义
 
 .. math::
 
-	\boldsymbol{H}_t^{(1)} = \phi(\boldsymbol{X}_t \boldsymbol{W}_{xh}^{(1)} + \boldsymbol{H}_{t-1}^{(1)} \boldsymbol{W}_{hh}^{(1)}  + \boldsymbol{b}_h^{(1)})
+    \boldsymbol{H}_t^{(1)} = \phi(\boldsymbol{X}_t \boldsymbol{W}_{xh}^{(1)} + \boldsymbol{H}_{t-1}^{(1)} \boldsymbol{W}_{hh}^{(1)}  + \boldsymbol{b}_h^{(1)})
 
 
 - 其中权重 :math:`\boldsymbol{W}_{xh}^{(1)} \in \mathbb{R}^{d \times h}` 、 :math:`\boldsymbol{W}_{hh}^{(1)} \in \mathbb{R}^{h \times h}` 和偏差  :math:`\boldsymbol{b}_h^{(1)} \in \mathbb{R}^{1 \times h}` 分别为第1隐藏层的模型参数。
@@ -155,7 +155,7 @@ RNN模型定义
 
 .. math::
 
-	\boldsymbol{H}_t^{(\ell)} = \phi(\boldsymbol{H}_t^{(\ell-1)} \boldsymbol{W}_{xh}^{(\ell)} + \boldsymbol{H}_{t-1}^{(\ell)} \boldsymbol{W}_{hh}^{(\ell)}  + \boldsymbol{b}_h^{(\ell)})
+    \boldsymbol{H}_t^{(\ell)} = \phi(\boldsymbol{H}_t^{(\ell-1)} \boldsymbol{W}_{xh}^{(\ell)} + \boldsymbol{H}_{t-1}^{(\ell)} \boldsymbol{W}_{hh}^{(\ell)}  + \boldsymbol{b}_h^{(\ell)})
 
 
 - 其中权重 :math:`\boldsymbol{W}_{xh}^{(\ell)} \in \mathbb{R}^{h \times h}` 、 :math:`\boldsymbol{W}_{hh}^{(\ell)} \in \mathbb{R}^{h \times h}` 和偏差  :math:`\boldsymbol{b}_h^{(\ell)} \in \mathbb{R}^{1 \times h}` 分别为第 :math:`\ell` 隐藏层的模型参数。
@@ -163,7 +163,7 @@ RNN模型定义
 
 .. math::
 
-	\boldsymbol{O}_t = \boldsymbol{H}_t^{(L)} \boldsymbol{W}_{hq} + \boldsymbol{b}_q
+    \boldsymbol{O}_t = \boldsymbol{H}_t^{(L)} \boldsymbol{W}_{hq} + \boldsymbol{b}_q
 
 - 其中权重 :math:`\boldsymbol{W}_{hq} \in \mathbb{R}^{h \times q}` 和偏差 :math:`\boldsymbol{b}_q \in \mathbb{R}^{1 \times q}` 为输出层的模型参数。
 - 同多层感知机一样，隐藏层个数 :math:`L` 和隐藏单元个数$h$都是超参数。此外，如果将隐藏状态的计算换成门控循环单元或者长短期记忆的计算，我们可以得到深度门控循环神经网络。
