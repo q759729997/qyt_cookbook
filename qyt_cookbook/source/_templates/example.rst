@@ -107,10 +107,12 @@ http://docutils.sf.net/ 孤立的网址会自动生成链接
 
 .. code-block:: shell
 
-	docker save -o 镜像名.tar 镜像名  # 导出镜像
+    docker save -o 镜像名.tar 镜像名  # 导出镜像
 	
 数学块
 ========================
+
+- 权重衰减（weight decay）等价于 :math:`L_2`  范数正则化（regularization）。
 
 .. math::
 
@@ -148,12 +150,12 @@ csv 表格
 ========================
 
 .. csv-table::
-   :header: sentence, target
+    :header: sentence, target
 
-   This is the first instance ., 0
-   Second instance ., 1
-   Third instance ., 1
-   ..., ...
+    This is the first instance ., 0
+    Second instance ., 1
+    Third instance ., 1
+    ..., ...
 
 
 

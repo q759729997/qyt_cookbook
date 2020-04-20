@@ -14,19 +14,19 @@ torchtext工具包
 
 .. code-block:: python
 
-	cache_dir = './data/torchtext'
-	# glove = vocab.pretrained_aliases["glove.6B.50d"](cache=cache_dir)
-	glove = vocab.GloVe(name='6B', dim=50, cache=cache_dir) # 与上面等价
-	print("一共包含%d个词。" % len(glove.stoi))  # 一共包含400000个词。
+    cache_dir = './data/torchtext'
+    # glove = vocab.pretrained_aliases["glove.6B.50d"](cache=cache_dir)
+    glove = vocab.GloVe(name='6B', dim=50, cache=cache_dir) # 与上面等价
+    print("一共包含%d个词。" % len(glove.stoi))  # 一共包含400000个词。
 
 - 返回的实例主要有以下三个属性：
 
-	- ``stoi``: 词到索引的字典：
-	- ``itos``: 一个列表，索引到词的映射；
-	- ``vectors``: 词向量。
+    - ``stoi``: 词到索引的字典：
+    - ``itos``: 一个列表，索引到词的映射；
+    - ``vectors``: 词向量。
 
 - 我们可以通过词来获取它在词典中的索引，也可以通过索引获取词。
 
 .. code-block:: python
 
-	glove.stoi['beautiful'], glove.itos[3366] # (3366, 'beautiful')
+    glove.stoi['beautiful'], glove.itos[3366] # (3366, 'beautiful')

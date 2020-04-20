@@ -25,8 +25,7 @@ normal(mean,std)/uniform(from,to)  正态分布/均匀分布
 randperm(m)                        随机排列
 =================================  =========================
 
--  重要参数 ``dtype``\ ，\ **默认数据类型**\ 为 ``torch.float``
-   ，32位浮点数。常用数据类型。
+-  重要参数 ``dtype`` ，\ **默认数据类型**\ 为 ``torch.float`` ，32位浮点数。常用数据类型。
 
 ============== ============================= ==================
 数据类型       dtype                         CPU tensor
@@ -40,83 +39,79 @@ randperm(m)                        随机排列
 
 .. code:: python
 
-   x = torch.ones(1, 2)
-   print('x:{}, dtype:{}'.format(x, x.dtype))
-   # 输出：x:tensor([[1., 1.]]), dtype:torch.float32
+    x = torch.ones(1, 2)
+    print('x:{}, dtype:{}'.format(x, x.dtype))
+    # 输出：x:tensor([[1., 1.]]), dtype:torch.float32
 
--  通过现有的 ``Tensor`` 来创建，此方法会默认重用输入 ``Tensor``
-   的一些属性，例如数据类型，除非自定义数据类型。
+-  通过现有的 ``Tensor`` 来创建，此方法会默认重用输入 ``Tensor`` 的一些属性，例如数据类型，除非自定义数据类型。
 
 .. code:: python
 
-   x = torch.tensor([1, 2, 3])
-   print('x:{}, dtype:{}'.format(x, x.dtype))
-   # 输出 x:tensor([1, 2, 3]), dtype:torch.int64
-   x = x.new_empty(1, 5)
-   print('x:{}, dtype:{}'.format(x, x.dtype))
-   # 输出 x:tensor([[0, 0, 0, 0, 0]]), dtype:torch.int64
-   x = x.new_empty(1, 5, dtype=torch.double)
-   print('x:{}, dtype:{}'.format(x, x.dtype))
-   # x:tensor([[0., 0., 0., 0., 0.]], dtype=torch.float64), dtype:torch.float64
+    x = torch.tensor([1, 2, 3])
+    print('x:{}, dtype:{}'.format(x, x.dtype))
+    # 输出 x:tensor([1, 2, 3]), dtype:torch.int64
+    x = x.new_empty(1, 5)
+    print('x:{}, dtype:{}'.format(x, x.dtype))
+    # 输出 x:tensor([[0, 0, 0, 0, 0]]), dtype:torch.int64
+    x = x.new_empty(1, 5, dtype=torch.double)
+    print('x:{}, dtype:{}'.format(x, x.dtype))
+    # x:tensor([[0., 0., 0., 0., 0.]], dtype=torch.float64), dtype:torch.float64
 
 常用属性
 ######################
 
--  ``Tensor`` 形状获取，通过 ``shape`` 或者 ``size()`` 来获取 ``Tensor``
-   的形状。返回的 ``torch.Size`` 其实相当于一个 ``tuple`` , 支持所有
-   ``tuple`` 的操作。
+-  ``Tensor`` 形状获取，通过 ``shape`` 或者 ``size()`` 来获取 ``Tensor`` 的形状。返回的 ``torch.Size`` 其实相当于一个 ``tuple`` , 支持所有 ``tuple`` 的操作。
 
 .. code:: python
 
-   x = torch.randn(8, 28, 28)
-   print(x.shape)  # 输出 torch.Size([8, 28, 28])
-   print(type(x.shape))  # 输出 <class 'torch.Size'>
-   print(x.size())  # 输出 torch.Size([8, 28, 28])
-   print(type(x.size()))  # 输出 <class 'torch.Size'>
-   print(x.size()[1])  # 输出 28
-   # x.shape[1] += 1，TypeError: 'torch.Size' object does not support item assignment
+    x = torch.randn(8, 28, 28)
+    print(x.shape)  # 输出 torch.Size([8, 28, 28])
+    print(type(x.shape))  # 输出 <class 'torch.Size'>
+    print(x.size())  # 输出 torch.Size([8, 28, 28])
+    print(type(x.size()))  # 输出 <class 'torch.Size'>
+    print(x.size()[1])  # 输出 28
+    # x.shape[1] += 1，TypeError: 'torch.Size' object does not support item assignment
 
 数学计算
 ######################
 
--  几种不同形式的相加运算，计算结果都一致（\ **计算时需要注意数据类型**\ ）。注：PyTorch操作inplace版本都有后缀\ ``_``,
-   例如\ ``x.copy_(y), x.t_()``
+-  几种不同形式的相加运算，计算结果都一致（\ **计算时需要注意数据类型**\ ）。注：PyTorch操作inplace版本都有后缀\ ``_`` , 例如\ ``x.copy_(y), x.t_()`` 。
 
 .. code:: python
 
-   x = torch.tensor([1, 2, 3])
-   y = torch.tensor([0.1, 0.2, 0.3])
-   # 形式一：直接相加
-   print(x + y)  # tensor([1.1000, 2.2000, 3.3000])
-   # 形式二：使用torch.add函数相加
-   print(torch.add(x, y))  # tensor([1.1000, 2.2000, 3.3000])
-   # 形式三：使用torch.add函数相加，将结果输出至指定的tensor
-   result = torch.empty_like(y)
-   print(torch.add(x, y, out=result))  # tensor([1.1000, 2.2000, 3.3000])
-   print(result)  # tensor([1.1000, 2.2000, 3.3000])
-   # 形式四：inplace版本，y的值会变化
-   print(y.add_(x))  # tensor([1.1000, 2.2000, 3.3000])
-   print(y)  # tensor([1.1000, 2.2000, 3.3000])
+    x = torch.tensor([1, 2, 3])
+    y = torch.tensor([0.1, 0.2, 0.3])
+    # 形式一：直接相加
+    print(x + y)  # tensor([1.1000, 2.2000, 3.3000])
+    # 形式二：使用torch.add函数相加
+    print(torch.add(x, y))  # tensor([1.1000, 2.2000, 3.3000])
+    # 形式三：使用torch.add函数相加，将结果输出至指定的tensor
+    result = torch.empty_like(y)
+    print(torch.add(x, y, out=result))  # tensor([1.1000, 2.2000, 3.3000])
+    print(result)  # tensor([1.1000, 2.2000, 3.3000])
+    # 形式四：inplace版本，y的值会变化
+    print(y.add_(x))  # tensor([1.1000, 2.2000, 3.3000])
+    print(y)  # tensor([1.1000, 2.2000, 3.3000])
 
 -  **广播机制**\ ：当对两个形状不同的\ ``Tensor``\ 按元素运算时，可能会触发广播（broadcasting）机制：先适当复制元素使这两个\ ``Tensor``\ 形状相同后再按元素运算。
 
 .. code:: python
 
-   x = torch.eye(2, 2)
-   print(x)  # tensor([[1., 0.], [0., 1.]])
-   print(x + torch.ones(1))  # tensor([[2., 1.], [1., 2.]])
-   print(x + torch.ones(1, 2))  # tensor([[2., 1.], [1., 2.]])
-   print(x + torch.ones(2, 1))  # tensor([[2., 1.], [1., 2.]])
-   print(x + torch.ones(2, 2))  # tensor([[2., 1.], [1., 2.]])
+    x = torch.eye(2, 2)
+    print(x)  # tensor([[1., 0.], [0., 1.]])
+    print(x + torch.ones(1))  # tensor([[2., 1.], [1., 2.]])
+    print(x + torch.ones(1, 2))  # tensor([[2., 1.], [1., 2.]])
+    print(x + torch.ones(2, 1))  # tensor([[2., 1.], [1., 2.]])
+    print(x + torch.ones(2, 2))  # tensor([[2., 1.], [1., 2.]])
 
 - ``max`` 函数。传入一个tensor时，返回其最大的值，传入两个时，则进行元素比较，每个元素取较大的，形状不同时要能够进行广播计算。
 
 .. code-block:: python
 
-   x = torch.tensor([-1, 0, 1])
-   print(x)
-   print(torch.max(x))  # tensor(1)
-   print(torch.max(x, torch.tensor(0)))  # tensor([0, 0, 1])
+    x = torch.tensor([-1, 0, 1])
+    print(x)
+    print(torch.max(x))  # tensor(1)
+    print(torch.max(x, torch.tensor(0)))  # tensor([0, 0, 1])
 
 -  一些线性代数函数：
 
@@ -141,12 +136,12 @@ svd                               奇异值分解
 
 .. code:: python
 
-   x = torch.tensor([[1, 2, 3], [4, 5, 6]])
-   print(x.shape)  # torch.Size([2, 3])
-   print(x.sum(dim=0, keepdim=True))  # tensor([[5, 7, 9]])
-   print(x.sum(dim=0, keepdim=True).shape)  # torch.Size([1, 3])
-   print(x.sum(dim=1, keepdim=True))  # tensor([[ 6], [15]])
-   print(x.sum(dim=1, keepdim=True).shape)  # torch.Size([2, 1])
+    x = torch.tensor([[1, 2, 3], [4, 5, 6]])
+    print(x.shape)  # torch.Size([2, 3])
+    print(x.sum(dim=0, keepdim=True))  # tensor([[5, 7, 9]])
+    print(x.sum(dim=0, keepdim=True).shape)  # torch.Size([1, 3])
+    print(x.sum(dim=1, keepdim=True))  # tensor([[ 6], [15]])
+    print(x.sum(dim=1, keepdim=True).shape)  # torch.Size([2, 1])
 
 点乘与矩阵乘
 ***************************
@@ -171,7 +166,7 @@ svd                               奇异值分解
 小批量乘法
 ***************************
 
-- 我们可以使用小批量乘法运算`bmm`对两个小批量中的矩阵一一做乘法。假设第一个小批量中包含 :math:`n` 个形状为 :math:`a\times b` 的矩阵 :math:`\boldsymbol{X}_1, \ldots, \boldsymbol{X}_n` ，第二个小批量中包含 :math:`n` 个形状为 :math:`b\times c` 的矩阵 :math:`\boldsymbol{Y}_1, \ldots, \boldsymbol{Y}_n` 。这两个小批量的矩阵乘法输出为 :math:`n` 个形状为 :math:`a\times c` 的矩阵 :math:`\boldsymbol{X}_1\boldsymbol{Y}_1, \ldots, \boldsymbol{X}_n\boldsymbol{Y}_n` 。因此，给定两个形状分别为( :math:`n` ,  :math:`a` ,  :math:`b` )和( :math:`n` ,  :math:`b` ,  :math:`c` )的`Tensor`，小批量乘法输出的形状为( :math:`n` ,  :math:`a` ,  :math:`c` )。
+- 我们可以使用小批量乘法运算 ``bmm`` 对两个小批量中的矩阵一一做乘法。假设第一个小批量中包含 :math:`n` 个形状为 :math:`a\times b` 的矩阵 :math:`\boldsymbol{X}_1, \ldots, \boldsymbol{X}_n` ，第二个小批量中包含 :math:`n` 个形状为 :math:`b\times c` 的矩阵 :math:`\boldsymbol{Y}_1, \ldots, \boldsymbol{Y}_n` 。这两个小批量的矩阵乘法输出为 :math:`n` 个形状为 :math:`a\times c` 的矩阵 :math:`\boldsymbol{X}_1\boldsymbol{Y}_1, \ldots, \boldsymbol{X}_n\boldsymbol{Y}_n` 。因此，给定两个形状分别为( :math:`n` ,  :math:`a` ,  :math:`b` )和( :math:`n` ,  :math:`b` ,  :math:`c` )的`Tensor`，小批量乘法输出的形状为( :math:`n` ,  :math:`a` ,  :math:`c` )。
 
 .. code-block:: python
 
@@ -186,13 +181,13 @@ svd                               奇异值分解
 
 .. code:: python
 
-   x = torch.eye(2, 2)
+    x = torch.eye(2, 2)
    print(x)  # tensor([[1., 0.], [0., 1.]])
-   y = x[0, :]  # 取第一维位置0，第二维全部
-   print(y)  # tensor([1., 0.])
-   y += 3  # 源tensor，也就是x也随之改变
-   print(y)  # tensor([4., 3.])
-   print(x)  # tensor([[4., 3.], [0., 1.]])
+    y = x[0, :]  # 取第一维位置0，第二维全部
+    print(y)  # tensor([1., 0.])
+    y += 3  # 源tensor，也就是x也随之改变
+    print(y)  # tensor([4., 3.])
+    print(x)  # tensor([[4., 3.], [0., 1.]])
 
 -  高级索引选择函数：
 
@@ -215,30 +210,30 @@ svd                               奇异值分解
 
 .. code:: python
 
-   y_hat = torch.tensor([[0.1, 0.3, 0.6], [0.3, 0.2, 0.5]])
-   print(y_hat.shape)  # torch.Size([2, 3])
-   index = torch.LongTensor([0, 2]).view(-1, 1)
-   print(index.shape)  # torch.Size([2, 1])
-   print(index)
-   """
-   tensor([[0],
-   [2]])
-   """
-   print(y_hat.gather(dim=1, index=index).shape)  # torch.Size([2, 1])
-   print(y_hat.gather(dim=1, index=index))
-   """
-   tensor([[0.1000],
-   [0.5000]])
-   """
+    y_hat = torch.tensor([[0.1, 0.3, 0.6], [0.3, 0.2, 0.5]])
+    print(y_hat.shape)  # torch.Size([2, 3])
+    index = torch.LongTensor([0, 2]).view(-1, 1)
+    print(index.shape)  # torch.Size([2, 1])
+    print(index)
+    """
+    tensor([[0],
+    [2]])
+    """
+    print(y_hat.gather(dim=1, index=index).shape)  # torch.Size([2, 1])
+    print(y_hat.gather(dim=1, index=index))
+    """
+    tensor([[0.1000],
+    [0.5000]])
+    """
 
 -  ``y_hat.argmax(dim=1)``\ 返回矩阵\ ``y_hat``\ 每行中最大元素的索引。
 
 .. code:: python
 
-   y_hat = torch.tensor([[0.1, 0.3, 0.6], [0.3, 0.2, 0.5]])
-   print(y_hat.shape)  # torch.Size([2, 3])
-   print(y_hat.argmax(dim=1).shape)  # torch.Size([2])
-   print(y_hat.argmax(dim=1))  # tensor([2, 2])
+    y_hat = torch.tensor([[0.1, 0.3, 0.6], [0.3, 0.2, 0.5]])
+    print(y_hat.shape)  # torch.Size([2, 3])
+    print(y_hat.argmax(dim=1).shape)  # torch.Size([2])
+    print(y_hat.argmax(dim=1))  # tensor([2, 2])
 
 形状改变操作
 ######################
@@ -247,63 +242,63 @@ svd                               奇异值分解
 
 .. code:: python
 
-   x = torch.zeros(10)
-   print(x.shape)  # torch.Size([10])
-   y = x.view(2, 5)
-   print(y.shape)  # torch.Size([2, 5])
-   y = x.view(2, -1)  # -1所指的维度可以根据其他维度的值推出来
-   print(y.shape)  # torch.Size([2, 5])
-   y = x.view(-1, 5)
-   print(y.shape)  # torch.Size([2, 5])
-   print('{} 共享数据 {}'.format('-'*15, '-'*15))
-   y += 3
-   print(x)  # tensor([3., 3., 3., 3., 3., 3., 3., 3., 3., 3.])
+    x = torch.zeros(10)
+    print(x.shape)  # torch.Size([10])
+    y = x.view(2, 5)
+    print(y.shape)  # torch.Size([2, 5])
+    y = x.view(2, -1)  # -1所指的维度可以根据其他维度的值推出来
+    print(y.shape)  # torch.Size([2, 5])
+    y = x.view(-1, 5)
+    print(y.shape)  # torch.Size([2, 5])
+    print('{} 共享数据 {}'.format('-'*15, '-'*15))
+    y += 3
+    print(x)  # tensor([3., 3., 3., 3., 3., 3., 3., 3., 3., 3.])
 
 -  使用\ ``clone``\ 拷贝tensor，创建一个副本 ，使其不共享\ ``data``\ 。使用\ ``clone``\ 还有一个好处是会被记录在计算图中，即梯度回传到副本时也会传到源\ ``Tensor``\ 。\ *Pytorch还提供了一个reshape() 可以改变形状，但是此函数并不能保证返回的是其拷贝，所以不推荐使用。*
 
 .. code:: python
 
-   x = torch.zeros(10)
-   y = x.clone().view(-1, 5)
-   y += 3
-   print(y)  # tensor([[3., 3., 3., 3., 3.], [3., 3., 3., 3., 3.]])
-   print(x)  # tensor([0., 0., 0., 0., 0., 0., 0., 0., 0., 0.])
+    x = torch.zeros(10)
+    y = x.clone().view(-1, 5)
+    y += 3
+    print(y)  # tensor([[3., 3., 3., 3., 3.], [3., 3., 3., 3., 3.]])
+    print(x)  # tensor([0., 0., 0., 0., 0., 0., 0., 0., 0., 0.])
 
 -  ``unsqueeze``\ **增加维度**\ ，参数\ ``dim``\ 表示在哪个维度位置增加一个维度。
 
 .. code:: python
 
-   # torch.Size([2]) dim=0 ==》torch.Size([1, 2])
-   # torch.Size([2]) dim=1 ==》torch.Size([2, 1])
-   x = torch.tensor([1, 2])
-   print(x.shape)  # torch.Size([2])
-   print(torch.unsqueeze(x, dim=0).shape)  # torch.Size([1, 2])
-   print(torch.unsqueeze(x, dim=0))  # tensor([[1, 2]])
-   print(torch.unsqueeze(x, dim=1).shape)  # torch.Size([2, 1])
-   print(torch.unsqueeze(x, dim=1))
-   """
-   tensor([[1],
-           [2]])
-   """
+    # torch.Size([2]) dim=0 ==》torch.Size([1, 2])
+    # torch.Size([2]) dim=1 ==》torch.Size([2, 1])
+    x = torch.tensor([1, 2])
+    print(x.shape)  # torch.Size([2])
+    print(torch.unsqueeze(x, dim=0).shape)  # torch.Size([1, 2])
+    print(torch.unsqueeze(x, dim=0))  # tensor([[1, 2]])
+    print(torch.unsqueeze(x, dim=1).shape)  # torch.Size([2, 1])
+    print(torch.unsqueeze(x, dim=1))
+    """
+    tensor([[1],
+        [2]])
+    """
 
 -  ``squeeze``\ **减少维度**\ ，默认去掉所有size为1的维度，可以使用\ ``dim``\ 参数指定某一个待移除的位置。若指定位置size不为1，则不进行任何操作。
 
 .. code:: python
 
-   x = torch.ones(1, 2, 1, 3, 1, 4)
-   print(x.shape)  # torch.Size([1, 2, 1, 3, 1, 4])
-   print(torch.squeeze(x).shape)  # torch.Size([2, 3, 4])
-   print(torch.squeeze(x, dim=0).shape)  # torch.Size([2, 1, 3, 1, 4])
-   print(torch.squeeze(x, dim=1).shape)  # torch.Size([1, 2, 1, 3, 1, 4])
+    x = torch.ones(1, 2, 1, 3, 1, 4)
+    print(x.shape)  # torch.Size([1, 2, 1, 3, 1, 4])
+    print(torch.squeeze(x).shape)  # torch.Size([2, 3, 4])
+    print(torch.squeeze(x, dim=0).shape)  # torch.Size([2, 1, 3, 1, 4])
+    print(torch.squeeze(x, dim=1).shape)  # torch.Size([1, 2, 1, 3, 1, 4])
 
 -  ``cat`` 张量连接（拼接）。除了参数中指定的维度 ``dim=0`` ，其他位置的形状必须相同。指定dim的size进行加和。
 
 .. code:: python
 
-   x = torch.ones(2, 3, 4)
-   y = torch.ones(2, 1, 4)
-   z = torch.cat((x, y), dim=1)
-   print(z.shape)  # torch.Size([2, 4, 4])
+    x = torch.ones(2, 3, 4)
+    y = torch.ones(2, 1, 4)
+    z = torch.cat((x, y), dim=1)
+    print(z.shape)  # torch.Size([2, 4, 4])
 
 - ``stack`` 沿新维度连接张量序列。所有的张量必须是相同的大小。
 
@@ -353,47 +348,46 @@ svd                               奇异值分解
 Tensor与Python数据转换
 ######################
 
--  ``item()``,
-   它可以将一个标量\ ``Tensor``\ 转换成一个\ ``Python number``\ ：
+-  ``item()`` ,它可以将一个标量\ ``Tensor``\ 转换成一个\ ``Python number``\ ：
 
 .. code:: python
 
-   x = torch.tensor([3])
-   print(x)  # tensor([3])
-   print(x.shape)  # torch.Size([1])
-   print(x.item())  # 3
+    x = torch.tensor([3])
+    print(x)  # tensor([3])
+    print(x.shape)  # torch.Size([1])
+    print(x.item())  # 3
 
 -  **Tensor转numpy**\ ：使用\ ``numpy()``\ 将\ ``Tensor``\ 转换成NumPy数组，二者\ **共享内存**\ ，转换速度很快。改变其中一个另一个也变。所有在CPU上的\ ``Tensor``\ （除了\ ``CharTensor``\ ）都支持与NumPy数组相互转换。
 
 .. code:: python
 
-   x = torch.zeros(3)
-   y = x.numpy()
-   print(x, '\t', y)  # tensor([0., 0., 0.]) [0. 0. 0.]
-   x += 1
-   print(x, '\t', y)  # tensor([1., 1., 1.]) [1. 1. 1.]
-   y += 1
-   print(x, '\t', y)  # tensor([2., 2., 2.]) [2. 2. 2.]
+    x = torch.zeros(3)
+    y = x.numpy()
+    print(x, '\t', y)  # tensor([0., 0., 0.]) [0. 0. 0.]
+    x += 1
+    print(x, '\t', y)  # tensor([1., 1., 1.]) [1. 1. 1.]
+    y += 1
+    print(x, '\t', y)  # tensor([2., 2., 2.]) [2. 2. 2.]
 
 -  **numpy转Tensor**\ ：使用\ ``from_numpy()``\ 将NumPy数组转换成\ ``Tensor``\ ，二者\ **共享内存**\ ，转换速度很快。改变其中一个另一个也变。\ ``torch.tensor()``\ 会进行数据拷贝（就会消耗更多的时间和空间），所以返回的\ ``Tensor``\ 和原来的数据不再共享内存。
 
 .. code:: python
 
-   x = np.zeros(3)
-   y = torch.from_numpy(x)
-   print(x, '\t', y)  # [0. 0. 0.] tensor([0., 0., 0.], dtype=torch.float64)
-   x += 1
-   print(x, '\t', y)  # [1. 1. 1.] tensor([1., 1., 1.], dtype=torch.float64)
-   y += 2
-   print(x, '\t', y)  # [3. 3. 3.] tensor([3., 3., 3.], dtype=torch.float64)
-   print('{} 不共享内存 {}'.format('-'*15, '-'*15))
-   x = np.zeros(3)
-   y = torch.tensor(x)
-   print(x, '\t', y)  # [0. 0. 0.] tensor([0., 0., 0.], dtype=torch.float64)
-   x += 1
-   print(x, '\t', y)  # [1. 1. 1.] tensor([0., 0., 0.], dtype=torch.float64)
-   y += 2
-   print(x, '\t', y)  # [1. 1. 1.] tensor([2., 2., 2.], dtype=torch.float64)
+    x = np.zeros(3)
+    y = torch.from_numpy(x)
+    print(x, '\t', y)  # [0. 0. 0.] tensor([0., 0., 0.], dtype=torch.float64)
+    x += 1
+    print(x, '\t', y)  # [1. 1. 1.] tensor([1., 1., 1.], dtype=torch.float64)
+    y += 2
+    print(x, '\t', y)  # [3. 3. 3.] tensor([3., 3., 3.], dtype=torch.float64)
+    print('{} 不共享内存 {}'.format('-'*15, '-'*15))
+    x = np.zeros(3)
+    y = torch.tensor(x)
+    print(x, '\t', y)  # [0. 0. 0.] tensor([0., 0., 0.], dtype=torch.float64)
+    x += 1
+    print(x, '\t', y)  # [1. 1. 1.] tensor([0., 0., 0.], dtype=torch.float64)
+    y += 2
+    print(x, '\t', y)  # [1. 1. 1.] tensor([2., 2., 2.], dtype=torch.float64)
 
 
 设备间移动
@@ -404,24 +398,24 @@ Tensor与Python数据转换
 
 .. code:: python
 
-   device = 'cuda' if torch.cuda.is_available() else 'cpu'
-   print(device)  # cuda
-   x = torch.ones(3)
-   print(x)  # tensor([1., 1., 1.])
-   print(x.to(device))  # tensor([1., 1., 1.], device='cuda:0')
-   print(x)  # tensor([1., 1., 1.])
-   print(x.to(device, dtype=torch.int))  # tensor([1, 1, 1], device='cuda:0', dtype=torch.int32)
+    device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    print(device)  # cuda
+    x = torch.ones(3)
+    print(x)  # tensor([1., 1., 1.])
+    print(x.to(device))  # tensor([1., 1., 1.], device='cuda:0')
+    print(x)  # tensor([1., 1., 1.])
+    print(x.to(device, dtype=torch.int))  # tensor([1, 1, 1], device='cuda:0', dtype=torch.int32)
 
 -  CPU环境下操作如下：
 
 .. code:: python
 
-   device = 'cuda' if torch.cuda.is_available() else 'cpu'
-   print(device)  # cpu
-   x = torch.ones(3)
-   print(x)  # tensor([1., 1., 1.])
-   print(x.to(device))  # tensor([1., 1., 1.])
-   print(x.to(device, dtype=torch.int))  # tensor([1, 1, 1], dtype=torch.int32)
+    device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    print(device)  # cpu
+    x = torch.ones(3)
+    print(x)  # tensor([1., 1., 1.])
+    print(x.to(device))  # tensor([1., 1., 1.])
+    print(x.to(device, dtype=torch.int))  # tensor([1, 1, 1], dtype=torch.int32)
 
 -  **Tensor运算需要保证都在相同的设备上**\ ，否则会报错：\ ``RuntimeError: expected device cuda:0 but got device cpu``
 -  Tensor转Python数据类型的操作（如\ ``.numpy()``\ ），若Tensor在cuda设备上，需要先将其转移至cpu上，再进行操作。否则会报错：\ ``TypeError: can't convert CUDA tensor to numpy. Use Tensor.cpu() to copy the tensor to host memory first.``

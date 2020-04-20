@@ -5,6 +5,6 @@ TensorFlow手册
 ========================================
 
 .. toctree::
-   :maxdepth: 2
+    :maxdepth: 2
 
-   环境配置 </TensorFlow/install>
+    环境配置 </TensorFlow/install>
