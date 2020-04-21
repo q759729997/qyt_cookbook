@@ -219,12 +219,12 @@ word2vec的实现
 
 .. math::
 
-	\begin{aligned}
-	-\log P(w^{(t+j)} \mid w^{(t)})
-	=& -\log P(D=1\mid w^{(t)}, w^{(t+j)}) - \sum_{k=1,\ w_k \sim P(w)}^K \log P(D=0\mid w^{(t)}, w_k)\\
-	=&-  \log\, \sigma\left(\boldsymbol{u}_{i_{t+j}}^\top \boldsymbol{v}_{i_t}\right) - \sum_{k=1,\ w_k \sim P(w)}^K \log\left(1-\sigma\left(\boldsymbol{u}_{h_k}^\top \boldsymbol{v}_{i_t}\right)\right)\\
-	=&-  \log\, \sigma\left(\boldsymbol{u}_{i_{t+j}}^\top \boldsymbol{v}_{i_t}\right) - \sum_{k=1,\ w_k \sim P(w)}^K \log\sigma\left(-\boldsymbol{u}_{h_k}^\top \boldsymbol{v}_{i_t}\right).
-	\end{aligned}
+    \begin{aligned}
+    -\log P(w^{(t+j)} \mid w^{(t)})
+    =& -\log P(D=1\mid w^{(t)}, w^{(t+j)}) - \sum_{k=1,\ w_k \sim P(w)}^K \log P(D=0\mid w^{(t)}, w_k)\\
+    =&-  \log\, \sigma\left(\boldsymbol{u}_{i_{t+j}}^\top \boldsymbol{v}_{i_t}\right) - \sum_{k=1,\ w_k \sim P(w)}^K \log\left(1-\sigma\left(\boldsymbol{u}_{h_k}^\top \boldsymbol{v}_{i_t}\right)\right)\\
+    =&-  \log\, \sigma\left(\boldsymbol{u}_{i_{t+j}}^\top \boldsymbol{v}_{i_t}\right) - \sum_{k=1,\ w_k \sim P(w)}^K \log\sigma\left(-\boldsymbol{u}_{h_k}^\top \boldsymbol{v}_{i_t}\right).
+    \end{aligned}
 
 - 现在，训练中每一步的梯度计算开销不再与词典大小相关，而与 :math:`K` 线性相关。当 :math:`K` 取较小的常数时，负采样在每一步的梯度计算开销较小。
 
@@ -282,9 +282,9 @@ GloVe模型
 - 在有些情况下，交叉熵损失函数有劣势。GloVe模型采用了平方损失，并通过词向量拟合预先基于整个数据集计算得到的全局统计信息。任意词的中心词向量和背景词向量在GloVe模型中是等价的。
 - 作为在word2vec之后提出的词嵌入模型，GloVe模型采用了平方损失，并基于该损失对跳字模型做了3点改动：
 
-	- 1. 使用非概率分布的变量 :math:`p'_{ij}=x_{ij}` 和 :math:`q'_{ij}=\exp(\boldsymbol{u}_j^\top \boldsymbol{v}_i)` ，并对它们取对数。因此，平方损失项是 :math:`\left(\log\,p'_{ij} - \log\,q'_{ij}\right)^2 = \left(\boldsymbol{u}_j^\top \boldsymbol{v}_i - \log\,x_{ij}\right)^2` 。
-	- 2. 为每个词 :math:`w_i` 增加两个为标量的模型参数：中心词偏差项 :math:`b_i` 和背景词偏差项 :math:`c_i` 。
-	- 3. 将每个损失项的权重替换成函数 :math:`h(x_{ij})` 。权重函数 :math:`h(x)` 是值域在 :math:`[0,1]` 的单调递增函数。
+    - 1. 使用非概率分布的变量 :math:`p'_{ij}=x_{ij}` 和 :math:`q'_{ij}=\exp(\boldsymbol{u}_j^\top \boldsymbol{v}_i)` ，并对它们取对数。因此，平方损失项是 :math:`\left(\log\,p'_{ij} - \log\,q'_{ij}\right)^2 = \left(\boldsymbol{u}_j^\top \boldsymbol{v}_i - \log\,x_{ij}\right)^2` 。
+    - 2. 为每个词 :math:`w_i` 增加两个为标量的模型参数：中心词偏差项 :math:`b_i` 和背景词偏差项 :math:`c_i` 。
+    - 3. 将每个损失项的权重替换成函数 :math:`h(x_{ij})` 。权重函数 :math:`h(x)` 是值域在 :math:`[0,1]` 的单调递增函数。
 
 - 如此一来，GloVe模型的目标是最小化损失函数
 

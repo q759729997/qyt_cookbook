@@ -12,34 +12,32 @@
 
 .. code:: python
 
-   # 待测试程序
-   import time
+    # 待测试程序
+    import time
 
+    def time_test():
+        for i in range(10):
+            time.sleep(0.1)
 
-   def time_test():
-       for i in range(10):
-           time.sleep(0.1)
+    # 测试脚本
+    def _time_analyze_(func):
+        from time import clock
+        start = clock()
+        func()
+        finish = clock()
+        print("{:<20}{:10.6} s".format(func.__name__ + ":", finish - start))
 
-
-   # 测试脚本
-   def _time_analyze_(func):
-       from time import clock
-       start = clock()
-       func()
-       finish = clock()
-       print("{:<20}{:10.6} s".format(func.__name__ + ":", finish - start))
-
-   _time_analyze_(time_test)  # time_test:             1.00729 s
+    _time_analyze_(time_test)  # time_test:             1.00729 s
 
 -  Python 提供了timeit模块，用来测试代码块的运行时间。
 
 .. code:: python
 
-   def _timeit_analyze_(func):
-       from timeit import Timer
-       t1 = Timer("%s()" % func.__name__, "from __main__ import %s" % func.__name__)
-       print("{:<20}{:10.6} s".format(func.__name__ + ":", t1.timeit(1)))
+    def _timeit_analyze_(func):
+        from timeit import Timer
+        t1 = Timer("%s()" % func.__name__, "from __main__ import %s" % func.__name__)
+        print("{:<20}{:10.6} s".format(func.__name__ + ":", t1.timeit(1)))
 
-   _time_analyze_(time_test)  # time_test:             1.00695 s
+    _time_analyze_(time_test)  # time_test:             1.00695 s
 
 -  复杂情况运行时间测试，参考上述链接内的\ ``Profile``\ 。

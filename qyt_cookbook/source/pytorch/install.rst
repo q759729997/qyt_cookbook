@@ -16,12 +16,10 @@ Pytorch安装
 
 -  务必参考官网安装，减少不必要的错误。
 
--  官网 ``QUICK START LOCALLY`` 或 ``get-started``
-   模块，选择自己的操作系统， ``CUDA``
-   版本等，按照官方推荐的命令进行安装，例如：
+-  官网 ``QUICK START LOCALLY`` 或 ``get-started`` 模块，选择自己的操作系统， ``CUDA`` 版本等，按照官方推荐的命令进行安装，例如：
 
 .. code:: shell
 
-   pip install torch==1.4.0+cpu torchvision==0.5.0+cpu -f https://download.pytorch.org/whl/torch_stable.html
+    pip install torch==1.4.0+cpu torchvision==0.5.0+cpu -f https://download.pytorch.org/whl/torch_stable.html
 
 -  以前版本安装：\ https://pytorch.org/get-started/previous-versions/

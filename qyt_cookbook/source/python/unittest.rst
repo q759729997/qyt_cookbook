@@ -9,11 +9,11 @@ pytest
 
 .. code:: shell
 
-   @pytest.mark.skip(reason="跳过原因")
+    @pytest.mark.skip(reason="跳过原因")
 
 -  运行时显示详细信息：
 
 .. code:: python
 
-   if __name__ == '__main__':
-       pytest.main(['-s', './test/import_time.py'])
+    if __name__ == '__main__':
+        pytest.main(['-s', './test/import_time.py'])

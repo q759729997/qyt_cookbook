@@ -17,10 +17,10 @@ docker
 
 .. code-block:: shell
 
-   docker save -o 镜像名.tar 镜像名  # 导出镜像
-   docker load -i 镜像名.tar  # 导入镜像
-   docker import  镜像名.tar 新镜像名  # 导入镜像并设置新的名称
-   docker tag 镜像名 新镜像名  # 镜像修改名称tag
+    docker save -o 镜像名.tar 镜像名  # 导出镜像
+    docker load -i 镜像名.tar  # 导入镜像
+    docker import  镜像名.tar 新镜像名  # 导入镜像并设置新的名称
+    docker tag 镜像名 新镜像名  # 镜像修改名称tag
 
 容器操作
 ***************************
@@ -29,39 +29,39 @@ docker
 
 .. code:: shell
 
-   docker run -dit --name 容器名 镜像名  # 后台运行模式
-   docker run -it --name 容器名 镜像名 /bin/bash  # shell界面运行模式
+    docker run -dit --name 容器名 镜像名  # 后台运行模式
+    docker run -it --name 容器名 镜像名 /bin/bash  # shell界面运行模式
 
 - 重要参数：
 
-   - 指定运行时的容器名：--name 容器名；若不指定，则会自动生成
-   - 端口映射：-p 宿主机端口:容器端口
-   - 文件挂载：-v /宿主机路径:/容器机路径 --privileged
+    - 指定运行时的容器名：--name 容器名；若不指定，则会自动生成
+    - 端口映射：-p 宿主机端口:容器端口
+    - 文件挂载：-v /宿主机路径:/容器机路径 --privileged
 
 -  常用命令：
 
 .. code:: shell
 
-   docker exec -it 容器名 /bin/sh  # 进入容器，且停留在容器内bash界面
-   docker ps # 查看当前运行中的容器信息
-   docker ps -a # 查看所有容器信息，包括已经退出或者异常的
-   docker stop 容器名  # 关闭容器
-   docker start 容器名  # 启动容器
-   docker commit 容器名  镜像名 # 容器提交为镜像
-   docker rm -f 容器名  # 容器删除
+    docker exec -it 容器名 /bin/sh  # 进入容器，且停留在容器内bash界面
+    docker ps # 查看当前运行中的容器信息
+    docker ps -a # 查看所有容器信息，包括已经退出或者异常的
+    docker stop 容器名  # 关闭容器
+    docker start 容器名  # 启动容器
+    docker commit 容器名  镜像名 # 容器提交为镜像
+    docker rm -f 容器名  # 容器删除
 
 -  容器与宿主机文件拷贝：
 
 .. code:: shell
 
-   docker cp 宿主机路径 容器名:容器内路径
+    docker cp 宿主机路径 容器名:容器内路径
 
 -  容器内命令：
 
 .. code:: shell
 
-   Ctrl+P+Q  # 退出容器，不关闭容器
-   exit  # 退出容器，关闭容器
+    Ctrl+P+Q  # 退出容器，不关闭容器
+    exit  # 退出容器，关闭容器
 
 docker安装
 ######################
@@ -74,10 +74,10 @@ docker安装
 
 .. code:: shell
 
-   docker -v  # 查看版本号
-   docker images  # 查看镜像
-   docker ps  # 查看运行中的容器
-   docker run hello-world  # 运行hello-world镜像
+    docker -v  # 查看版本号
+    docker images  # 查看镜像
+    docker ps  # 查看运行中的容器
+    docker run hello-world  # 运行hello-world镜像
 
 CentOS系统下安装
 ***************************
@@ -91,9 +91,9 @@ CentOS系统下安装
 
 .. code:: shell
 
-   systemctl start docker  # 启动docker服务
-   systemctl restart docker  # 重启docker服务
-   systemctl stop docker  # 关闭docker服务
+    systemctl start docker  # 启动docker服务
+    systemctl restart docker  # 重启docker服务
+    systemctl stop docker  # 关闭docker服务
 
 问题记录
 ***************************
@@ -109,10 +109,10 @@ docker用户组设置
 
 .. code:: shell
 
-   cat /etc/group | grep docker  # 查看用户组
-   usermod -aG docker 用户名  # 将相应的用户添加到这个分组
-   cat /etc/group  # 检查一下创建是否有效
-   systemctl restart docker  # 重启docker服务
+    cat /etc/group | grep docker  # 查看用户组
+    usermod -aG docker 用户名  # 将相应的用户添加到这个分组
+    cat /etc/group  # 检查一下创建是否有效
+    systemctl restart docker  # 重启docker服务
 
 常用镜像
 ######################
@@ -124,12 +124,12 @@ Nginx镜像
 
 .. code:: shell
 
-   docker pull nginx  # 镜像拉取
-   docker run -dit -p 主机端口:80 -v 项目路径:/usr/share/nginx/html --privileged --name 容器名称 nginx  # 首次启动，根据镜像创建容器
-   docker start 容器名称  # 启动容器
-   docker stop 容器名称  # 关闭容器
-   docker logs 容器名称  # 查看容器日志
-   docker rm 容器名称  # 删除容器
+    docker pull nginx  # 镜像拉取
+    docker run -dit -p 主机端口:80 -v 项目路径:/usr/share/nginx/html --privileged --name 容器名称 nginx  # 首次启动，根据镜像创建容器
+    docker start 容器名称  # 启动容器
+    docker stop 容器名称  # 关闭容器
+    docker logs 容器名称  # 查看容器日志
+    docker rm 容器名称  # 删除容器
 
 dockerfile
 ######################
@@ -138,39 +138,39 @@ dockerfile
 
 .. code:: shell
 
-   # docker_test镜像
-   FROM docker.io/python:3.6-buster
-   # 创建项目根目录
-   RUN mkdir /docker_test
+    # docker_test镜像
+    FROM docker.io/python:3.6-buster
+    # 创建项目根目录
+    RUN mkdir /docker_test
 
-   WORKDIR /docker_test
-   # 拷贝文件
-   COPY LICENSE ./
-   COPY *.md ./
-   COPY requirement* ./
-   COPY *.py ./
-   COPY 文件夹 ./文件夹
+    WORKDIR /docker_test
+    # 拷贝文件
+    COPY LICENSE ./
+    COPY *.md ./
+    COPY requirement* ./
+    COPY *.py ./
+    COPY 文件夹 ./文件夹
 
-   # 依赖安装
-   RUN pip install tensorflow-cpu==2.1.0 -i https://pypi.douban.com/simple && \
-       pip install -r requirements.txt -i https://pypi.douban.com/simple && \
-       # 清理pip安装缓存
-       rm -rf /root/.cache/*
+    # 依赖安装
+    RUN pip install tensorflow-cpu==2.1.0 -i https://pypi.douban.com/simple && \
+        pip install -r requirements.txt -i https://pypi.douban.com/simple && \
+        # 清理pip安装缓存
+        rm -rf /root/.cache/*
 
-   CMD ["python", "--version"]
-   # 构建镜像：docker build -f dockerfile -t docker_test .
+    CMD ["python", "--version"]
+    # 构建镜像：docker build -f dockerfile -t docker_test .
 
 -  相关命令：
 
 .. code:: shell
 
-   # 构建镜像：docker build -f docker_test.dockerfile -t docker_test .
-   # 删除镜像：docker rmi -f docker_test
-   # 查看镜像安装历史（可以分析每一步占用空间情况）：docker history docker_test
-   # 导出镜像：docker save -o docker_test.tar docker_test
-   # 压缩镜像：tar -czvf docker_test.tar.gz docker_test.tar
-   # 解压镜像：tar -xzvf docker_test.tar.gz
-   # 导入镜像：docker load -i docker_test.tar
+    # 构建镜像：docker build -f docker_test.dockerfile -t docker_test .
+    # 删除镜像：docker rmi -f docker_test
+    # 查看镜像安装历史（可以分析每一步占用空间情况）：docker history docker_test
+    # 导出镜像：docker save -o docker_test.tar docker_test
+    # 压缩镜像：tar -czvf docker_test.tar.gz docker_test.tar
+    # 解压镜像：tar -xzvf docker_test.tar.gz
+    # 导入镜像：docker load -i docker_test.tar
 
 MySQL镜像
 ######################

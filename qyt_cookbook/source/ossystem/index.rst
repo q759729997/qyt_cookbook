@@ -5,8 +5,8 @@
 ========================================
 
 .. toctree::
-   :maxdepth: 2
+    :maxdepth: 2
 
-   linux </ossystem/linux>
-   docker </ossystem/docker>
-   windows </ossystem/windows>
+    linux </ossystem/linux>
+    docker </ossystem/docker>
+    windows </ossystem/windows>

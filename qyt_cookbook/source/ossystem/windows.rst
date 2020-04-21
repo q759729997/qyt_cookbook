@@ -6,5 +6,5 @@ windows
 
 .. code:: shell
 
-   python -m rasa shell nlu ^
-       --model ./example/demo/models
+    python -m rasa shell nlu ^
+        --model ./example/demo/models
