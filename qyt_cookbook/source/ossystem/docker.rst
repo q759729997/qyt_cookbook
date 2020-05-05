@@ -131,6 +131,34 @@ Nginx镜像
     docker logs 容器名称  # 查看容器日志
     docker rm 容器名称  # 删除容器
 
+drools镜像
+***************************
+
+- 规则引擎，参考页面： https://hub.docker.com/r/jboss/drools-workbench-showcase
+
+.. code:: shell
+
+    docker pull jboss/drools-workbench-showcase
+    docker run -p 11980:8080 -p 11981:8001 -d --name drools-workbench jboss/drools-workbench-showcase:latest
+    
+- 访问链接： http://39.104.161.233:11980/business-central
+- 用户名``admin``
+
+- ``drools-engine``: https://hub.docker.com/r/isathish/drools-engine
+
+.. code:: shell
+
+    docker pull isathish/drools-engine
+    docker run -p 11980:8080 -d --name kie-server isathish/drools-engine:latest
+    Once the container starts, you can navigate into the Drools Workbench at:
+    http://localhost:11980/drools-wb
+    and the Kie Server at:
+    http://localhost:11980/kie-server
+    For more Kie Server Rest documentation use:
+    http://localhost:11980/kie-server/docs
+    Credentials:
+    User: admin Password: Admin@1234
+
 dockerfile
 ######################
 

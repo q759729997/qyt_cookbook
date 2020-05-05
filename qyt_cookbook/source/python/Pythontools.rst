@@ -2,6 +2,22 @@
 工具模块
 ==================
 
+编码与解码
+######################
+
+- 按文件流读取，对每一行进行解码
+
+.. code-block:: python
+
+    import codecs
+    import chardet
+
+    with codecs.open('./README.md', mode='rb') as fr:
+        for line in fr:
+            encoding = chardet.detect(line)['encoding']
+            line = line.decode(encoding, errors='ignore')
+            print(encoding, line)
+
 iterable数据操作
 ######################
 

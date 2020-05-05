@@ -15,12 +15,12 @@ Python库收藏
 进度条显示
 ***************************
 
-- tqdm： \ https://github.com/tqdm/tqdm
+- tqdm： https://github.com/tqdm/tqdm
 
 日期时间
 ***************************
 
-- 时间操作： \ https://github.com/crsmithdev/arrow
+- 时间操作： https://github.com/crsmithdev/arrow
 
 文本处理
 ***************************
@@ -29,15 +29,24 @@ Python库收藏
 - 倒排索引： https://github.com/willf/inverted_index
 - SQLLITE倒排： https://github.com/lsq960124/Inverted-index-BM25
 
+文档处理
+***************************
+
+- word文档解析： https://pypi.org/project/python-docx/
+- doc转docx（win32com）： https://zhuanlan.zhihu.com/p/27135983
+
 自然语言处理
 ***************************
 
-- Ngram库： \ https://pythonhosted.org/ngram/ngram.html#ngram-a-set-class-that-supports-lookup-by-n-gram-string-similarity
+- Ngram库： https://pythonhosted.org/ngram/ngram.html#ngram-a-set-class-that-supports-lookup-by-n-gram-string-similarity
+- 中文近义词工具包： https://github.com/huyingxi/Synonyms
+- 深度学习关系抽取框架（Pytorch版）： https://github.com/zjunlp/deepke
+- 图谱交互可视化： http://www.openkg.cn/tool/interactivegraph
 
 语料获取
 ***************************
 
-- web搜索封装： \ https://github.com/fossasia/query-server
+- web搜索封装： https://github.com/fossasia/query-server
 
 UI界面
 ***************************
