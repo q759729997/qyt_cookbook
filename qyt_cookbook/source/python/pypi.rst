@@ -28,6 +28,7 @@ Python库收藏
 - 字符串模糊匹配： https://github.com/seatgeek/fuzzywuzzy
 - 倒排索引： https://github.com/willf/inverted_index
 - SQLLITE倒排： https://github.com/lsq960124/Inverted-index-BM25
+- xml、json互转： https://pypi.org/project/xmltodict/
 
 文档处理
 ***************************
