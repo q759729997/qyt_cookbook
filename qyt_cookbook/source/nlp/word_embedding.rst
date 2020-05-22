@@ -37,6 +37,7 @@ Word2vec
 ######################
 
 - Word2Vec-知其然知其所以然: https://www.zybuluo.com/Dounm/note/591752
+- 预训练模型下载： https://github.com/Embedding/Chinese-Word-Vectors
 - word2vec工具的提出正是为了解决“由于任何两个不同词的one-hot向量的余弦相似度都为0，多个不同词之间的相似度难以通过one-hot向量准确地体现出来”这个问题。它将每个词表示成一个定长的向量，并使得这些向量能较好地表达不同词之间的相似和类比关系。word2vec工具包含了两个模型，即跳字模型（skip-gram）和连续词袋模型（continuous bag of words，CBOW）。
 - 参考文献：Mikolov, T., Sutskever, I., Chen, K., Corrado, G. S., & Dean, J. (2013). Distributed representations of words and phrases and their compositionality. In Advances in neural information processing systems (pp. 3111-3119).
 
