@@ -10,7 +10,7 @@
     基本概念 </nlp/concept>
     术语库 </nlp/glossary>
     语言模型 </nlp/language_model>
-    预训练模型 <nlp/Pre_trained_Models>
+    预训练模型 </nlp/pre_trained_Models>
     文本分类 </nlp/text_classification>
     机器翻译 </nlp/machine_translation>
     词嵌入 </nlp/word_embedding>

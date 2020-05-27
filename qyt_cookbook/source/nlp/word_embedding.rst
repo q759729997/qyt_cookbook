@@ -296,3 +296,21 @@ GloVe模型
 - 其中权重函数 :math:`h(x)` 的一个建议选择是：当 :math:`x < c` 时（如 :math:`c = 100` ），令 :math:`h(x) = (x/c)^\alpha` （如 :math:`\alpha = 0.75` ），反之令 :math:`h(x) = 1` 。因为 :math:`h(0)=0` ，所以对于 :math:`x_{ij}=0` 的平方损失项可以直接忽略。当使用小批量随机梯度下降来训练时，每个时间步我们随机采样小批量非零 :math:`x_{ij}` ，然后计算梯度来迭代模型参数。这些非零 :math:`x_{ij}` 是预先基于整个数据集计算得到的，包含了数据集的全局统计信息。因此，GloVe模型的命名取“全局向量”（Global Vectors）之意。
 - 需要强调的是，如果词 :math:`w_i` 出现在词 :math:`w_j` 的背景窗口里，那么词 :math:`w_j` 也会出现在词 :math:`w_i` 的背景窗口里。也就是说， :math:`x_{ij}=x_{ji}` 。不同于word2vec中拟合的是非对称的条件概率 :math:`p_{ij}` ，GloVe模型拟合的是对称的 :math:`\log\, x_{ij}` 。因此，任意词的中心词向量和背景词向量在GloVe模型中是等价的。但由于初始化值的不同，同一个词最终学习到的两组词向量可能不同。当学习得到所有词向量以后，GloVe模型使用中心词向量与背景词向量之和作为该词的最终词向量。
 - 参考文献：Pennington, J., Socher, R., & Manning, C. (2014). Glove: Global vectors for word representation. In Proceedings of the 2014 conference on empirical methods in natural language processing (EMNLP) (pp. 1532-1543).
+
+
+word2vec工具
+######################
+
+gensim
+***************************
+
+- 利用word2vec计算相似词汇： https://radimrehurek.com/gensim/models/word2vec.html
+
+.. code-block:: python
+
+    from gensim.models import KeyedVectors
+
+    word2vec_model_file = './data/embed/sgns.weibo.word/sgns.weibo.word'
+    model = KeyedVectors.load_word2vec_format(word2vec_model_file, binary=False)
+    results = model.most_similar('扎克伯格', topn=5)
+    [('孙正义', 0.6995826959609985), ('贝索斯', 0.6919196844100952), ('AOL', 0.6872508525848389), ('鲍尔默', 0.6810077428817749), ('贝佐斯', 0.67955482006073)]

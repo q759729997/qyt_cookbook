@@ -1,5 +1,5 @@
-sphinx
-sphinx-autobuild
-sphinx_rtd_theme
-recommonmark
-sphinx-markdown-tables
+sphinx>=2.4.3  # sphinx文档生成工具包
+sphinx-autobuild>=0.7.1  # sphinx自动build
+sphinx_rtd_theme>=0.4.3  # sphinx主题
+sphinx-markdown-tables>=0.0.12  # sphinx扩展包：markdown表格
+recommonmark>=0.6.0  # Sphinx项目中编写CommonMark
